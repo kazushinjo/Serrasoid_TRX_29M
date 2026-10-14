@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "Serrasoid_TRX")(type "KiCad")(uri "${KIPRJMOD}/Serrasoid_TRX.kicad_sym")(options "")(descr "Serrasoid TRX project symbols"))
+)
