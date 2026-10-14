@@ -30,7 +30,7 @@ def main():
         for p in sorted(real, key=lambda p: refkey(p['ref'])): w.writerow([p['ref'], p['value'], p['fp'], p['block'], p['note']])
     md = ['# Serrasoid TRX 29M 部品表（BOM）', '',
           '回路一覧 `tools/circuit.py` から `tools/gen_bom.py` で生成。回路図 `Serrasoid_TRX.kicad_sch` と同じ内容。', '',
-          '- 表面実装は TLV3501（SOIC-8）と SHDN 選択用のはんだジャンパ JP1 だけ。ほかはすべてリード部品',
+          '- 表面実装部品は使わない（すべてリード部品）',
           '- IC はすべて丸ピン IC ソケットを使う前提のフットプリント',
           '- 基板専用部品（回路図にない）: RD06HHF1 の放熱器（秋月 20PB020）、取付穴', '']
     total = 0

@@ -112,10 +112,10 @@ J3,TJC,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,制御,TJC 表
 J4,ENC,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,制御,ロータリーエンコーダ（上面 TUNE）
 J5,ANT,Connector_Wire:SolderWire-1sqmm_1x02_P5.4mm_D1.4mm_OD2.7mm,制御,後面 BNC へ（RG-174 で配線）
 J6,TX LED,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,制御,上面の TX ランプ
-J7,MIC,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,送信音声,エレクトレットマイク・PTT（上面 MIC）
-J8,VOL,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,受信,上面 VOL（10kΩ A カーブ）
-J9,SP,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,受信,スピーカー 8Ω
-JP1,SHDN,Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm,セラゾイド変調,TLV3501 の SHDN。初期は 1-2（GND）。データシートで論理を確認して必要なら 2-3 へ
+J7,LATCH,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,セラゾイド変調,ラッチ選択（ジャンパピン）。初期は 1-2（GND = ラッチしない）。データシートで論理を確認して必要なら 2-3 へ
+J8,MIC,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,送信音声,エレクトレットマイク・PTT（上面 MIC）
+J9,VOL,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,受信,上面 VOL（10kΩ A カーブ）
+J10,SP,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,受信,スピーカー 8Ω
 K1,G5V-2 DC12,Relay_THT:Relay_DPDT_Omron_G5V-2,制御,送受切替。1 極目: アンテナ（NC=受信、NO=送信）、2 極目: 8V を RX8V / TX8V へ
 L1,10uH,Inductor_THT:L_Axial_L9.5mm_D4.0mm_P2.54mm_Vertical_Fastron_SMCC,電源,DC-DC 入力フィルタ
 L2,T30-6 17T/2T,Serrasoid_TRX:L_T30_3pin_Vertical,送信RF,送信 BPF 1 段目。T-30-6 に 0.4mm 線 17 回、コールド側から 2 回目でタップ
@@ -220,7 +220,7 @@ U4,LP2950-3.3,Package_TO_SOT_THT:TO-92_Inline,電源,Si5351 モジュール用 3
 U5,XIAO ESP32C3,Serrasoid_TRX:Seeeduino_XIAO_Socket,制御,ソケット実装。D8（PTT）・D9（エンコーダ SW）は起動設定ピンなので、PTT を押したまま電源を入れない
 U6,AE-Si5351A,Serrasoid_TRX:DIP-8_W7.62mm,制御,秋月 AE-Si5351A。CLK0 = 変調基準 9.15625MHz（送信時のみ）、CLK1 = 受信局発 18.6MHz（受信時のみ）
 U7,74HCT4017,Package_DIP:DIP-16_W7.62mm_Socket,セラゾイド変調,÷10。Q0 が 1.09µs ごとに約 110ns 幅のリセットパルス。HCT 品（3.3V 入力を受けるため）
-U8,TLV3501AID,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,セラゾイド変調,高速コンパレータ（唯一の表面実装部品、SOIC-8）
+U8,MAX913CPA,Package_DIP:DIP-8_W7.62mm_Socket,セラゾイド変調,高速コンパレータ（10ns、DIP-8）。単電源 5V で入力範囲が GND まで入る MAX913 を使う。ピン互換の LT1016CN8 も可（入力が 1.25V 未満で誤動作しないか確認）
 U9,74HC123,Package_DIP:DIP-16_W7.62mm_Socket,セラゾイド変調,コンパレータの立ち上がりで約 545ns（デューティ 50%）のパルス。2 回路目は未使用
 U10,74AC86,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65MHz）。必ず AC 品
 U11,74AC86,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,×2 段 5（29.3MHz）と出力バッファ。必ず AC 品

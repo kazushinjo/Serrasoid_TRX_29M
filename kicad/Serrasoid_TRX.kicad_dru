@@ -1,0 +1,4 @@
+(version 1)
+# GND ベタへのサーマルリリーフは 1 本以上あればよい（GND は内層 2 枚でもつながっているため）
+(rule "thermal_spokes"
+  (constraint min_resolved_spokes 1))

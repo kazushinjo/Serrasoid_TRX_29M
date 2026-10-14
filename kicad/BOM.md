@@ -2,7 +2,7 @@
 
 回路一覧 `tools/circuit.py` から `tools/gen_bom.py` で生成。回路図 `Serrasoid_TRX.kicad_sch` と同じ内容。
 
-- 表面実装は TLV3501（SOIC-8）と SHDN 選択用のはんだジャンパ JP1 だけ。ほかはすべてリード部品
+- 表面実装部品は使わない（すべてリード部品）
 - IC はすべて丸ピン IC ソケットを使う前提のフットプリント
 - 基板専用部品（回路図にない）: RD06HHF1 の放熱器（秋月 20PB020）、取付穴
 
@@ -142,7 +142,7 @@
 | U5 | XIAO ESP32C3 | Seeeduino XIAO Socket | 1 | ソケット実装。D8（PTT）・D9（エンコーダ SW）は起動設定ピンなので、PTT を押したまま電源を入れない |
 | U6 | AE-Si5351A | DIP-8 W7.62mm | 1 | 秋月 AE-Si5351A。CLK0 = 変調基準 9.15625MHz（送信時のみ）、CLK1 = 受信局発 18.6MHz（受信時のみ） |
 | U7 | 74HCT4017 | DIP-16 W7.62mm Socket | 1 | ÷10。Q0 が 1.09µs ごとに約 110ns 幅のリセットパルス。HCT 品（3.3V 入力を受けるため） |
-| U8 | TLV3501AID | SOIC-8 3.9x4.9mm P1.27mm | 1 | 高速コンパレータ（唯一の表面実装部品、SOIC-8） |
+| U8 | MAX913CPA | DIP-8 W7.62mm Socket | 1 | 高速コンパレータ（10ns、DIP-8）。単電源 5V で入力範囲が GND まで入る MAX913 を使う。ピン互換の LT1016CN8 も可（入力が 1.25V 未満で誤動作しないか確認） |
 | U9 | 74HC123 | DIP-16 W7.62mm Socket | 1 | コンパレータの立ち上がりで約 545ns（デューティ 50%）のパルス。2 回路目は未使用 |
 | U10, U11 | 74AC86 | DIP-14 W7.62mm Socket | 2 | U10: ×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65MHz）。必ず AC 品<br>U11: ×2 段 5（29.3MHz）と出力バッファ。必ず AC 品 |
 | U12 | MCP6004 | DIP-14 W7.62mm Socket | 1 | A: マイクアンプ、B: 利得段、C: 3kHz LPF、D: しきい値バッファ |
@@ -190,19 +190,12 @@
 | J4 | ENC | PinHeader 1x05 P2.54mm Vertical | 1 | ロータリーエンコーダ（上面 TUNE） |
 | J5 | ANT | SolderWire-1sqmm 1x02 P5.4mm D1.4mm OD2.7mm | 1 | 後面 BNC へ（RG-174 で配線） |
 | J6 | TX LED | PinHeader 1x02 P2.54mm Vertical | 1 | 上面の TX ランプ |
-| J7 | MIC | PinHeader 1x03 P2.54mm Vertical | 1 | エレクトレットマイク・PTT（上面 MIC） |
-| J8 | VOL | PinHeader 1x03 P2.54mm Vertical | 1 | 上面 VOL（10kΩ A カーブ） |
-| J9 | SP | PinHeader 1x02 P2.54mm Vertical | 1 | スピーカー 8Ω |
+| J7 | LATCH | PinHeader 1x03 P2.54mm Vertical | 1 | ラッチ選択（ジャンパピン）。初期は 1-2（GND = ラッチしない）。データシートで論理を確認して必要なら 2-3 へ |
+| J8 | MIC | PinHeader 1x03 P2.54mm Vertical | 1 | エレクトレットマイク・PTT（上面 MIC） |
+| J9 | VOL | PinHeader 1x03 P2.54mm Vertical | 1 | 上面 VOL（10kΩ A カーブ） |
+| J10 | SP | PinHeader 1x02 P2.54mm Vertical | 1 | スピーカー 8Ω |
 
-**コネクタ J 合計: 9**
-
-## はんだジャンパ JP
-
-| Reference | 値 / 型番 | フットプリント | 数量 | 備考 |
-|---|---|---|---|---|
-| JP1 | SHDN | SolderJumper-3 P1.3mm Bridged12 RoundedPad1.0x1.5mm | 1 | TLV3501 の SHDN。初期は 1-2（GND）。データシートで論理を確認して必要なら 2-3 へ |
-
-**はんだジャンパ JP 合計: 1**
+**コネクタ J 合計: 10**
 
 ## テストポイント TP
 

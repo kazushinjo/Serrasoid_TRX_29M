@@ -141,11 +141,10 @@ R(B, '100', 'RST_P', 'RST_G')
 add(B, 'Transistor_FET:2N7000', '2N7000', FP_TO92, {'1': G, '2': 'RST_G', '3': 'RAMP'}, '放電スイッチ')
 TP(B, 'RAMP', 'RAMP', 'のこぎり波の観測点')
 # コンパレータ
-add(B, 'Comparator:TLV3501AID', 'TLV3501AID', 'Package_SO:SOIC-8_3.9x4.9mm_P1.27mm',
-    {'3': 'RAMP', '2': 'THRESH', '6': 'COMP_OUT', '7': '+5VT', '4': G, '8': 'SHDN', '1': None, '5': None},
-    '高速コンパレータ（唯一の表面実装部品、SOIC-8）')
-add(B, 'Jumper:SolderJumper_3_Bridged12', 'SHDN', 'Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm',
-    {'1': G, '2': 'SHDN', '3': '+5VT'}, 'TLV3501 の SHDN。初期は 1-2（GND）。データシートで論理を確認して必要なら 2-3 へ')
+add(B, 'Comparator:LT1016', 'MAX913CPA', FP_DIP8,
+    {'2': 'RAMP', '3': 'THRESH', '7': 'COMP_OUT', '8': None, '1': '+5VT', '4': G, '6': G, '5': 'LATCH'},
+    '高速コンパレータ（10ns、DIP-8）。単電源 5V で入力範囲が GND まで入る MAX913 を使う。ピン互換の LT1016CN8 も可（入力が 1.25V 未満で誤動作しないか確認）')
+HDR(B, 'LATCH', [G, 'LATCH', '+5VT'], 'ラッチ選択（ジャンパピン）。初期は 1-2（GND = ラッチしない）。データシートで論理を確認して必要なら 2-3 へ')
 C(B, '0.1u', '+5VT', G)
 TP(B, 'THRESH', 'THRESH', 'しきい値（1.5V ± 音声）の観測点')
 # パルス整形（ワンショット）

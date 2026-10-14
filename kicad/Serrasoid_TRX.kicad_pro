@@ -240,7 +240,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": ""
+      "sch_revision": "1.0"
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -796,8 +796,36 @@
   },
   "sheets": [
     [
-      "6a1c3f3e-29a0-4c55-9d1e-5e7a50000001",
-      "Root"
+      "50835569-93ad-4c8c-aafc-424a6a3761ef",
+      "Serrasoid_TRX"
+    ],
+    [
+      "5bce4158-6682-519f-a5da-cabb97a70939",
+      "電源"
+    ],
+    [
+      "69b750f0-209b-5203-b863-20fe5ff209df",
+      "送信音声"
+    ],
+    [
+      "88cc78b6-3fcf-524e-8404-a76ab6ae5d25",
+      "制御"
+    ],
+    [
+      "8fd5ae5c-db64-56ff-9af6-8485fb1252b3",
+      "送信RF"
+    ],
+    [
+      "85d87d25-2ebd-56c6-906e-ce803dc55478",
+      "セラゾイド変調"
+    ],
+    [
+      "4d231745-e8e7-59f4-9c47-7dd040e59a7f",
+      "受信"
+    ],
+    [
+      "067fb83e-ea12-5a0e-a6d6-235a8f0db92d",
+      "逓倍"
     ]
   ],
   "text_variables": {},
