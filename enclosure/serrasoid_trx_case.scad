@@ -135,7 +135,7 @@ lcd_insert_depth = lcd_boss_h + bezel_t - 1.0;
 bezel_screw = [bezel[0] / 2 - 6, 20];
 bezel_insert_depth = bezel_t - 1.0;
 bezel_hole = 3.4;
-lcd_c = [8 + bezel[0] / 2, 57 + bezel[1] / 2];   // ベゼル左端 X=8、前端 Y=57（手前に MIC・SP ジャック・内蔵スピーカー）
+lcd_c = [8 + bezel[0] / 2, 40 + bezel[1] / 2];   // ベゼル左端 X=8、前端 Y=40（手前に MIC・EXT SP、奥に内蔵スピーカー）
 // 右の列（X = 170）: 手前から TUNE・VOL・POWER
 col_x = 170;
 enc_c   = [col_x, 40];  enc_hole = 7.2;  enc_knob = 32;  enc_body = 14; enc_depth = 12;   // ロータリーエンコーダ（J4）
@@ -148,7 +148,7 @@ mic_c   = [35, 20];  mic_hole = 16.2; mic_flange = 20; mic_body = 20; mic_depth 
 sp_c    = [70, 20];  sp_hole = 6.2;   sp_plug = 8;     sp_body = 12;  sp_depth = 15;     // 3.5mm 外部スピーカージャック（秋月 117359 MJ-352W-C、M6 P0.5 ねじ長 3.5mm、スイッチ付き。J9 からブレーク接点経由で内蔵スピーカーへ: 挿すと内蔵が切れる）
 sp_thin = 15; sp_thin_t = 1.8;   // SP ジャック穴を中心に 15x15mm を板厚 1.8mm に（ふた裏から座ぐり。ジャックのねじ長さ対策、PSN_TRX と同じ）
 // 内蔵スピーカー（秋月 116024 DXYD50N-22Z-8A-F、5cm 角 8Ω 0.5W。PSN_TRX と同じ）: ふた裏に密着させ、四隅の穴を M3 皿ねじ＋ナットで留める
-spk_c = [115, 31];       // 中心。左は EXT SP ジャック、右は TUNE、前は前面パネル、後ろは LCD
+spk_c = [80, 130];       // 中心。PSN_TRX と同じく LCD の奥、通風スロットの左。後ろは後面の BNC、下は送信 RF の入口（背の低い部品）
 spk_size = 50;           // 外形 50 × 50
 spk_pitch = 40;          // 取付穴 φ4 のピッチ
 spk_depth = 17.5;        // 枠の前面からマグネット後端まで
@@ -171,12 +171,16 @@ assert(sp_c[0] - sp_thin / 2 >= mic_c[0] + mic_hole / 2 + 2, "SP の薄肉部が
 assert(sp_c[1] - sp_thin / 2 >= y_front_in + 1, "SP の薄肉部が前面パネルの上端にかかる");
 // 内蔵スピーカー
 function sq_dist(c, p, half) = norm([max(abs(p[0] - c[0]) - half, 0), max(abs(p[1] - c[1]) - half, 0)]);   // 正方形と点の距離
-assert(spk_c[1] - spk_size / 2 >= y_front_in + 0.5, "スピーカーが前面パネルにかかる");
-assert(spk_c[1] + spk_size / 2 + 2 <= lcd_c[1] - lcd_cut[1] / 2, "スピーカーが LCD の切り欠きにかかる");
-assert(spk_c[1] + spk_pitch / 2 + 6.6 / 2 + 2 <= lcd_c[1] - bezel[1] / 2, "スピーカー取付ねじの頭がベゼルに近すぎる");
-assert(spk_c[0] - spk_size / 2 >= sp_c[0] + max(sp_thin, sp_body) / 2 + 1, "スピーカーが EXT SP ジャックにかかる");
-assert(spk_c[0] + spk_size / 2 + 1 <= enc_c[0] - enc_body / 2, "スピーカーがエンコーダの本体にかかる");
-assert(spk_c[0] + spk_pitch / 2 + 6.6 / 2 + knob_gap <= enc_c[0] - enc_knob / 2, "スピーカー取付ねじの頭が TUNE つまみに近すぎる");
+assert(spk_c[1] - spk_size / 2 >= lcd_c[1] + lcd_cut[1] / 2 + 2, "スピーカーが LCD にかかる");
+assert(spk_c[1] - spk_pitch / 2 - 6.6 / 2 >= lcd_c[1] + bezel[1] / 2 + 2, "スピーカー取付ねじの頭がベゼルに近すぎる");
+assert(spk_c[1] + spk_size / 2 + 1 <= y_rear_in, "スピーカーが後面パネルにかかる");
+assert(spk_c[0] - spk_size / 2 >= wall + 1, "スピーカーが左の側板にかかる");
+assert(spk_c[0] + spk_size / 2 + 3 <= lid_vent_x[0], "スピーカーが通風スロットに近すぎる");
+for (b = boss_pos) assert(sq_dist(spk_c, b, spk_size / 2) >= ear_d / 2 + 1, "スピーカーがふた固定ボスにかかる");
+// 後面の部品の本体（後面パネル内面から奥へ）: 平面で 1mm 以上離すか、本体の上端がマグネットの下端より 1mm 以上下
+for (c = [[dc_c, dc_body, dc_depth, "DC"], [fuse_c, fuse_body, fuse_depth, "FUSE"], [bnc_c, bnc_body, bnc_depth, "BNC"]])
+    let(dx = max(abs(c[0][0] - spk_c[0]) - spk_size / 2 - c[1] / 2, 0), dy = max((y_rear_in - c[2]) - (spk_c[1] + spk_size / 2), 0))
+    assert(norm([dx, dy]) >= 1 || c[0][1] + c[1] / 2 + 1 <= lid_under - spk_depth, str("スピーカーが後面の ", c[3], " の本体にかかる"));
 assert(lid_under - spk_depth >= parts_top(spk_c[0] - spk_size / 2, spk_c[0] + spk_size / 2, spk_c[1] - spk_size / 2, spk_c[1] + spk_size / 2) + 1, "スピーカーが基板の部品に当たる");
 assert(tx_c[0] + tx_hole / 2 + 3 <= W - 3 && led_c[0] + led_hole / 2 + 3 <= W - 3, "LED がふたの縁に近すぎる");
 // ふた裏の本体が基板の部品に当たらない（基板の上にあるもの）
@@ -194,7 +198,7 @@ assert(lid_under - lcd_depth >= parts_top(lcd_c[0] - lcd_mod[0] / 2, lcd_c[0] + 
 rear_z = 30;   // DC・ヒューズ・BNC の中心の高さ（ヒューズの本体を電源ブロックの部品の上に通す）
 dc_c   = [27, rear_z]; dc_hole = 8.0;  dc_flange = 14; dc_body = 12; dc_depth = 15;      // DC ジャック（2.1/2.5mm、センタープラス）
 dc_thin = 15; dc_thin_t = 1.8;   // DC ジャック穴を中心に 15x15mm を板厚 1.8mm に（パネル内側から座ぐり。ジャックのねじ長さ対策）
-fuse_c = [64, rear_z]; fuse_hole = 12.5; fuse_flange = 18; fuse_body = 16; fuse_depth = 35;   // 5x20 パネル取付ヒューズホルダ
+fuse_c = [176, rear_z]; fuse_hole = 12.5; fuse_flange = 18; fuse_body = 16; fuse_depth = 35;   // 5x20 パネル取付ヒューズホルダ
 bnc_c  = [92, rear_z]; bnc_hole = 9.6; bnc_flange = 14; bnc_body = 12; bnc_depth = 12;     // BNC（アンテナ、J5 へ同軸）
 hs_win = [hs_x - hs_w / 2 - 0.5, hs_x + hs_w / 2 + 0.5, hs_z0 - 0.2, hs_z0 + hs_h + 0.5];   // 放熱器の窓 [X0, X1, Z0, Z1]（下辺で放熱器を受ける）
 for (c = [[dc_c, dc_flange], [fuse_c, fuse_flange], [bnc_c, bnc_flange]]) {
@@ -231,8 +235,8 @@ for (c = [[dc_c, dc_body], [fuse_c, fuse_body], [bnc_c, bnc_body]], x = panel_bo
     assert(abs(c[0][0] - x) >= c[1] / 2 + ear_d / 2 + 1, "後面部品の本体が後面パネル固定ボスにかかる");
 for (x = panel_boss_x) assert(abs(x - hs_x) >= hs_w / 2 + ear_d / 2 + 1, "放熱器が後面パネル固定ボスにかかる");
 
-// ふたの通風スロット（放熱器・RD06HHF1・レギュレータの上）
-lid_vent_x = [bp(80, 0)[0], bp(150, 0)[0]];
+// ふたの通風スロット（放熱器・RD06HHF1・T1 の上、スピーカーの右）
+lid_vent_x = [spk_c[0] + spk_size / 2 + 3, bp(150, 0)[0]];
 lid_vent_y0 = psw_c[1] + psw_hole / 2 + 12; lid_vent_n = 6; lid_vent_pitch = 5;
 assert(lid_vent_y0 + (lid_vent_n - 1) * lid_vent_pitch + 2.5 + 3 <= y_rear_in, "ふたの通風スロットが後面パネルにかかる");
 assert(lid_vent_x[1] + 3 <= col_x - psw_body / 2 || lid_vent_y0 >= psw_c[1] + psw_hole / 2 + 8, "ふたの通風スロットが電源スイッチにかかる");
