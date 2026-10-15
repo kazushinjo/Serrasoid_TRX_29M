@@ -105,7 +105,7 @@ R(B, '10k', '+3V3X', 'PTT_IN', 'PTT プルアップ')
 R(B, '1k', 'MIC_PTT', 'PTT_IN', 'PTT 保護抵抗')
 C(B, '0.01u', 'PTT_IN', G)
 # 送受切替: TX_EN → Q → K1。K1 の 1 極目でアンテナ、2 極目で 8V を TX8V / RX8V に振り分ける
-R(B, '4.7k', 'TX_EN', 'RLY_B')
+R(B, '1k', 'TX_EN', 'RLY_B', 'リレー駆動のベース電流 約 2.6mA（コイル約 42mA を確実に飽和させる）')
 R(B, '10k', 'RLY_B', G)
 NPN(B, '2SC1815', G, 'RLY_C', 'RLY_B', 'リレー駆動')
 D(B, '1N4001', '+13V8', 'RLY_C', 'リレーコイルの逆起電力吸収', sym='Diode:1N4001', fp=FP_D41)
@@ -142,16 +142,16 @@ add(B, 'Transistor_FET:2N7000', '2N7000', FP_TO92, {'1': G, '2': 'RST_G', '3': '
 TP(B, 'RAMP', 'RAMP', 'のこぎり波の観測点')
 # コンパレータ
 add(B, 'Comparator:LT1016', 'MAX913CPA', FP_DIP8,
-    {'2': 'RAMP', '3': 'THRESH', '7': 'COMP_OUT', '8': None, '1': '+5VT', '4': G, '6': G, '5': 'LATCH'},
-    '高速コンパレータ（10ns、DIP-8）。単電源 5V で入力範囲が GND まで入る MAX913 を使う。ピン互換の LT1016CN8 も可（入力が 1.25V 未満で誤動作しないか確認）')
-HDR(B, 'LATCH', [G, 'LATCH', '+5VT'], 'ラッチ選択（ジャンパピン）。初期は 1-2（GND = ラッチしない）。データシートで論理を確認して必要なら 2-3 へ')
+    {'2': 'RAMP', '3': 'THRESH', '7': 'COMP_OUT', '8': None, '1': '+5VT', '4': G, '6': G, '5': G},
+    '高速コンパレータ（10ns、DIP-8）。単電源 5V（V- = GND）で入力範囲は -0.2〜+3.5V、出力は TTL（High 2.4〜3.4V）。'
+    'LE は Low でラッチしない（データシート: High または開放でラッチ）ので GND に固定。LT1016 は単電源では入力範囲が足りないので使わない')
 C(B, '0.1u', '+5VT', G)
 TP(B, 'THRESH', 'THRESH', 'しきい値（1.5V ± 音声）の観測点')
 # パルス整形（ワンショット）
-add(B, '74xx:74HC123', '74HC123', FP_DIP16,
+add(B, '74xx:74HC123', '74HCT123', FP_DIP16,
     {'1': G, '2': 'COMP_OUT', '3': '+5VT', '13': 'PM_OUT', '4': None, '14': 'OS_C', '15': 'OS_RC',
      '9': '+5VT', '10': G, '11': G, '5': None, '12': None, '6': None, '7': None, '8': G, '16': '+5VT'},
-    'コンパレータの立ち上がりで約 545ns（デューティ 50%）のパルス。2 回路目は未使用')
+    'コンパレータの立ち上がりで約 545ns（デューティ 50%）のパルス。MAX913 の TTL 出力を受けるため HCT 品。2 回路目は未使用')
 C(B, '100p', 'OS_C', 'OS_RC', 'ワンショット時定数', fp=FP_CS)
 R(B, '4.7k', '+5VT', 'OS_R')
 VR(B, '10k', 'OS_R', 'OS_RC', 'OS_RC', 'パルス幅（デューティ 50%）調整')
@@ -162,15 +162,26 @@ TP(B, 'PM', 'PM_OUT', '位相変調された 915.625kHz の観測点（立ち上
 # 逓倍 ×32（+5VT）
 # =====================================================================
 B = '逓倍'
-stages = [('PM_OUT', 'X2', '2k', '100p'), ('X2', 'X4', '1k', '100p'), ('X4', 'X8', '510', '100p'),
-          ('X8', 'X16', '510', '47p'), ('X16', 'X32', '270', '47p')]
+# 各段: XOR(x, x を RC で遅らせて 74AC14 で整形・反転したもの) → 2 倍の周波数。
+# 遅延（RC ＋ 74AC14 約 6ns）を入力周期の 1/4 にすると出力のデューティが 50% になる
+stages = [('PM_OUT', 'X2', '3.9k', '100p', '273ns（915.6kHz の 1/4 周期）'),
+          ('X2', 'X4', '1.8k', '100p', '137ns（1.83MHz の 1/4 周期）'),
+          ('X4', 'X8', '910', '100p', '68ns（3.66MHz の 1/4 周期）'),
+          ('X8', 'X16', '510', '82p', '34ns（7.33MHz の 1/4 周期）'),
+          ('X16', 'X32', '330', '47p', '17ns（14.65MHz の 1/4 周期）')]
+inv_pins = [('1', '2'), ('3', '4'), ('5', '6'), ('9', '8'), ('11', '10'), ('13', '12')]
 gate_pins = [('1', '2', '3'), ('4', '5', '6'), ('9', '10', '8'), ('12', '13', '11')]
 dl = []
-for i, (xi, xo, rv, cv) in enumerate(stages):
-    dn = 'DLY%d' % (i + 1)
-    R(B, rv, xi, dn, '×2 段 %d の遅延（出力周期の 1/4）' % (i + 1))
-    C(B, cv, dn, G, '', fp=FP_CS)
+inv = {'7': G, '14': '+5VT'}
+for i, (xi, xo, rv, cv, t) in enumerate(stages):
+    rc, dn = 'RC%d' % (i + 1), 'DLY%d' % (i + 1)
+    R(B, rv, xi, rc, '×2 段 %d の遅延 %s' % (i + 1, t))
+    C(B, cv, rc, G, 'NP0', fp=FP_CS)
+    inv.update({inv_pins[i][0]: rc, inv_pins[i][1]: dn})
     dl.append((xi, dn, xo))
+inv.update({inv_pins[5][0]: G, inv_pins[5][1]: None})
+add(B, '74xx:74HC14', '74AC14', FP_DIP14, inv, 'RC 遅延の後の波形整形（シュミット）。74AC86 に遅い波形を入れないため。必ず AC 品')
+C(B, '0.1u', '+5VT', G)
 u1 = {'7': G, '14': '+5VT'}
 for (a, b2, y), (xi, dn, xo) in zip(gate_pins, dl[:4]):
     u1.update({a: xi, b2: dn, y: xo})
@@ -238,8 +249,8 @@ C(B, '22p', 'TB2', G, 'NP0', fp=FP_CS)
 TC(B, '30p', 'TB2', G, '29.3MHz に同調')
 # バッファ 2N3866（TX8V、約 50mA）
 C(B, '0.01u', 'TXBPF_OUT', 'Q_BUF_B')
-R(B, '4.7k', 'TX8V', 'Q_BUF_B')
-R(B, '1k', 'Q_BUF_B', G)
+R(B, '560', 'TX8V', 'Q_BUF_B', 'ベースバイアス（分圧電流 約 12mA、hFE が低くても約 40mA を保つ）')
+R(B, '120', 'Q_BUF_B', G)
 add(B, 'Transistor_BJT:Q_NPN_EBC', '2N3866', 'Package_TO_SOT_THT:TO-39-3',
     {'1': 'Q_BUF_E', '2': 'Q_BUF_B', '3': 'Q_BUF_C'}, 'バッファ（TO-39、放熱クリップを付ける）')
 R(B, '4.7', 'Q_BUF_E', 'Q_BUF_E2', '帰還（バイパスしない）')
@@ -258,7 +269,7 @@ C(B, '0.01u', 'DRV_BW', G)
 R(B, '1k', 'DRV_BW', 'DRV_IN', 'ゲートバイアス')
 add(B, L + 'RD_MOSFET_GSD', 'RD06HHF1', FP_TO220, {'1': 'DRV_G', '2': G, '3': 'DRV_D'},
     'ドライバ（約 1W）。放熱器 HS1 に固定')
-Lx(B, 'FT37-43 10T', '+13V8', 'DRV_D', 'ドレインチョーク（約 25µH）', fp=FP_T50)
+Lx(B, 'FT37-43 10T', '+13V8', 'DRV_D', 'ドレインチョーク（約 35µH）', fp=FP_T50)
 C(B, '0.1u', '+13V8', G)
 C(B, '0.01u', 'DRV_D', 'PA_IN')
 # ファイナル RD16HHF1
@@ -277,8 +288,8 @@ C(B, '0.1u', '+13V8', G)
 C(B, '0.01u', '+13V8', G)
 CP(B, '220u', '+13V8', G, '25V 以上', fp=FP_CP8)
 C(B, '0.1u', 'PA_D', 'T1_P', '50V 以上')
-add(B, 'Device:Transformer_1P_1S', 'BN43-202 2T:4T', L + 'Transformer_BN43-202',
-    {'1': 'T1_P', '2': G, '3': 'LPF_IN', '4': G}, '出力整合 1:4（12.5Ω → 50Ω）。一次 2 回・二次 4 回')
+add(B, 'Device:Transformer_1P_1S', 'BN43-202 2T:5T', L + 'Transformer_BN43-202',
+    {'1': 'T1_P', '2': G, '3': 'LPF_IN', '4': G}, '出力整合 1:6.25（8Ω → 50Ω）。一次 2 回・二次 5 回。13.8V で 10W 出すにはドレイン負荷 約 8Ω が必要')
 # 7 次チェビシェフ LPF（fc 約 32MHz）
 C(B, '120p', 'LPF_IN', G, 'NP0 500V', fp=FP_CHV)
 Lx(B, 'T50-6 9T', 'LPF_IN', 'LPF2', '約 0.35µH', fp=FP_T50)
@@ -315,7 +326,8 @@ add(B, 'Transistor_FET:2N3819', '2N3819', 'Package_TO_SOT_THT:TO-92_Inline', {'1
     'RF アンプ（ソース接地）')
 R(B, '330', 'RFA_S', G)
 C(B, '0.01u', 'RFA_S', G)
-R(B, '1k', 'RX8V', 'RFA_D')
+Lx(B, '10uH', 'RX8V', 'RFA_D', 'ドレインチョーク（2N3819 の Idss のばらつきでドレイン電圧が下がらないように）')
+R(B, '1k', 'RX8V', 'RFA_D', '負荷（利得を約 8dB に抑える）')
 C(B, '0.01u', 'RX8V', G)
 C(B, '0.01u', 'RFA_D', 'MIX_IN')
 # 第 1 混合 SA612
@@ -333,15 +345,15 @@ add(B, L + 'MC3361', 'MC3361', FP_DIP16,
     {'16': 'IF1', '1': 'OSC_B', '2': 'OSC_E', '3': 'MIX3', '5': 'LIM_IN', '6': 'DEC1', '7': 'DEC2', '8': 'QUAD',
      '9': 'AF_DEM', '10': None, '11': None, '12': None, '13': None, '14': None, '4': '+5VA', '15': G},
     '第 2 混合（455kHz）・リミッタ・検波。スケルチは XIAO 側で行うので 10〜14 番は未使用')
-add(B, 'Device:Crystal', '10.245MHz', 'Crystal:Crystal_HC49-U_Vertical', {'1': 'OSC_B', '2': G}, '第 2 局発（並列共振）')
+add(B, 'Device:Crystal', '10.245MHz', 'Crystal:Crystal_HC49-U_Vertical', {'1': 'OSC_B', '2': '+5VA'}, '第 2 局発。データシートの試験回路どおり 1 番と VCC の間')
 C(B, '68p', 'OSC_B', 'OSC_E', 'NP0', fp=FP_CS)
-C(B, '220p', 'OSC_E', G, 'NP0', fp=FP_CS)
+C(B, '220p', 'OSC_E', '+5VA', 'NP0（データシートどおり VCC へ）', fp=FP_CS)
 add(B, L + 'Filter_3pin', 'CFWLA455KFFA', L + 'Filter_Ceramic_3pin_P2.54mm', {'1': 'MIX3', '2': G, '3': 'LIM_IN'},
     '455kHz セラミックフィルタ（±7.5kHz 程度）。ピン配置は実物で確認')
-C(B, '0.1u', 'DEC1', G)
-C(B, '0.1u', 'DEC2', G)
+C(B, '0.1u', 'DEC1', '+5VA', 'データシートどおり VCC へ')
+C(B, '0.1u', 'DEC2', '+5VA', 'データシートどおり VCC へ')
 add(B, 'Device:Crystal', 'CDBM455C24', FP_CHV, {'1': 'QUAD', '2': '+5VA'}, '455kHz セラミックディスクリミネータ（2 端子、5mm ピッチ）')
-R(B, '6.8k', 'QUAD', '+5VA', 'ディスクリミネータの Q 調整（音が歪むときは 3.9k〜10k で調整）')
+R(B, '20k', 'QUAD', '+5VA', 'ダンピング（データシートは 20k）。音が歪むときは 6.8k〜47k で調整')
 C(B, '0.1u', '+5VA', G)
 # ディエンファシス・音量・ミュート・LM386
 R(B, '10k', 'AF_DEM', 'AF_DE', 'ディエンファシス 470µs')

@@ -10,27 +10,30 @@
 
 | Reference | 値 / 型番 | フットプリント | 数量 | 備考 |
 |---|---|---|---|---|
-| R1, R2, R8, R15, R35, R51, R58 | 4.7k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 7 | R1, R2: I2C プルアップ<br>R51: Q 調整 |
+| R1, R2, R15, R51, R58 | 4.7k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 5 | R1, R2: I2C プルアップ<br>R51: Q 調整 |
 | R3-R6, R9, R13, R22, R23, R26, R29, R34, R48, R50, R57, R59, R60, R62-R64, R67 | 10k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 20 | R6: PTT プルアップ<br>R22: VREF = 2.5V<br>R57: ディエンファシス 470µs |
-| R7, R17, R36, R42, R47, R53, R54 | 1k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 7 | R7: PTT 保護抵抗<br>R17: ×2 段 2 の遅延（出力周期の 1/4）<br>R42, R47: ゲートバイアス<br>R54: 局発を約 0.3Vp-p に減衰 |
+| R7, R8, R42, R47, R53, R54 | 1k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 6 | R7: PTT 保護抵抗<br>R8: リレー駆動のベース電流 約 2.6mA（コイル約 42mA を確実に飽和させる）<br>R42, R47: ゲートバイアス<br>R53: 負荷（利得を約 8dB に抑える）<br>R54: 局発を約 0.3Vp-p に減衰 |
 | R10, R12 | 1.5k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | R10: TX ランプ電流<br>R12: 定電流源エミッタ抵抗 |
 | R11, R14, R21, R55 | 100 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | R11: Si5351 CLK0 の直列抵抗<br>R21: BPF への直列抵抗 |
-| R16 | 2k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ×2 段 1 の遅延（出力周期の 1/4） |
-| R18, R19 | 510 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | R18: ×2 段 3 の遅延（出力周期の 1/4）<br>R19: ×2 段 4 の遅延（出力周期の 1/4） |
-| R20 | 270 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ×2 段 5 の遅延（出力周期の 1/4） |
+| R16 | 3.9k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ×2 段 1 の遅延 273ns（915.6kHz の 1/4 周期） |
+| R17 | 1.8k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ×2 段 2 の遅延 137ns（1.83MHz の 1/4 周期） |
+| R18 | 910 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ×2 段 3 の遅延 68ns（3.66MHz の 1/4 周期） |
+| R19 | 510 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ×2 段 4 の遅延 34ns（7.33MHz の 1/4 周期） |
+| R20, R52 | 330 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | R20: ×2 段 5 の遅延 17ns（14.65MHz の 1/4 周期） |
 | R24 | 470 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | マイク電源デカップリング |
 | R25, R30 | 2.2k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | R25: エレクトレットのバイアス<br>R30: IDC（クリップ） |
 | R27 | 220k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | マイクアンプ利得 22 |
 | R28, R33, R66 | 100k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 3 | R28: 利得 11 |
 | R31, R32 | 15k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | R31: 3kHz LPF（サレンキー） |
+| R35 | 560 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ベースバイアス（分圧電流 約 12mA、hFE が低くても約 40mA を保つ） |
+| R36 | 120 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 |  |
 | R37 | 4.7 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 帰還（バイパスしない） |
 | R38, R39, R43, R61 | 10 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | R39, R43: ゲートストッパー |
 | R40 | 47 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 入力スワンプ |
 | R41, R46 | 3.3k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 |  |
 | R44, R45 | 100 | R Axial DIN0414 L11.9mm D4.5mm P5.08mm Vertical | 2 | 入力スワンプ（2 本並列で 50Ω） |
 | R49 | 47k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 |  |
-| R52 | 330 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 |  |
-| R56 | 6.8k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ディスクリミネータの Q 調整（音が歪むときは 3.9k〜10k で調整） |
+| R56 | 20k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ダンピング（データシートは 20k）。音が歪むときは 6.8k〜47k で調整 |
 | R65 | 470k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ノイズアンプ利得 47 |
 | R68 | 22k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ADC 入力を 3.1V 以下に |
 
@@ -51,30 +54,31 @@
 | Reference | 値 / 型番 | フットプリント | 数量 | 備考 |
 |---|---|---|---|---|
 | C1 | 470u | CP Radial D8.0mm P3.50mm | 1 | 25V 以上 |
-| C2, C5, C8, C9, C11, C13, C17, C18, C20, C22, C28, C29, C40, C50, C54, C57, C65, C73, C77-C79, C83, C87, C91, C92 | 0.1u | C Disc D5.0mm W2.5mm P2.50mm | 25 | C57: 50V 以上 |
-| C3, C4, C7, C10, C12, C31, C39, C82, C88, C89 | 10u | CP Radial D5.0mm P2.00mm | 10 | C3: 25V 以上 |
+| C2, C5, C8, C9, C11, C13, C17, C18, C20, C22, C28-C30, C41, C51, C55, C58, C66, C74, C78-C80, C84, C88, C92, C93 | 0.1u | C Disc D5.0mm W2.5mm P2.50mm | 26 | C58: 50V 以上<br>C78, C79: データシートどおり VCC へ |
+| C3, C4, C7, C10, C12, C32, C40, C83, C89, C90 | 10u | CP Radial D5.0mm P2.00mm | 10 | C3: 25V 以上 |
 | C6 | 0.33u | C Disc D5.0mm W2.5mm P2.50mm | 1 |  |
-| C14, C30, C44-C49, C51-C53, C55, C64, C69-C72, C74 | 0.01u | C Disc D5.0mm W2.5mm P2.50mm | 18 |  |
-| C15, C16, C32 | 47u | CP Radial D5.0mm P2.00mm | 3 |  |
-| C19, C21, C23-C25, C63 | 100p | C Disc D3.0mm W1.6mm P2.50mm | 6 | C19: C0G（NP0）必須。のこぎり波の直線性に直結<br>C21: ワンショット時定数 |
-| C26, C27 | 47p | C Disc D3.0mm W1.6mm P2.50mm | 2 |  |
-| C33, C35, C38, C81 | 1u | C Disc D5.0mm W2.5mm P2.50mm | 4 |  |
-| C34, C76 | 220p | C Disc D3.0mm W1.6mm P2.50mm | 2 | C34: 高域カット<br>C76: NP0 |
-| C36 | 4.7n | C Disc D5.0mm W2.5mm P2.50mm | 1 |  |
-| C37, C90 | 2.2n | C Disc D5.0mm W2.5mm P2.50mm | 2 | C90: ノイズ HPF（約 7kHz 以上） |
-| C41, C43, C66, C68 | 22p | C Disc D3.0mm W1.6mm P2.50mm | 4 | NP0 |
-| C42, C67 | 2p | C Disc D3.0mm W1.6mm P2.50mm | 2 | NP0、段間結合 |
-| C56 | 220u | CP Radial D8.0mm P3.50mm | 1 | 25V 以上 |
-| C58, C61 | 120p | C Disc D5.0mm W2.5mm P5.00mm | 2 | NP0 500V |
-| C59, C60 | 220p | C Disc D5.0mm W2.5mm P5.00mm | 2 | NP0 500V |
-| C62 | 4.7p | C Disc D3.0mm W1.6mm P2.50mm | 1 | NP0 500V。容量分割 |
-| C75 | 68p | C Disc D3.0mm W1.6mm P2.50mm | 1 | NP0 |
-| C80, C85 | 0.047u | C Disc D5.0mm W2.5mm P2.50mm | 2 |  |
-| C84 | 100u | CP Radial D6.3mm P2.50mm | 1 |  |
-| C86 | 220u | CP Radial D6.3mm P2.50mm | 1 | 16V 以上 |
-| C93 | 0.47u | C Disc D5.0mm W2.5mm P2.50mm | 1 |  |
+| C14, C31, C45-C50, C52-C54, C56, C65, C70-C73, C75 | 0.01u | C Disc D5.0mm W2.5mm P2.50mm | 18 |  |
+| C15, C16, C33 | 47u | CP Radial D5.0mm P2.00mm | 3 |  |
+| C19, C21, C23-C25, C64 | 100p | C Disc D3.0mm W1.6mm P2.50mm | 6 | C19: C0G（NP0）必須。のこぎり波の直線性に直結<br>C21: ワンショット時定数<br>C23-C25: NP0 |
+| C26 | 82p | C Disc D3.0mm W1.6mm P2.50mm | 1 | NP0 |
+| C27 | 47p | C Disc D3.0mm W1.6mm P2.50mm | 1 | NP0 |
+| C34, C36, C39, C82 | 1u | C Disc D5.0mm W2.5mm P2.50mm | 4 |  |
+| C35, C77 | 220p | C Disc D3.0mm W1.6mm P2.50mm | 2 | C35: 高域カット<br>C77: NP0（データシートどおり VCC へ） |
+| C37 | 4.7n | C Disc D5.0mm W2.5mm P2.50mm | 1 |  |
+| C38, C91 | 2.2n | C Disc D5.0mm W2.5mm P2.50mm | 2 | C91: ノイズ HPF（約 7kHz 以上） |
+| C42, C44, C67, C69 | 22p | C Disc D3.0mm W1.6mm P2.50mm | 4 | NP0 |
+| C43, C68 | 2p | C Disc D3.0mm W1.6mm P2.50mm | 2 | NP0、段間結合 |
+| C57 | 220u | CP Radial D8.0mm P3.50mm | 1 | 25V 以上 |
+| C59, C62 | 120p | C Disc D5.0mm W2.5mm P5.00mm | 2 | NP0 500V |
+| C60, C61 | 220p | C Disc D5.0mm W2.5mm P5.00mm | 2 | NP0 500V |
+| C63 | 4.7p | C Disc D3.0mm W1.6mm P2.50mm | 1 | NP0 500V。容量分割 |
+| C76 | 68p | C Disc D3.0mm W1.6mm P2.50mm | 1 | NP0 |
+| C81, C86 | 0.047u | C Disc D5.0mm W2.5mm P2.50mm | 2 |  |
+| C85 | 100u | CP Radial D6.3mm P2.50mm | 1 |  |
+| C87 | 220u | CP Radial D6.3mm P2.50mm | 1 | 16V 以上 |
+| C94 | 0.47u | C Disc D5.0mm W2.5mm P2.50mm | 1 |  |
 
-**コンデンサ C 合計: 93**
+**コンデンサ C 合計: 94**
 
 ## トリマコンデンサ TC
 
@@ -88,20 +92,20 @@
 
 | Reference | 値 / 型番 | フットプリント | 数量 | 備考 |
 |---|---|---|---|---|
-| L1, L4 | 10uH | L Axial L9.5mm D4.0mm P2.54mm Vertical Fastron SMCC | 2 | L1: DC-DC 入力フィルタ<br>L4: コレクタチョーク |
+| L1, L4, L12 | 10uH | L Axial L9.5mm D4.0mm P2.54mm Vertical Fastron SMCC | 3 | L1: DC-DC 入力フィルタ<br>L4: コレクタチョーク<br>L12: ドレインチョーク（2N3819 の Idss のばらつきでドレイン電圧が下がらないように） |
 | L2, L3, L10, L11 | T30-6 17T/2T | L T30 3pin Vertical | 4 | L2: 送信 BPF 1 段目。T-30-6 に 0.4mm 線 17 回、コールド側から 2 回目でタップ<br>L3: 送信 BPF 2 段目<br>L10: 受信 BPF 1 段目<br>L11: 受信 BPF 2 段目（タップは使わない） |
-| L5 | FT37-43 10T | L T50 2pin Vertical | 1 | ドレインチョーク（約 25µH） |
+| L5 | FT37-43 10T | L T50 2pin Vertical | 1 | ドレインチョーク（約 35µH） |
 | L6 | FT50-43 8T | L T50 2pin Vertical | 1 | ドレインチョーク（0.8mm 線、3A） |
 | L7, L9 | T50-6 9T | L T50 2pin Vertical | 2 | 約 0.35µH |
 | L8 | T50-6 10T | L T50 2pin Vertical | 1 | 約 0.39µH |
 
-**コイル L 合計: 11**
+**コイル L 合計: 12**
 
 ## トランス T
 
 | Reference | 値 / 型番 | フットプリント | 数量 | 備考 |
 |---|---|---|---|---|
-| T1 | BN43-202 2T:4T | Transformer BN43-202 | 1 | 出力整合 1:4（12.5Ω → 50Ω）。一次 2 回・二次 4 回 |
+| T1 | BN43-202 2T:5T | Transformer BN43-202 | 1 | 出力整合 1:6.25（8Ω → 50Ω）。一次 2 回・二次 5 回。13.8V で 10W 出すにはドレイン負荷 約 8Ω が必要 |
 
 **トランス T 合計: 1**
 
@@ -142,23 +146,24 @@
 | U5 | XIAO ESP32C3 | Seeeduino XIAO Socket | 1 | ソケット実装。D8（PTT）・D9（エンコーダ SW）は起動設定ピンなので、PTT を押したまま電源を入れない |
 | U6 | AE-Si5351A | DIP-8 W7.62mm | 1 | 秋月 AE-Si5351A。CLK0 = 変調基準 9.15625MHz（送信時のみ）、CLK1 = 受信局発 18.6MHz（受信時のみ） |
 | U7 | 74HCT4017 | DIP-16 W7.62mm Socket | 1 | ÷10。Q0 が 1.09µs ごとに約 110ns 幅のリセットパルス。HCT 品（3.3V 入力を受けるため） |
-| U8 | MAX913CPA | DIP-8 W7.62mm Socket | 1 | 高速コンパレータ（10ns、DIP-8）。単電源 5V で入力範囲が GND まで入る MAX913 を使う。ピン互換の LT1016CN8 も可（入力が 1.25V 未満で誤動作しないか確認） |
-| U9 | 74HC123 | DIP-16 W7.62mm Socket | 1 | コンパレータの立ち上がりで約 545ns（デューティ 50%）のパルス。2 回路目は未使用 |
-| U10, U11 | 74AC86 | DIP-14 W7.62mm Socket | 2 | U10: ×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65MHz）。必ず AC 品<br>U11: ×2 段 5（29.3MHz）と出力バッファ。必ず AC 品 |
-| U12 | MCP6004 | DIP-14 W7.62mm Socket | 1 | A: マイクアンプ、B: 利得段、C: 3kHz LPF、D: しきい値バッファ |
-| U13 | SA612AN | DIP-8 W7.62mm Socket | 1 | 第 1 混合 |
-| U14 | MC3361 | DIP-16 W7.62mm Socket | 1 | 第 2 混合（455kHz）・リミッタ・検波。スケルチは XIAO 側で行うので 10〜14 番は未使用 |
-| U15 | LM386N-1 | DIP-8 W7.62mm Socket | 1 | 低周波増幅（利得 20） |
-| U16 | 78L05 | TO-92 Inline | 1 | 受信用 5V（SA612・MC3361・スケルチ） |
-| U17 | MCP6002 | DIP-8 W7.62mm Socket | 1 | A: スケルチ用ノイズアンプ、B: 未使用（ボルテージフォロワで固定） |
+| U8 | MAX913CPA | DIP-8 W7.62mm Socket | 1 | 高速コンパレータ（10ns、DIP-8）。単電源 5V（V- = GND）で入力範囲は -0.2〜+3.5V、出力は TTL（High 2.4〜3.4V）。LE は Low でラッチしない（データシート: High または開放でラッチ）ので GND に固定。LT1016 は単電源では入力範囲が足りないので使わない |
+| U9 | 74HCT123 | DIP-16 W7.62mm Socket | 1 | コンパレータの立ち上がりで約 545ns（デューティ 50%）のパルス。MAX913 の TTL 出力を受けるため HCT 品。2 回路目は未使用 |
+| U10 | 74AC14 | DIP-14 W7.62mm Socket | 1 | RC 遅延の後の波形整形（シュミット）。74AC86 に遅い波形を入れないため。必ず AC 品 |
+| U11, U12 | 74AC86 | DIP-14 W7.62mm Socket | 2 | U11: ×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65MHz）。必ず AC 品<br>U12: ×2 段 5（29.3MHz）と出力バッファ。必ず AC 品 |
+| U13 | MCP6004 | DIP-14 W7.62mm Socket | 1 | A: マイクアンプ、B: 利得段、C: 3kHz LPF、D: しきい値バッファ |
+| U14 | SA612AN | DIP-8 W7.62mm Socket | 1 | 第 1 混合 |
+| U15 | MC3361 | DIP-16 W7.62mm Socket | 1 | 第 2 混合（455kHz）・リミッタ・検波。スケルチは XIAO 側で行うので 10〜14 番は未使用 |
+| U16 | LM386N-1 | DIP-8 W7.62mm Socket | 1 | 低周波増幅（利得 20） |
+| U17 | 78L05 | TO-92 Inline | 1 | 受信用 5V（SA612・MC3361・スケルチ） |
+| U18 | MCP6002 | DIP-8 W7.62mm Socket | 1 | A: スケルチ用ノイズアンプ、B: 未使用（ボルテージフォロワで固定） |
 
-**IC・モジュール U 合計: 17**
+**IC・モジュール U 合計: 18**
 
 ## 水晶・ディスクリミネータ X
 
 | Reference | 値 / 型番 | フットプリント | 数量 | 備考 |
 |---|---|---|---|---|
-| X1 | 10.245MHz | Crystal HC49-U Vertical | 1 | 第 2 局発（並列共振） |
+| X1 | 10.245MHz | Crystal HC49-U Vertical | 1 | 第 2 局発。データシートの試験回路どおり 1 番と VCC の間 |
 | X2 | CDBM455C24 | C Disc D5.0mm W2.5mm P5.00mm | 1 | 455kHz セラミックディスクリミネータ（2 端子、5mm ピッチ） |
 
 **水晶・ディスクリミネータ X 合計: 2**
@@ -190,12 +195,11 @@
 | J4 | ENC | PinHeader 1x05 P2.54mm Vertical | 1 | ロータリーエンコーダ（上面 TUNE） |
 | J5 | ANT | SolderWire-1sqmm 1x02 P5.4mm D1.4mm OD2.7mm | 1 | 後面 BNC へ（RG-174 で配線） |
 | J6 | TX LED | PinHeader 1x02 P2.54mm Vertical | 1 | 上面の TX ランプ |
-| J7 | LATCH | PinHeader 1x03 P2.54mm Vertical | 1 | ラッチ選択（ジャンパピン）。初期は 1-2（GND = ラッチしない）。データシートで論理を確認して必要なら 2-3 へ |
-| J8 | MIC | PinHeader 1x03 P2.54mm Vertical | 1 | エレクトレットマイク・PTT（上面 MIC） |
-| J9 | VOL | PinHeader 1x03 P2.54mm Vertical | 1 | 上面 VOL（10kΩ A カーブ） |
-| J10 | SP | PinHeader 1x02 P2.54mm Vertical | 1 | スピーカー 8Ω |
+| J7 | MIC | PinHeader 1x03 P2.54mm Vertical | 1 | エレクトレットマイク・PTT（上面 MIC） |
+| J8 | VOL | PinHeader 1x03 P2.54mm Vertical | 1 | 上面 VOL（10kΩ A カーブ） |
+| J9 | SP | PinHeader 1x02 P2.54mm Vertical | 1 | スピーカー 8Ω |
 
-**コネクタ J 合計: 10**
+**コネクタ J 合計: 9**
 
 ## テストポイント TP
 
@@ -210,4 +214,4 @@
 
 ---
 
-**部品総数: 240**
+**部品総数: 242**
