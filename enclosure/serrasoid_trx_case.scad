@@ -142,10 +142,10 @@ enc_c   = [col_x, 40];  enc_hole = 7.2;  enc_knob = 32;  enc_body = 14; enc_dept
 afv_c   = [col_x, 82];  afv_hole = 7.2;  afv_knob = 20;  afv_body = 17; afv_depth = 10;   // AF ボリューム（J8、10kΩ A）
 psw_c   = [col_x, 115]; psw_hole = 13.0; psw_body = 16; psw_depth = 20;                    // 電源スイッチ
 led_c   = [col_x + 18, psw_c[1]]; led_hole = 3.1;                                         // 電源 LED
-tx_c    = [col_x + 18, afv_c[1]]; tx_hole = 3.0; tx_depth = 6;                            // TX ランプ（J7）
 // 手前（基板より前、ふた裏が空いている所）: MIC・SP
-mic_c   = [35, 20];  mic_hole = 16.2; mic_flange = 20; mic_body = 20; mic_depth = 25;    // 4P 丸型マイクコネクタ（J5: MIC・PTT・GND）
-sp_c    = [70, 20];  sp_hole = 6.2;   sp_plug = 8;     sp_body = 12;  sp_depth = 15;     // 3.5mm 外部スピーカージャック（秋月 117359 MJ-352W-C、M6 P0.5 ねじ長 3.5mm、スイッチ付き。J9 からブレーク接点経由で内蔵スピーカーへ: 挿すと内蔵が切れる）
+mic_c   = [50, 20];  mic_hole = 16.2; mic_flange = 20; mic_body = 20; mic_depth = 25;    // 4P 丸型マイクコネクタ（J5: MIC・PTT・GND）
+sp_c    = [85, 20];  sp_hole = 6.2;   sp_plug = 8;     sp_body = 12;  sp_depth = 15;     // 3.5mm 外部スピーカージャック（秋月 117359 MJ-352W-C、M6 P0.5 ねじ長 3.5mm、スイッチ付き。J9 からブレーク接点経由で内蔵スピーカーへ: 挿すと内蔵が切れる）
+tx_c    = [mic_c[0] - 30, mic_c[1]]; tx_hole = 3.0; tx_depth = 6;   // TX ランプ（J7）: PSN_TRX と同じく MIC の左 30mm、MIC の穴と同じ高さ
 sp_thin = 15; sp_thin_t = 1.8;   // SP ジャック穴を中心に 15x15mm を板厚 1.8mm に（ふた裏から座ぐり。ジャックのねじ長さ対策、PSN_TRX と同じ）
 // 内蔵スピーカー（秋月 116024 DXYD50N-22Z-8A-F、5cm 角 8Ω 0.5W。PSN_TRX と同じ）: ふた裏に密着させ、四隅の穴を M3 皿ねじ＋ナットで留める
 spk_c = [80, 130];       // 中心。PSN_TRX と同じく LCD の奥、通風スロットの左。後ろは後面の BNC、下は送信 RF の入口（背の低い部品）
@@ -182,7 +182,8 @@ for (c = [[dc_c, dc_body, dc_depth, "DC"], [fuse_c, fuse_body, fuse_depth, "FUSE
     let(dx = max(abs(c[0][0] - spk_c[0]) - spk_size / 2 - c[1] / 2, 0), dy = max((y_rear_in - c[2]) - (spk_c[1] + spk_size / 2), 0))
     assert(norm([dx, dy]) >= 1 || c[0][1] + c[1] / 2 + 1 <= lid_under - spk_depth, str("スピーカーが後面の ", c[3], " の本体にかかる"));
 assert(lid_under - spk_depth >= parts_top(spk_c[0] - spk_size / 2, spk_c[0] + spk_size / 2, spk_c[1] - spk_size / 2, spk_c[1] + spk_size / 2) + 1, "スピーカーが基板の部品に当たる");
-assert(tx_c[0] + tx_hole / 2 + 3 <= W - 3 && led_c[0] + led_hole / 2 + 3 <= W - 3, "LED がふたの縁に近すぎる");
+assert(tx_c[0] - tx_hole / 2 - 3 >= wall && led_c[0] + led_hole / 2 + 3 <= W - 3, "LED がふたの縁に近すぎる");
+assert(tx_c[0] + tx_hole / 2 + 3 <= mic_c[0] - mic_flange / 2, "TX LED の穴が MIC に近すぎる");
 // ふた裏の本体が基板の部品に当たらない（基板の上にあるもの）
 for (c = [[enc_c, enc_body, enc_depth, "TUNE"], [afv_c, afv_body, afv_depth, "VOL"], [psw_c, psw_body, psw_depth, "POWER"],
           [mic_c, mic_body, mic_depth, "MIC"], [sp_c, sp_body, sp_depth, "SP"], [tx_c, 4, tx_depth, "TX"], [led_c, 4, tx_depth, "ON"]])
@@ -327,7 +328,7 @@ module top_labels_2d() {
     t("VOL", [afv_c[0], afv_c[1] + afv_knob / 2 + 4], 3.2);
     t("POWER", [psw_c[0], psw_c[1] + psw_hole / 2 + 4.5], 3.2);
     t("ON", [led_c[0], psw_c[1] + psw_hole / 2 + 4.5], 2.6);
-    t("TX", [tx_c[0], tx_c[1] + tx_hole / 2 + 4], 3.2);
+    t("TX", [tx_c[0], mic_c[1] + mic_flange / 2 + 4], 3.2);   // MIC・EXT SP と高さをそろえる
     t("MIC", [mic_c[0], mic_c[1] + mic_flange / 2 + 4], 3.2);
     t("EXT SP", [sp_c[0], mic_c[1] + mic_flange / 2 + 4], 3.2);
 }
