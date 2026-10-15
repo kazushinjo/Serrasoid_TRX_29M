@@ -159,7 +159,7 @@ tools/check.sh             # 回路図を作り直して ERC と接続照合（t
 
 | フォルダ | 内容 |
 |---|---|
-| `kicad/` | 回路図・部品表・基板（KiCad 10） |
+| `kicad/` | 回路図・部品表・基板（KiCad 10）。部品番号は回路図の位置順（X の小さい順、同じ X は Y の順。2026-10-16 に振り直し、新旧の対応は `kicad/refdes_map_2026-10-16.csv`） |
 | `tools/` | 回路図・部品表を作るスクリプト（回路は `tools/circuit.py` にまとめてある） |
 | `firmware/` | XIAO ESP32C3 スケッチ |
 | `docs/` | 資料 |

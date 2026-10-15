@@ -46,17 +46,17 @@ FAINT = '#c8c8c8'
 NAVY = '#1f2d6b'
 # 組立順の目安: 電源を先に付けて電圧を確かめ、制御（XIAO・Si5351）→ 変調 → 逓倍 → 送信音声 → 送信RF → 受信
 BLOCKS = [
-    ('電源', '#f6c27a', ['ヒューズ（5A）は後面パネル側。U2 L7808 には小型放熱器を付ける',
+    ('電源', '#f6c27a', ['ヒューズ（5A）は後面パネル側。U3 L7808 には小型放熱器を付ける',
                         '付け終わったら 13.8V を入れ、+8V・+5V（2 系統）・+3.3V を確認してから次へ']),
-    ('制御', '#b9b2ec', ['XIAO（U5）はソケット、Si5351 モジュール（U6 AE-Si5351A）はピンヘッダで実装',
+    ('制御', '#b9b2ec', ['XIAO（U9）はソケット、Si5351 モジュール（U7 AE-Si5351A）はピンヘッダで実装',
                         'XIAO の D0（PTT）・D9（エンコーダ SW）は起動設定ピン: PTT・つまみを押したまま電源を入れない']),
-    ('セラゾイド変調', '#f0b8d8', ['C19（100p）は C0G（NP0）必須。のこぎり波の直線性に直結',
-                                 'TP1（RAMP）・TP2（THRESH）・TP3（PM）で波形を確認できる']),
-    ('逓倍', '#a9c8ef', ['U10・U11・U12 は必ず AC 品（74AC14・74AC86）。HC・HCT 品では 29MHz まで上がらない',
-                        '遅延の C（C23〜C27）は NP0。TP4 で 29.3MHz を確認']),
-    ('送信音声', '#d6e6a4', ['VR3 マイク利得、VR4 周波数偏移（±5kHz）、VR5 しきい値の中心']),
-    ('送信RF', '#f2aaa8', ['Q5 RD06HHF1 は放熱器 HS1 に固定。Q6 RD16HHF1 は基板端に立て、ケースの放熱器にねじ止め（絶縁不要）',
-                          'C58 は積層セラミック（X7R・100V）。LPF の C59〜C62 は NP0 500V。コイルの巻数は表のとおり']),
+    ('セラゾイド変調', '#f0b8d8', ['C73（100p）は C0G（NP0）必須。のこぎり波の直線性に直結',
+                                 'TP2（RAMP）・TP3（THRESH）・TP4（PM）で波形を確認できる']),
+    ('逓倍', '#a9c8ef', ['U1・U2・U8 は必ず AC 品（74AC14・74AC86）。HC・HCT 品では 29MHz まで上がらない',
+                        '遅延の C（C1・C9・C23・C31・C40）は NP0。TP1 で 29.3MHz を確認']),
+    ('送信音声', '#d6e6a4', ['VR3 マイク利得、VR5 周波数偏移（±5kHz）、VR6 しきい値の中心']),
+    ('送信RF', '#f2aaa8', ['Q2 RD06HHF1 は放熱器 HS1 に固定。Q3 RD16HHF1 は基板端に立て、ケースの放熱器にねじ止め（絶縁不要）',
+                          'C34 は積層セラミック（X7R・100V）。LPF の C38・C41・C42・C43 は NP0 500V。コイルの巻数は表のとおり']),
     ('受信', '#a8dcb4', ['FL1（10.7MHz 水晶フィルタ 10M15A）・FL2（455kHz セラミックフィルタ）は 3 ピンで中央が GND',
                         'TC3・TC4 は 29.3MHz に同調']),
 ]
@@ -117,7 +117,7 @@ ROWS = {n: [] for n, _, _ in BLOCKS}
 for p in circuit.parts:
     if p['ref'].startswith('#'): continue
     ROWS[p['block']].append([p['ref'], p['value'], kind(p), caution(p)])
-ROWS['送信RF'].append(['HS1', FP['HS1']['val'], '放熱器', 'Q5 をねじ止めしてからはんだ付け'])
+ROWS['送信RF'].append(['HS1', FP['HS1']['val'], '放熱器', 'Q2 をねじ止めしてからはんだ付け'])
 BLOCK_OF = {r[0]: n for n, rows in ROWS.items() for r in rows}
 
 
@@ -178,7 +178,7 @@ def draw_fp(ax, f, mode, small=False):
     if mode != 'faint':
         (x0, y0), (x1, y1) = f['bbox']
         cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-        ax.text(cx, cy, 'U5 (XIAO)' if f['ref'] == 'U5' else f['ref'], ha='center', va='center', fontsize=4.0 if small else 5.2, color=NAVY, fontproperties=BOLD,
+        ax.text(cx, cy, 'U9 (XIAO)' if f['ref'] == 'U9' else f['ref'], ha='center', va='center', fontsize=4.0 if small else 5.2, color=NAVY, fontproperties=BOLD,
                 zorder=20, bbox=dict(fc='white', ec='none', alpha=0.65, pad=0.15))
         if not small and f['val'] and not f['ref'].startswith(('H', 'J', 'TP')):
             ax.text(cx, cy + 1.6, f['val'][:14], ha='center', va='center', fontsize=3.2, color='#555555', zorder=20)

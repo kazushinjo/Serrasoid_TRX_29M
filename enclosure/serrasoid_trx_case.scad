@@ -66,7 +66,7 @@ standoff_h = 5;
 standoff_od = 9;
 standoff_hole = 5.0;
 part_h = 11;                   // 基板上の一般の部品の高さ（縦置き抵抗・電解・IC ソケット）
-q6_uv = [120, 4.5];            // RD16HHF1（Q6）のピン 1 の位置（基板座標）
+q6_uv = [120, 4.5];            // RD16HHF1（Q3）のピン 1 の位置（基板座標）
 q6_tab_inset = 1.1;            // 基板の上辺からタブの裏面までの距離（TO-220 縦置き、コートヤードより）
 q6_hole_h = 16;                // 基板上面から RD16HHF1 の取付穴の中心まで ※要実測
 bx = (W - pcb_u) / 2;                         // 基板の X 位置（左端）
@@ -96,16 +96,16 @@ function zp(z) = z - panel_z0;   // ケース Z → パネル座標 z
 // ---------------- 基板上の背の高い部品（基板座標 u, v = 中心、幅、奥行き、高さ。kicad/Serrasoid_TRX.kicad_pcb より） ----------------
 tall = [
     [103.5, 16.6, 20.6, 20.4, 25,   "dimgray",   "HS1 放熱器（RD06HHF1）"],
-    [122.5,  3.5, 10.6,  5.0, 20,   "black",     "Q6 RD16HHF1"],
-    [103.5, 28.9, 10.6,  5.0, 20,   "black",     "Q5 RD06HHF1"],
-    [ 26.4, 33.7,  5.0, 10.6, 20,   "black",     "U2 L7808"],
-    [ 24.1, 43.5, 10.6,  5.0, 20,   "black",     "U3 L7805"],
-    [ 35.2, 35.5,  9.1, 12.2, 10.5, "orange",    "U1 R-78E"],
+    [122.5,  3.5, 10.6,  5.0, 20,   "black",     "Q3 RD16HHF1"],
+    [103.5, 28.9, 10.6,  5.0, 20,   "black",     "Q2 RD06HHF1"],
+    [ 26.4, 33.7,  5.0, 10.6, 20,   "black",     "U3 L7808"],
+    [ 24.1, 43.5, 10.6,  5.0, 20,   "black",     "U5 L7805"],
+    [ 35.2, 35.5,  9.1, 12.2, 10.5, "orange",    "U4 R-78E"],
     [155.8, 24.9, 10.7, 20.9, 10.5, "white",     "K1 リレー"],
     [122.6, 17.1, 12.1, 19.3, 10,   "tan",       "T1 トランス"],
-    [ 35.6, 23.2,  8.6,  8.7, 13,   "steelblue", "C1 470µF"],
-    [ 87.6,  6.6,  8.6,  8.7, 13,   "steelblue", "C57 220µF"],
-    [ 45.1, 91.4, 21.7, 18.1, 15,   "royalblue", "U5 XIAO（ソケット込み）"],
+    [ 35.6, 23.2,  8.6,  8.7, 13,   "steelblue", "C4 470µF"],
+    [ 87.6,  6.6,  8.6,  8.7, 13,   "steelblue", "C37 220µF"],
+    [ 45.1, 91.4, 21.7, 18.1, 15,   "royalblue", "U9 XIAO（ソケット込み）"],
     [142.3, 88.9, 11.9,  5.7, 13.5, "silver",    "FL1 10M15A"],
     [143.4, 96.5, 11.9,  5.7, 13.5, "silver",    "X1 10.245MHz"],
 ];
@@ -114,7 +114,7 @@ tall_max = max([for (t = tall) t[4]]);
 function parts_top(x0, x1, y0, y1) = max(concat([pcb_top + part_h],
     [for (t = tall) let(c = bp(t[0], t[1])) if (c[0] + t[2] / 2 > x0 && c[0] - t[2] / 2 < x1 && c[1] + t[3] / 2 > y0 && c[1] - t[3] / 2 < y1) pcb_top + t[4]]));
 // 放熱器のベースが基板の端にかかる 1.1mm の範囲には、RD16HHF1 以外の部品がない
-for (t = tall) if (t[6] != "Q6 RD16HHF1")
+for (t = tall) if (t[6] != "Q3 RD16HHF1")
     assert(t[1] - t[3] / 2 > q6_tab_inset || abs(bp(t[0], 0)[0] - hs_x) > hs_w / 2 + t[2] / 2, str(t[6], " が放熱器にかかる"));
 
 // ---------------- 上面部品（ふた上面、ケース X/Y 座標） ----------------
@@ -142,9 +142,9 @@ enc_c   = [col_x, 40];  enc_hole = 7.2;  enc_knob = 32;  enc_body = 14; enc_dept
 afv_c   = [col_x, 82];  afv_hole = 7.2;  afv_knob = 20;  afv_body = 17; afv_depth = 10;   // AF ボリューム（J8、10kΩ A）
 psw_c   = [col_x, 115]; psw_hole = 13.0; psw_body = 16; psw_depth = 20;                    // 電源スイッチ
 led_c   = [col_x + 18, psw_c[1]]; led_hole = 3.1;                                         // 電源 LED
-tx_c    = [col_x + 18, afv_c[1]]; tx_hole = 3.0; tx_depth = 6;                            // TX ランプ（J6）
+tx_c    = [col_x + 18, afv_c[1]]; tx_hole = 3.0; tx_depth = 6;                            // TX ランプ（J7）
 // 手前（基板より前、ふた裏が空いている所）: MIC・SP
-mic_c   = [35, 20];  mic_hole = 16.2; mic_flange = 20; mic_body = 20; mic_depth = 25;    // 4P 丸型マイクコネクタ（J7: MIC・PTT・GND）
+mic_c   = [35, 20];  mic_hole = 16.2; mic_flange = 20; mic_body = 20; mic_depth = 25;    // 4P 丸型マイクコネクタ（J5: MIC・PTT・GND）
 sp_c    = [70, 20];  sp_hole = 6.2;   sp_plug = 8;     sp_body = 12;  sp_depth = 15;     // 3.5mm 外部スピーカージャック（秋月 117359 MJ-352W-C、M6 P0.5 ねじ長 3.5mm、スイッチ付き。J9 からブレーク接点経由で内蔵スピーカーへ: 挿すと内蔵が切れる）
 sp_thin = 15; sp_thin_t = 1.8;   // SP ジャック穴を中心に 15x15mm を板厚 1.8mm に（ふた裏から座ぐり。ジャックのねじ長さ対策、PSN_TRX と同じ）
 // 内蔵スピーカー（秋月 116024 DXYD50N-22Z-8A-F、5cm 角 8Ω 0.5W。PSN_TRX と同じ）: ふた裏に密着させ、四隅の穴を M3 皿ねじ＋ナットで留める
@@ -199,7 +199,7 @@ rear_z = 30;   // DC・ヒューズ・BNC の中心の高さ（ヒューズの�
 dc_c   = [27, rear_z]; dc_hole = 8.0;  dc_flange = 14; dc_body = 12; dc_depth = 15;      // DC ジャック（2.1/2.5mm、センタープラス）
 dc_thin = 15; dc_thin_t = 1.8;   // DC ジャック穴を中心に 15x15mm を板厚 1.8mm に（パネル内側から座ぐり。ジャックのねじ長さ対策）
 fuse_c = [176, rear_z]; fuse_hole = 12.5; fuse_flange = 18; fuse_body = 16; fuse_depth = 35;   // 5x20 パネル取付ヒューズホルダ
-bnc_c  = [92, rear_z]; bnc_hole = 9.6; bnc_flange = 14; bnc_body = 12; bnc_depth = 12;     // BNC（アンテナ、J5 へ同軸）
+bnc_c  = [92, rear_z]; bnc_hole = 9.6; bnc_flange = 14; bnc_body = 12; bnc_depth = 12;     // BNC（アンテナ、J6 へ同軸）
 hs_win = [hs_x - hs_w / 2 - 0.5, hs_x + hs_w / 2 + 0.5, hs_z0 - 0.2, hs_z0 + hs_h + 0.5];   // 放熱器の窓 [X0, X1, Z0, Z1]（下辺で放熱器を受ける）
 for (c = [[dc_c, dc_flange], [fuse_c, fuse_flange], [bnc_c, bnc_flange]]) {
     assert(c[0][1] - c[1] / 2 >= floor_t + 0.5, "後面部品のつばが底板にかかる");
