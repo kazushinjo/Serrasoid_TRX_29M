@@ -28,7 +28,7 @@ XIAO_WORDS = ('GPIO', 'XIAO', '起動設定', 'VIN', '| D', 'D0', 'ピン割り�
 RECORDS = ['docs/回路図論理チェック.md', 'docs/基板チェック.md']
 TEXTS = ['README.md', 'tools/circuit.py', 'tools/gen_pcb.py', 'tools/pcb_report.py', 'tools/netclass.py',
          'docs/tools/make_parts_layout.py', 'docs/tools/make_serrasoid_doc.py', 'docs/tools/make_serrasoid_figs.py',
-         'enclosure/serrasoid_trx_case.scad', 'enclosure/README.md']
+         'enclosure/serrasoid_trx_case.scad', 'enclosure/README.md', 'tools/make_bom_purchase.py']
 
 
 def sch_positions():

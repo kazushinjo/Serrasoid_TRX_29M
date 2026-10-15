@@ -2,6 +2,7 @@
 import os, sys, csv, re, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from circuit import parts, prefix
+from make_bom_purchase import buy_of, EXTRA, CHECKED
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GROUPS = [('R', '抵抗 R'), ('VR', '半固定抵抗 VR'), ('C', 'コンデンサ C'), ('TC', 'トリマコンデンサ TC'),
@@ -19,6 +20,10 @@ def refrange(refs):
         while j + 1 < len(refs) and refkey(refs[j + 1])[1] == refkey(refs[j])[1] + 1: j += 1
         out += refs[i:j + 1] if j - i < 2 else ['%s-%s' % (refs[i], refs[j])]; i = j + 1
     return ', '.join(out)
+
+def cell(b):
+    shop, model, code = b[:3]
+    return ('%s（%s）' % (model, code) if code else model)
 
 def fpname(fp):
     return fp.split(':')[-1].replace('_', ' ')
@@ -40,15 +45,23 @@ def main():
         g = collections.OrderedDict()
         for p in sorted(ps, key=lambda p: refkey(p['ref'])):
             g.setdefault((p['value'], p['fp']), []).append(p)
-        md += ['## ' + title, '', '| Reference | 値 / 型番 | フットプリント | 数量 | 備考 |', '|---|---|---|---|---|']
+        md += ['## ' + title, '', '| Reference | 値 / 型番 | フットプリント | 数量 | 購入先 | 購入先の型番（販売コード） | 備考 |', '|---|---|---|---|---|---|---|']
         for (v, fp), lst in g.items():
             byn = collections.OrderedDict()
             for p in lst:
                 if p['note']: byn.setdefault(p['note'], []).append(p['ref'])
             notes = [n if len(r) == len(lst) else '%s: %s' % (refrange(r), n) for n, r in byn.items()]
-            md.append('| %s | %s | %s | %d | %s |' % (refrange([p['ref'] for p in lst]), v, fpname(fp), len(lst), '<br>'.join(notes)))
+            buys = collections.OrderedDict()
+            for p in lst: buys.setdefault(buy_of(p)[1], []).append(p['ref'])
+            shop = '<br>'.join(dict.fromkeys(b[0] for b in buys))
+            model = '<br>'.join(('%s: ' % refrange(r) if len(buys) > 1 else '') + cell(b) for b, r in buys.items())
+            md.append('| %s | %s | %s | %d | %s | %s | %s |' % (refrange([p['ref'] for p in lst]), v, fpname(fp), len(lst), shop, model, '<br>'.join(notes)))
         md += ['', '**%s 合計: %d**' % (title, len(ps)), '']
         total += len(ps)
+    md += ['## 回路図に載っていない部品', '', '| 品名 | 数量 | 購入先 | 購入先の型番（販売コード） | 備考 |', '|---|---|---|---|---|']
+    for name, qty, b, note in EXTRA: md.append('| %s | %d | %s | %s | %s |' % (name, qty, b[0], cell(b), note))
+    md += ['', '購入先・販売コード・価格は `kicad/bom_purchase.csv`（`tools/make_bom_purchase.py`、秋月電子の通販サイトで %s に確認）。'
+           '「要確認」は秋月で扱いがなく、型番・在庫を確かめていない部品。' % CHECKED, '']
     md += ['---', '', '**部品総数: %d**' % total, '']
     open(os.path.join(ROOT, 'kicad', 'BOM.md'), 'w').write('\n'.join(md))
     print('BOM', total)
