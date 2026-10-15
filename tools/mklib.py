@@ -96,6 +96,23 @@ def copy_psn(name, newname, fp=None, value=None, desc=None):
         c[1] = q(unq(c[1]).replace('PSN_TRX:', '').replace(name, newname, 1))
     return dump(s)
 
+def flip_y(text):
+    """記号を上下反転する（ドレインを上・ソースを下の普通の向きに）"""
+    t = parse(text)
+    def walk(n, in_sub):
+        for c in n:
+            if not isinstance(c, list) or not c: continue
+            if c[0] == 'symbol': walk(c, True); continue
+            if c[0] == 'property': continue
+            if in_sub and c[0] in ('xy', 'start', 'end', 'mid', 'center'):
+                c[2] = S(F(-float(c[2])))
+            elif in_sub and c[0] == 'at' and len(c) >= 3:
+                c[2] = S(F(-float(c[2])))
+                if len(c) > 3: c[3] = S(str({90: 270, 270: 90}.get(int(float(c[3])), int(float(c[3])))))
+            walk(c, in_sub)
+    walk(t, False)
+    return dump(t)
+
 POWER_NETS = ['+13V8', '+8V', '+5V', '+5VT', '+5VA', '+3V3S', '+3V3X', 'TX8V', 'RX8V']
 
 def main():
@@ -113,8 +130,8 @@ def main():
                top=[('4', 'VCC', 'power_in')], bottom=[('15', 'GND', 'power_in')], w=15.24),
         two_terminal_filter('Filter_3pin', 'Crystal:Crystal_HC49-U-3Pin_Vertical', '3-terminal filter, 1=IN 2=GND 3=OUT'),
         l_tap('L_Tap', L + 'L_T30_3pin_Vertical', 'Tapped toroid coil, 1=hot 2=tap 3=cold'),
-        copy_psn('RD06HVF1', 'RD_MOSFET_GSD', value='RD16HHF1',
-                 desc='Mitsubishi RF power MOSFET TO-220S (RD06HHF1 / RD16HHF1), 1=G 2=S 3=D'),
+        flip_y(copy_psn('RD06HVF1', 'RD_MOSFET_GSD', value='RD16HHF1',
+                 desc='Mitsubishi RF power MOSFET TO-220S (RD06HHF1 / RD16HHF1), 1=G 2=S 3=D')),
         copy_psn('Seeeduino_XIAO_Socket', 'XIAO_ESP32C3', fp=L + 'Seeeduino_XIAO_Socket', value='XIAO ESP32C3'),
         copy_psn('Si5351_DIP8', 'Si5351_Module', fp=L + 'DIP-8_W7.62mm', value='AE-Si5351A'),
     ] + [power_sym(n) for n in POWER_NETS]

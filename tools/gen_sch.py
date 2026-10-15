@@ -9,6 +9,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sx import parse, dump, find, find1, unq, q, Sym
 import libload
 from circuit import parts
+try:
+    from circuit import LAYOUT
+except ImportError:
+    LAYOUT = {}
 from place import Placer
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,6 +25,7 @@ ROOT_UUID = '6a1c3f3e-29a0-4c55-9d1e-5e7a50000001'
 POWER = {'GND'}
 RAILS = {'+13V8', '+8V', '+5V', '+5VT', '+5VA', '+3V3S', '+3V3X', 'TX8V', 'RX8V'}
 NAME_PIN = {}          # 電源の名前を示す電源記号を置くピン {net: (ref, pin)}
+NAME_UP = set()
 def pick_name_pins():
     """電源の名前を示す電源記号を置くピン: レギュレータの出力 → コネクタ → リレー → その他（PWR_FLAG は使わない）"""
     cand = {}
@@ -33,7 +38,9 @@ def pick_name_pins():
             rank = 0 if (pins[num][5] == 'power_out' and len(pins) <= 3) else 1 if p['sym'].startswith('Connector') \
                 else 2 if p['sym'].startswith('Relay') else 3
             if net not in cand or rank < cand[net][0]: cand[net] = (rank, p['ref'], num)
-    for net, (_, ref, num) in cand.items(): NAME_PIN[net] = (ref, num)
+    for net, (rank, ref, num) in cand.items():
+        NAME_PIN[net] = (ref, num)
+        if rank == 0: NAME_UP.add(net)        # レギュレータの出力だけ記号を上に立てる（コネクタはピンが並ぶので外向きのまま）
 
 # 機能ブロック → シートのファイル名（並び順 = ページ順）
 SHEETS = [('電源', 'power'), ('制御', 'control'), ('セラゾイド変調', 'modulator'), ('逓倍', 'multiplier'),
@@ -42,6 +49,10 @@ PAPERS = [('A3', 420, 297), ('A2', 594, 420), ('A1', 841, 594)]
 RG = 1.27            # 配線の格子
 U = lambda: q(str(uuid.uuid4()))
 DIRS = ((1, 0), (-1, 0), (0, 1), (0, -1))
+
+def name_dir(o, net=None):
+    """電源の名前を示す電源記号の向き: レギュレータの横向きの出力では上に立てる（右・左の線をふさがない）"""
+    return (0, -1) if (o[1] == 0 and (net is None or net in NAME_UP)) else o
 
 def sheet_uuid(block):
     return str(uuid.uuid5(NS, 'sheet:' + block))
@@ -244,8 +255,11 @@ class Sheet:
             if role[u.key] == 'shunt' and u.two: rr = [self._shunt_rot(u)]
             elif role[u.key] == 'series' and u.two: rr = [90, 270]
             else: rr = [0]
+            fix = LAYOUT.get(u.key) or (LAYOUT.get(u.ref) if u.unit == 1 else None)
+            if fix:                                 # 位置を手で決めた部品（circuit.py の LAYOUT）
+                rr = [fix[2] if len(fix) > 2 else 0]
             rots = {r: (u.footprint_box(r), {num: u.pin_end(num, (0, 0), r) for num in u.pins}) for r in rr}
-            pl.add_part(u.key, self.block, rots)
+            pl.add_part(u.key, self.block, rots, (fix[0], fix[1], rr[0]) if fix else None)
             c = lvl[u.key]
             # 信号の通り道（IC・直列部品）は段の上側、GND・電源に落ちる部品はその下
             k = 'main' if role[u.key] != 'shunt' else 'shunt'
@@ -274,9 +288,11 @@ class Sheet:
                 net = u.p['pins'][num]
                 if net and net not in POWER:
                     nets.setdefault(net, []).append((self.cell(u.pin_end(num)), u.pin_out(num)))
+        self.pending = []
         for net in sorted(nets, key=lambda n: (self._span(nets[n]), n)):
             if len(nets[net]) < 2 and net not in self.globals: continue
             self._route_net(net, nets[net])
+        for args in self.pending: self._global_label(*args)
 
     def route_setup(self):
         self.nx, self.ny = int(self.W / RG) + 1, int(self.H / RG) + 1
@@ -306,12 +322,14 @@ class Sheet:
                 net = u.p['pins'][num]
                 if net in POWER or NAME_PIN.get(net) == (u.ref, num):
                     e = self.cell(u.pin_end(num)); o = u.pin_out(num)
+                    if net not in POWER: o = name_dir(o, net)
                     for k in range(1, 5):
                         for s in (-1, 0, 1):
                             blocked.add((e[0] + o[0] * k + (s if o[0] == 0 else 0), e[1] + o[1] * k + (s if o[1] == 0 else 0)))
         self.blocked, self.pinend = blocked, pinend
         # 電源記号を付けたピンには、線は横から入る
-        self.side = {self.cell(u.pin_end(num)) for u in self.units for num in u.pins if NAME_PIN.get(u.p['pins'][num]) == (u.ref, num)}
+        self.side = {self.cell(u.pin_end(num)): (u.pin_out(num), name_dir(u.pin_out(num), u.p['pins'][num]))
+                     for u in self.units for num in u.pins if NAME_PIN.get(u.p['pins'][num]) == (u.ref, num)}
         self.occ = {}                      # セル → {'h': ネット, 'v': ネット}
         self.ends = {}                     # 線の端・角（他のネットは通れない）
         self.wires, self.deg, self.wire_nets = [], {}, []
@@ -327,9 +345,7 @@ class Sheet:
         start = min(pins, key=lambda pc: (pc[0][0], pc[0][1]))
         rest = [p for p in pins if p is not start]
         tree[start[0]] = set(); self._deg(net, start[0], 1)
-        labeled = False
-        if net in self.globals:
-            self._global_label(net, start, tree); labeled = True
+        labeled = net in self.globals
         while rest:
             rest.sort(key=lambda pc: min(abs(pc[0][0] - t[0]) + abs(pc[0][1] - t[1]) for t in tree))
             tgt = rest.pop(0)
@@ -342,6 +358,8 @@ class Sheet:
                 continue
             self._commit(net, path, tree)
             self._deg(net, tgt[0], 1)
+        if net in self.globals:            # ブロックをまたぐ信号の目印は、全部の線を引いた後で空いている所に置く
+            self.pending.append((net, start, tree, pin_of))
 
     def _deg(self, net, c, d):
         self.deg[(net, c)] = self.deg.get((net, c), 0) + d
@@ -351,14 +369,16 @@ class Sheet:
         inward = (-tout[0], -tout[1])
         flex = getattr(self, 'flex', set())      # ピン先でない端（ラベルの引き出し線の先）は横からも入れる
         okin = {d for d in DIRS if d != (tout[0], tout[1])} if tc in flex else {inward}
-        if tc in getattr(self, 'side', ()): okin = {d for d in DIRS if d not in (tout, inward)}
+        if tc in getattr(self, 'side', {}):
+            o_, sd = self.side[tc]; okin = {d for d in DIRS if d not in (o_, (-sd[0], -sd[1]))}
         heap, best, came = [], {}, {}
         for c, used in tree.items():
             if c in pin_of:
                 if used: continue
                 dirs = [pin_of[c]]                       # ピン先からは外向きにだけ出す
                 if c in flex: dirs = [d for d in DIRS if d != (-pin_of[c][0], -pin_of[c][1])]
-                if c in getattr(self, 'side', ()): dirs = [d for d in DIRS if d not in (pin_of[c], (-pin_of[c][0], -pin_of[c][1]))]
+                if c in getattr(self, 'side', {}):
+                    o_, sd = self.side[c]; dirs = [d for d in DIRS if d not in ((-o_[0], -o_[1]), sd)]
             else:
                 if c in self.ends and len(used) == 2: continue
                 dirs = [d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used]
@@ -416,17 +436,29 @@ class Sheet:
         for p in pts[1:-1]: self._deg(net, p, 2)
         for a, b in zip(pts, pts[1:]): self.wires.append((a, b)); self.wire_nets.append(net)
 
-    def _global_label(self, net, start, tree):
-        c, o = start
-        stub = [(c[0] + o[0] * k, c[1] + o[1] * k) for k in range(1, 3)]
+    def _global_label(self, net, start, tree, pin_of):
         tl = int(len(net) * 1.1 / RG) + 5
-        text = [(stub[-1][0] + o[0] * k, stub[-1][1] + o[1] * k) for k in range(1, tl)]
-        if all(s not in self.blocked and s not in self.pinend and s not in self.ends and s not in self.occ for s in stub + text):
-            self._commit(net, [c] + stub, tree)
-            for s in text: self.blocked.add(s)
-            self._glabel(net, stub[-1], o)
-        else:
-            self._glabel(net, c, o)
+        def free(cells):
+            return all(x not in self.blocked and x not in self.pinend and x not in self.ends and x not in self.occ
+                       and self.escape.get(x, net) == net for x in cells)
+        cands = []
+        for c, used in tree.items():
+            if c in pin_of:
+                if not used: cands.append((c, pin_of[c]))       # まだ線のないピン（このブロックでは 1 本だけのネット）
+            elif c not in self.ends:
+                for d in DIRS:
+                    if ('h' if d[1] == 0 else 'v') not in used: cands.append((c, d))
+        cands.sort(key=lambda cd: (0 if cd[0] in pin_of else 1, abs(cd[0][0] - start[0][0]) + abs(cd[0][1] - start[0][1])))
+        for c, o in cands:
+            stub = [(c[0] + o[0] * k, c[1] + o[1] * k) for k in range(1, 3)]
+            text = [(stub[-1][0] + o[0] * k, stub[-1][1] + o[1] * k) for k in range(1, tl)]
+            if free(stub + text):
+                self._commit(net, [c] + stub, tree)
+                for x in text: self.blocked.add(x)
+                self._glabel(net, stub[-1], o)
+                return
+        c, o = start
+        self._glabel(net, c, o)
 
     def _glabel(self, net, c, o):
         ang = ANG[o]; x, y = c[0] * RG, c[1] * RG
@@ -491,7 +523,7 @@ class Sheet:
                 elif net in POWER:
                     self.power(net, e, o)
                 elif NAME_PIN.get(net) == (u.ref, num):
-                    self.power(net, e, o)
+                    self.power(net, e, name_dir(o, net))
         for a, b in self.wires:
             self.items.append([S('wire'), [S('pts'), [S('xy'), F(a[0] * RG), F(a[1] * RG)], [S('xy'), F(b[0] * RG), F(b[1] * RG)]],
                                [S('stroke'), [S('width'), S('0')], [S('type'), S('default')]], [S('uuid'), U()]])
@@ -661,7 +693,7 @@ def route_between(g, net, src, dst, out):
     def dirs_from(c, used):
         if not used:
             if c in g.side:
-                o = out.get(c) or g_pin_out(g, c); return [d for d in DIRS if d not in (o, (-o[0], -o[1]))]
+                o, sd = g.side[c]; return [d for d in DIRS if d not in ((-o[0], -o[1]), sd)]
             if c in g.pinend: return [out.get(c) or g_pin_out(g, c)]
             return list(DIRS)
         return [d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used]
@@ -669,7 +701,7 @@ def route_between(g, net, src, dst, out):
     for c, used in dst.items():
         if used: goal[c] = {d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used}
         elif c in g.side:
-            o = out.get(c) or g_pin_out(g, c); goal[c] = {d for d in DIRS if d not in (o, (-o[0], -o[1]))}
+            o, sd = g.side[c]; goal[c] = {d for d in DIRS if d not in (o, (-sd[0], -sd[1]))}
         elif c in g.pinend: goal[c] = {(-o[0], -o[1]) for o in [out.get(c) or g_pin_out(g, c)]}
         else: goal[c] = set(DIRS)
     gx = [c[0] for c in goal]; gy = [c[1] for c in goal]
@@ -719,7 +751,7 @@ def g_pin_out(g, c):
             if g.cell(u.pin_end(num)) == c: return u.pin_out(num)
     return None
 
-def write_merged(sheets):
+def write_merged(sheets, out=None):
     """ブロックごとに作った回路を、枠で囲んで 1 枚に並べる"""
     M = 8.0          # 枠の内側の余白
     sizes = [('A1', 841, 594), ('A0', 1189, 841)] + [('User', 1189 + 100 * k, 841 + 100 * k) for k in range(1, 8)]
@@ -760,7 +792,8 @@ def write_merged(sheets):
             [S('date'), q(datetime.date.today().isoformat())], [S('rev'), q('1.0')], [S('company'), q('JA6FUF')]],
            [S('lib_symbols')] + list(libs.values())] + items + [
            [S('sheet_instances'), [S('path'), q('/'), [S('page'), q('1')]]], [S('embedded_fonts'), S('no')]]
-    open(os.path.join(ROOT, 'kicad', PROJ + '.kicad_sch'), 'w').write(dump(sch) + '\n')
+    open(out or os.path.join(ROOT, 'kicad', PROJ + '.kicad_sch'), 'w').write(dump(sch) + '\n')
+    if out: return name
     # ブロック別に分けていたころのファイルは消す
     for sh in sheets:
         f = os.path.join(ROOT, 'kicad', sh.fname + '.kicad_sch')
@@ -777,9 +810,11 @@ def main():
                 if n and n not in POWER: where.setdefault(n, set()).add(blk)
     global_nets = {n for n, b in where.items() if len(b) > 1}
     pick_name_pins()
-    only = sys.argv[1:]
+    only = [a for a in sys.argv[1:] if not a.startswith('--')]
+    preview = next((a[len('--preview='):] for a in sys.argv[1:] if a.startswith('--preview=')), None)
     sheets = []
     for i, (blk, fname) in enumerate(SHEETS):
+        if only and blk not in only: continue
         us = [u for p in blocks[blk] for u in units_of(p)]
         sh = Sheet(blk, fname, i + 2, us, global_nets)
         k = 0
@@ -791,7 +826,7 @@ def main():
         sh.emit()
         print('%-10s 部品 %3d 線 %4d ラベルで代用 %s' % (blk, len(us), len(sh.wires), sorted(set(sh.failed)) or 'なし'))
         sheets.append(sh)
-    print('用紙', write_merged(sheets))
+    print('用紙', write_merged(sheets, preview))
 
 if __name__ == '__main__':
     main()
