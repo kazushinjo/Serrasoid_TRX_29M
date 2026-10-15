@@ -84,7 +84,7 @@ def waves():
         axs[1].plot(t[i], th[i], 'o', ms=3.2, color=ACC2)
     axs[1].set_ylim(0, 2.9); axs[1].set_ylabel('V', rotation=0, fontsize=8.5)
     axs[1].legend(fontsize=7.8, loc='upper left', frameon=False, ncol=2)
-    axs[1].text(t[rise[0]] + 0.03, 0.15, '交点の時刻が\n音声で前後する', fontsize=7.6, color=QUIET)
+    axs[1].text(t[rise[0]] + 0.03, 0.15, '交点のタイミングが\n音声で前後する', fontsize=7.6, color=QUIET)
     axs[2].plot(t, comp, color=LINE, lw=1.1); axs[2].set_ylim(-0.2, 1.4); axs[2].set_yticks([])
     axs[2].set_ylabel('COMP_OUT\n(MAX913)', rotation=0, ha='right', va='center', fontsize=8.5)
     axs[3].plot(t, pm, color=ACC, lw=1.3); axs[3].set_ylim(-0.2, 1.4); axs[3].set_yticks([])
@@ -124,7 +124,7 @@ def doubler():
     axs[2].annotate('', xy=(T + tau, 1.12), xytext=(T, 1.12), arrowprops=dict(arrowstyle='<->', color=ACC2, lw=1))
     axs[2].text(T + tau / 2, 1.2, 'τ = 入力周期の 1/4', ha='center', fontsize=7.8, color=ACC2)
     axs[3].set_xlabel('時間（入力周期 = 1）', fontsize=8.5)
-    fig.suptitle('入力の両方のエッジで τ 幅のパルスが出るので、周波数は 2 倍、エッジの時刻のずれ（位相）も 2 倍になる', fontsize=9.5, fontproperties=BOLD, x=0.02, ha='left')
+    fig.suptitle('入力の両方のエッジで τ 幅のパルスが出るので、周波数は 2 倍、タイミングのズレ（位相）も 2 倍になる', fontsize=9.5, fontproperties=BOLD, x=0.02, ha='left')
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     fig.savefig(os.path.join(OUT, 'serrasoid_doubler.png')); plt.close(fig)
 
