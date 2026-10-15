@@ -4,7 +4,7 @@
 
 > 部品はすべてリード部品（表面実装部品なし）。
 
-> **状態: 回路図 Ver 1.0 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)）。基板 Ver 1.0 は配置・配線まで（DRC エラー 0、[基板チェック](docs/基板チェック.md)）。製造データ・ファームウェアはこれから。実機未製作
+> **状態: 回路図 Ver 1.0 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)）。基板 Ver 1.0 は配置・配線まで（DRC エラー 0、[基板チェック](docs/基板チェック.md)、[部品実装図](docs/Serrasoid_TRX_部品実装図.pdf)・[部品配置図 A3](kicad/Serrasoid_TRX_部品配置図.pdf)）。製造データ・ファームウェアはこれから。実機未製作
 
 回路図は 1 枚（A1）。機能ブロック（電源・制御・セラゾイド変調・逓倍・送信音声・送信RF・受信）ごとに枠で囲み、ブロックの中もブロックの間も、信号・電源ともすべて線で結線している（ネットラベルは使わない）。電源の名前（+13V8・+5VT・TX8V など）は、その電源の出どころ（レギュレータの出力など）に電源記号を 1 つ置いて示す。GND だけは GND 記号でつなぐ。
 
@@ -146,6 +146,14 @@ tools/check.sh             # 回路図を作り直して ERC と接続照合（t
 - 29MHz 帯 FM は 4 級でも 10W まで運用可。自作機のため保証認定（JARD / TSS）と変更申請が必要
 - 逓倍方式は分数調波・隣の逓倍成分が出やすい。スペクトラムアナライザでスプリアスが規格内か確認すること（特に 14.65MHz・43.95MHz 付近）
 - 周波数は JARL バンドプランの FM 区分に合わせる
+
+## 基板の組み立て
+
+[部品実装図（PDF、8 ページ）](docs/Serrasoid_TRX_部品実装図.pdf): 1 ページ目が全体図、2 ページ目からブロックごと（電源 → 制御 → セラゾイド変調 → 逓倍 → 送信音声 → 送信RF → 受信、組立順の目安）に、そのブロックの部品を強調した図と部品表（値・種類・極性などの注意）。A3 1 枚の配置図は [kicad/Serrasoid_TRX_部品配置図.pdf](kicad/Serrasoid_TRX_部品配置図.pdf)。
+
+![部品配置（全体図）](docs/images/layout_overview.png)
+
+作り直し: `docs/tools/export_board.py`（KiCad 付属の Python で基板を JSON に）→ `docs/tools/make_parts_layout.py`（部品表は `tools/circuit.py` から）、A3 は `docs/tools/make_layout_a3.sh`。
 
 ## フォルダ
 
