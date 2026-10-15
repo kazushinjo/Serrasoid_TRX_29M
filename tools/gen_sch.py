@@ -17,7 +17,24 @@ LOCAL = os.path.join(ROOT, 'kicad', PROJ + '.kicad_sym')
 S = Sym
 NS = uuid.UUID('6a1c3f3e-29a0-4c55-9d1e-5e7a50000000')
 ROOT_UUID = '6a1c3f3e-29a0-4c55-9d1e-5e7a50000001'
-POWER = {'GND', '+13V8', '+8V', '+5V', '+5VT', '+5VA', '+3V3S', '+3V3X', 'TX8V', 'RX8V'}
+# GND だけは電源記号（GND 記号）でつなぐ。ほかの電源は線で結び、名前を示すため出どころに電源記号を 1 つ置く
+POWER = {'GND'}
+RAILS = {'+13V8', '+8V', '+5V', '+5VT', '+5VA', '+3V3S', '+3V3X', 'TX8V', 'RX8V'}
+NAME_PIN = {}          # 電源の名前を示す電源記号を置くピン {net: (ref, pin)}
+def pick_name_pins():
+    """電源の名前を示す電源記号を置くピン: レギュレータの出力 → コネクタ → リレー → その他（PWR_FLAG は使わない）"""
+    cand = {}
+    for p in parts:
+        if p['sym'] == 'power:PWR_FLAG': continue
+        pins = libload.pins(libsym(p['sym']))
+        for num, net in p['pins'].items():
+            if net not in RAILS: continue
+            # ピンが密に並ぶ IC（XIAO など）は横から線を入れにくいので後回し
+            rank = 0 if (pins[num][5] == 'power_out' and len(pins) <= 3) else 1 if p['sym'].startswith('Connector') \
+                else 2 if p['sym'].startswith('Relay') else 3
+            if net not in cand or rank < cand[net][0]: cand[net] = (rank, p['ref'], num)
+    for net, (_, ref, num) in cand.items(): NAME_PIN[net] = (ref, num)
+
 # 機能ブロック → シートのファイル名（並び順 = ページ順）
 SHEETS = [('電源', 'power'), ('制御', 'control'), ('セラゾイド変調', 'modulator'), ('逓倍', 'multiplier'),
           ('送信音声', 'txaudio'), ('送信RF', 'txrf'), ('受信', 'rx')]
@@ -107,7 +124,8 @@ class Unit:
         xs, ys = [b[0], b[2]], [b[1], b[3]]
         for num in self.pins:
             e = self.pin_end(num, (0, 0), r); o = self.pin_out(num, r)
-            ext = 6.35 if self.p['pins'][num] in POWER else 1.27
+            net = self.p['pins'][num]
+            ext = 6.35 if (net in POWER or NAME_PIN.get(net) == (self.ref, num)) else 1.27
             xs += [e[0], e[0] + o[0] * ext]; ys += [e[1], e[1] + o[1] * ext]
         x0, y0, x1, y1 = min(xs), min(ys), max(xs), max(ys)
         tw = max(len(self.p['value']), len(self.ref) + 1) * 1.05 + 1.5
@@ -215,12 +233,15 @@ class Sheet:
         # 電源記号の置き場所
         for u in self.units:
             for num in u.pins:
-                if u.p['pins'][num] in POWER:
+                net = u.p['pins'][num]
+                if net in POWER or NAME_PIN.get(net) == (u.ref, num):
                     e = self.cell(u.pin_end(num)); o = u.pin_out(num)
                     for k in range(1, 5):
                         for s in (-1, 0, 1):
                             blocked.add((e[0] + o[0] * k + (s if o[0] == 0 else 0), e[1] + o[1] * k + (s if o[1] == 0 else 0)))
         self.blocked, self.pinend = blocked, pinend
+        # 電源記号を付けたピンには、線は横から入る
+        self.side = {self.cell(u.pin_end(num)) for u in self.units for num in u.pins if NAME_PIN.get(u.p['pins'][num]) == (u.ref, num)}
         self.occ = {}                      # セル → {'h': ネット, 'v': ネット}
         self.ends = {}                     # 線の端・角（他のネットは通れない）
         self.wires, self.deg, self.wire_nets = [], {}, []
@@ -260,12 +281,14 @@ class Sheet:
         inward = (-tout[0], -tout[1])
         flex = getattr(self, 'flex', set())      # ピン先でない端（ラベルの引き出し線の先）は横からも入れる
         okin = {d for d in DIRS if d != (tout[0], tout[1])} if tc in flex else {inward}
+        if tc in getattr(self, 'side', ()): okin = {d for d in DIRS if d not in (tout, inward)}
         heap, best, came = [], {}, {}
         for c, used in tree.items():
             if c in pin_of:
                 if used: continue
                 dirs = [pin_of[c]]                       # ピン先からは外向きにだけ出す
                 if c in flex: dirs = [d for d in DIRS if d != (-pin_of[c][0], -pin_of[c][1])]
+                if c in getattr(self, 'side', ()): dirs = [d for d in DIRS if d not in (pin_of[c], (-pin_of[c][0], -pin_of[c][1]))]
             else:
                 if c in self.ends and len(used) == 2: continue
                 dirs = [d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used]
@@ -397,6 +420,8 @@ class Sheet:
                     self.items.append([S('no_connect'), [S('at'), F(e[0]), F(e[1])], [S('uuid'), U()]])
                 elif net in POWER:
                     self.power(net, e, o)
+                elif NAME_PIN.get(net) == (u.ref, num):
+                    self.power(net, e, o)
         for a, b in self.wires:
             self.items.append([S('wire'), [S('pts'), [S('xy'), F(a[0] * RG), F(a[1] * RG)], [S('xy'), F(b[0] * RG), F(b[1] * RG)]],
                                [S('stroke'), [S('width'), S('0')], [S('type'), S('default')]], [S('uuid'), U()]])
@@ -475,7 +500,7 @@ def connect_labels(items, units, wires, PW, PH):
             for cc, ax in lst[i][0].items(): d.setdefault(cc, set()).update(ax)
         d.setdefault(c, set())
         return d
-    done, extra_w, extra_j, path_ends = [], [], [], set()
+    done, extra_w, extra_j, path_ends, path_ends_of = [], [], [], set(), {}
     for net in sorted(groups, key=lambda n: g._span([(c, o) for _, c, o in groups[n]])):
         lst = groups[net]
         if len(lst) < 2: continue
@@ -484,6 +509,8 @@ def connect_labels(items, units, wires, PW, PH):
             cc = comp(net, c, o)
             if not any(c in x for x in comps): comps.append(cc)
         out = {c: o for _, c, o in lst}
+        if os.environ.get('SCH_DEBUG') == net:
+            print('DEBUG', net, [(c, o) for _, c, o in lst], [len(x) for x in comps])
         tree = dict(comps[0]); ok = True; paths = []
         for tgt in comps[1:]:
             path = route_between(g, net, tree, tgt, out)
@@ -495,6 +522,7 @@ def connect_labels(items, units, wires, PW, PH):
                     print('   src', len(tree), 'dst', len(tgt))
                 ok = False; break
             paths.append(path)
+            if os.environ.get('SCH_DEBUG') == net: print('  path', path[0], '->', path[-1], len(path))
             for x, y in zip(path, path[1:]):
                 axis = 'h' if x[1] == y[1] else 'v'
                 for c in (x, y): tree.setdefault(c, set()).add(axis)
@@ -513,15 +541,17 @@ def connect_labels(items, units, wires, PW, PH):
                 axis = 'h' if x[1] == y[1] else 'v'
                 for c in (x, y): g.occ.setdefault(c, {})[axis] = net
             for c in (path[0], path[-1]):
-                path_ends.add(c)
+                path_ends.add(c); path_ends_of.setdefault(net, set()).add(c)
                 exist = wdeg.get(c, 0) + (1 if c in g.pinend else 0)
                 if exist >= 2: extra_j.append(c)
                 wdeg[c] = wdeg.get(c, 0) + 1
+            for c in path[1:-1]:                  # 後から引く線がこの線の途中につながるときのため
+                wdeg[c] = wdeg.get(c, 0) + 2
     print('ブロック間を線で結んだ信号 %d / %d（残りはラベル: %s）' % (len(done), len([n for n in groups if len(groups[n]) > 1]),
           sorted({n for n in groups if len(groups[n]) > 1} - set(done)) or 'なし'))
     keep = [it for it in items if not (it[0] == 'global_label' and unq(it[1]) in done)]
     # ラベルを外した引き出し線の先が余ったら、分岐点まで切り詰める
-    for net in done:
+    for net in (done if not os.environ.get('NO_TRIM') else []):
         for _, c, o in groups[net]:
             if c in g.pinend or c in path_ends or wdeg.get(c, 0) > 2: continue
             for it in list(keep):
@@ -531,14 +561,17 @@ def connect_labels(items, units, wires, PW, PH):
                 if c not in ends: continue
                 other = ends[1] if ends[0] == c else ends[0]
                 if sum(1 for a2, b2, *_ in wires if c in (a2, b2)) > 1: break
-                attach = path_ends | {a2 for a2, b2, *_ in wires if (a2, b2) not in ((c, other), (other, c))} | \
-                         {b2 for a2, b2, *_ in wires if (a2, b2) not in ((c, other), (other, c))}
+                same = [(a2, b2) for a2, b2, n2, _ in wires if n2 == net and (a2, b2) not in ((c, other), (other, c))]
+                attach = path_ends_of.get(net, set()) | {a2 for a2, b2 in same} | {b2 for a2, b2 in same} | \
+                         {u for a2, b2 in same for u in seg_cells(a2, b2)}
                 on = [e for e in attach if e != other and min(other[0], c[0]) <= e[0] <= max(other[0], c[0])
                       and min(other[1], c[1]) <= e[1] <= max(other[1], c[1]) and (e[0] == c[0] or e[1] == c[1])]
                 if on:
                     nearest = min(on, key=lambda e: abs(e[0] - c[0]) + abs(e[1] - c[1]))
                     k = 0 if ends[0] == c else 1
                     pts[k][1] = F(nearest[0] * RG); pts[k][2] = F(nearest[1] * RG)
+                    if not any(nearest in (a2, b2) for a2, b2 in same) and nearest not in path_ends_of.get(net, set()):
+                        extra_j.append(nearest)       # 線の途中につながるので接続点
                 else:
                     keep.remove(it)
     for a, b in extra_w:
@@ -549,16 +582,24 @@ def connect_labels(items, units, wires, PW, PH):
                      [S('color'), S('0'), S('0'), S('0'), S('0')], [S('uuid'), U()]])
     return keep
 
+def seg_cells(a, b):
+    if a[1] == b[1]: return [(x, a[1]) for x in range(min(a[0], b[0]), max(a[0], b[0]) + 1)]
+    return [(a[0], y) for y in range(min(a[1], b[1]), max(a[1], b[1]) + 1)]
+
 def route_between(g, net, src, dst, out):
     """src（セル → 使っている向き）から dst のどこかへ、直角の線を引く"""
     def dirs_from(c, used):
         if not used:
+            if c in g.side:
+                o = out.get(c) or g_pin_out(g, c); return [d for d in DIRS if d not in (o, (-o[0], -o[1]))]
             if c in g.pinend: return [out.get(c) or g_pin_out(g, c)]
             return list(DIRS)
         return [d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used]
     goal = {}
     for c, used in dst.items():
         if used: goal[c] = {d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used}
+        elif c in g.side:
+            o = out.get(c) or g_pin_out(g, c); goal[c] = {d for d in DIRS if d not in (o, (-o[0], -o[1]))}
         elif c in g.pinend: goal[c] = {(-o[0], -o[1]) for o in [out.get(c) or g_pin_out(g, c)]}
         else: goal[c] = set(DIRS)
     gx = [c[0] for c in goal]; gy = [c[1] for c in goal]
@@ -639,7 +680,7 @@ def write_merged(sheets):
     note = ('送信: マイク → 送信音声 → セラゾイド変調（915.625kHz で PM）→ 逓倍 ×32 → 送信RF（10W）→ ANT\\n'
             '受信: ANT → 受信（2N3819 → SA612 → 10.7MHz → MC3361 → LM386）→ SP\\n'
             '制御: XIAO ESP32C3 ＋ Si5351（CLK0 = 変調基準 9.15625MHz、CLK1 = 受信局発 18.6MHz）\\n'
-            'ブロックの中もブロックの間も線で結線（電源・GND は電源記号）')
+            'ブロックの中もブロックの間も線で結線（電源も線。電源の名前は出どころの電源記号で示す。GND だけ GND 記号）')
     items.append([S('text'), q(note), [S('exclude_from_sim'), S('no')], [S('at'), F(25.4), F(PH - 30), S('0')],
                   [S('effects'), [S('font'), [S('size'), S('2.5'), S('2.5')]], [S('justify'), S('left'), S('bottom')]], [S('uuid'), U()]])
     sch = [S('kicad_sch'), [S('version'), S('20260306')], [S('generator'), q('eeschema')], [S('generator_version'), q('10.0')],
@@ -664,6 +705,7 @@ def main():
             for n in p['pins'].values():
                 if n and n not in POWER: where.setdefault(n, set()).add(blk)
     global_nets = {n for n, b in where.items() if len(b) > 1}
+    pick_name_pins()
     only = sys.argv[1:]
     sheets = []
     for i, (blk, fname) in enumerate(SHEETS):
