@@ -76,7 +76,12 @@ class Placer:
         return w * (max(xs) - min(xs) + max(ys) - min(ys))
     def part_cost(self, ref, pos=None, rot=None):
         ov = (ref, pos, rot) if pos is not None else None
-        return sum(self.net_len(n, ov) for n in self.part_nets.get(ref, ()))
+        c = sum(self.net_len(n, ov) for n in self.part_nets.get(ref, ()))
+        a = getattr(self, 'anchor', {}).get(ref)
+        if a is not None:                     # 決めておいた位置（列・行）から離れるほど損
+            q = pos if pos is not None else self.parts[ref]['pos']
+            if q is not None: c += self.anchor_w * (abs(q[0] - a[0]) + 2.0 * abs(q[1] - a[1]))
+        return c
     def total(self):
         return sum(self.net_len(n) for n in self.nets)
 

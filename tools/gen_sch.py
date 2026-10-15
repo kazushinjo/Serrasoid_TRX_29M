@@ -99,6 +99,8 @@ class Unit:
         self.body = body(self.sym, unit)
         self.two = len(allp) == 2
         self.pos, self.r = None, 0
+    def n_pins_total(self):
+        return len(libload.pins(self.sym))
     def pin_end(self, num, pos=None, r=None):
         pos = pos or self.pos; r = self.r if r is None else r
         v = self.pins[num]; dx, dy = rot(v[0], v[1], r)
@@ -155,15 +157,16 @@ class Sheet:
         self.suuid = sheet_uuid(block)
 
     # ---- 配置
-    def place(self):
-        # ブロックの区画は A3 大から。部品の間隔は 7.62mm（収まらなければ詰める・広げる）
-        tries = [(PAPERS[0], g) for g in (7.62, 6.35)] + [(PAPERS[1], g) for g in (7.62, 6.35, 5.08)]
-        for (name, w, h), gap in tries:
+    TRIES = [(PAPERS[0], 7.62), (PAPERS[0], 6.35), (PAPERS[1], 7.62), (PAPERS[1], 10.16), (PAPERS[1], 6.35), (PAPERS[1], 5.08), (PAPERS[2], 7.62)]
+    def place(self, start=0):
+        """部品を置く。start 番目の条件（用紙・部品の間隔）から試し、区画に収まった条件の番号を返す"""
+        for i in range(start, len(self.TRIES)):
+            (name, w, h), gap = self.TRIES[i]
             self.paper, self.W, self.H = name, w, h
             region = (20, 22, w - 20, h - 45)
             res, pl = self._try_place(region, gap)
             if all(self._inside(pl.rect(k), region) for k in res): break
-        self.gap = gap
+        self.gap, self.try_index = gap, i
         for u in self.units:
             (x, y), r = res[u.key]
             u.pos, u.r = (round(x / 2.54) * 2.54, round(y / 2.54) * 2.54), r
@@ -171,26 +174,93 @@ class Sheet:
     def _inside(self, r, region):
         return r[0] >= region[0] - 0.01 and r[1] >= region[1] - 0.01 and r[2] <= region[2] + 0.01 and r[3] <= region[3] + 0.01
 
+    def _roles(self):
+        """2 端子部品の役割: 'shunt'（片側が GND か電源）か 'series'（信号の通り道）"""
+        role = {}
+        for u in self.units:
+            if not u.two: role[u.key] = 'ic'; continue
+            nets = [u.p['pins'][n] for n in sorted(u.pins)]
+            pw = [n in POWER or n in RAILS for n in nets]
+            role[u.key] = 'shunt' if any(pw) else 'series'
+        return role
+
+    def _shunt_rot(self, u):
+        """GND を下、電源を上に向ける角度（ピン 1 が上になるのが 0°）"""
+        n1, n2 = u.p['pins']['1'], u.p['pins']['2']
+        def rank(n):
+            return 0 if n in RAILS else 2 if n in POWER else 1
+        return 0 if rank(n1) <= rank(n2) else 180
+
+    def _levels(self):
+        """信号の流れの順番（列）。回路一覧の先頭から、信号のネットをたどった段数"""
+        sig = {}
+        for u in self.units:
+            for num in u.pins:
+                n = u.p['pins'][num]
+                if n and n not in POWER and n not in RAILS: sig.setdefault(n, set()).add(u.key)
+        nb = {u.key: set() for u in self.units}
+        for n, ks in sig.items():
+            if len(ks) > 8: continue            # 多数の部品がつながるネット（VREF など）は流れに使わない
+            for k in ks: nb[k] |= ks - {k}
+        role = self._roles()
+        lvl = {}
+        order = [u.key for u in self.units]
+        # 電源と GND だけにつながる部品（パスコンなど）は、回路一覧で直前の部品と同じ列に置く
+        ponly = {u.key for u in self.units if all((u.p['pins'][n] in POWER or u.p['pins'][n] in RAILS or u.p['pins'][n] is None) for n in u.pins)}
+        for start in order:
+            if start in lvl or start in ponly: continue
+            base = max(lvl.values()) + 1 if lvl else 0
+            lvl[start] = base; q = [start]
+            while q:
+                k = q.pop(0)
+                for k2 in sorted(nb[k], key=order.index):
+                    if k2 in lvl: continue
+                    # GND・電源に落ちる部品は、つながる相手と同じ列（その下に置く）
+                    lvl[k2] = lvl[k] if role[k2] == 'shunt' else lvl[k] + 1
+                    q.append(k2)
+        last = 0
+        units = {u.key: u for u in self.units}
+        for k in order:
+            if k in ponly and not units[k].two and units[k].p['sym'] != 'power:PWR_FLAG' and units[k].n_pins_total() >= 3 \
+                    and units[k].unit == 1 and units[k].p['sym'].startswith(('Regulator', 'Converter')):
+                last = (max(lvl.values()) + 1) if lvl else 0          # レギュレータは自分の列を持つ
+                lvl[k] = last; role[k] = 'ic'
+            elif k in ponly:
+                lvl[k] = last; role[k] = 'shunt'
+            else: last = lvl[k]
+        return lvl, role
+
     def _try_place(self, region, gap):
         w, h = self.W, self.H
         pl = Placer(w, h, {self.block: region}, grid=2.54, gap=gap, edge=12)
-        n = len(self.units)
-        init = {}
-        for i, u in enumerate(self.units):
-            rots = {}
-            for r in ((0, 90) if u.two else (0,)):
-                rots[r] = (u.footprint_box(r), {num: u.pin_end(num, (0, 0), r) for num in u.pins})
+        lvl, role = self._levels()
+        ncol = max(lvl.values()) + 1
+        colw = 22.86
+        per_row = max(1, int((region[2] - region[0] - 16) / colw))       # 区画の幅を超える列は次の段へ折り返す
+        nrow = (ncol + per_row - 1) // per_row
+        rowh = max(60.0, (region[3] - region[1] - 10) / max(1, nrow))
+        init, rows = {}, {}
+        for u in self.units:
+            if role[u.key] == 'shunt' and u.two: rr = [self._shunt_rot(u)]
+            elif role[u.key] == 'series' and u.two: rr = [90, 270]
+            else: rr = [0]
+            rots = {r: (u.footprint_box(r), {num: u.pin_end(num, (0, 0), r) for num in u.pins}) for r in rr}
             pl.add_part(u.key, self.block, rots)
-            # 初期位置: 回路一覧の順に左から右へ（信号の流れ）
-            init[u.key] = (region[0] + 10 + (region[2] - region[0] - 20) * i / max(1, n - 1),
-                           (region[1] + region[3]) / 2 + ((i % 3) - 1) * 25)
+            c = lvl[u.key]
+            # 信号の通り道（IC・直列部品）は段の上側、GND・電源に落ちる部品はその下
+            k = 'main' if role[u.key] != 'shunt' else 'shunt'
+            i = rows.setdefault((c, k), 0); rows[(c, k)] += 1
+            y0 = region[1] + 12 + (c // per_row) * rowh
+            y = y0 + (i * 20 if k == 'main' else 20 + i * 14)
+            init[u.key] = (region[0] + 8 + (c % per_row) * colw, y)
         nets = {}
         for u in self.units:
             for num in u.pins:
                 net = u.p['pins'][num]
-                if net and net not in POWER: nets.setdefault(net, []).append((u.key, num))
+                if net and net not in POWER and net not in RAILS: nets.setdefault(net, []).append((u.key, num))
         for net, lst in nets.items():
             pl.add_net(net, 1.0, lst)
+        pl.anchor, pl.anchor_w = init, 0.6
         return pl.run(log=lambda *a: None, init=init, passes=12), pl
 
     # ---- 結線
@@ -213,8 +283,8 @@ class Sheet:
         blocked, pinend = set(), {}
         for u in self.units:
             x0, y0, x1, y1 = u.body_rect()
-            for ix in range(int(math.floor(x0 / RG)), int(math.ceil(x1 / RG)) + 1):
-                for iy in range(int(math.floor(y0 / RG)), int(math.ceil(y1 / RG)) + 1):
+            for ix in range(int(math.floor(x0 / RG + 1e-6)), int(math.ceil(x1 / RG - 1e-6)) + 1):
+                for iy in range(int(math.floor(y0 / RG + 1e-6)), int(math.ceil(y1 / RG - 1e-6)) + 1):
                     blocked.add((ix, iy))
             for num in u.pins:
                 for pt in u.pin_line(num): blocked.add(self.cell(pt))
@@ -319,9 +389,9 @@ class Sheet:
             axis = 'h' if d[1] == 0 else 'v'
             if axis in o: continue
             crossing = bool(o)
-            ng = g + 1 + (4 if crossing else 0)
+            ng = g + 1 + (12 if crossing else 0)
             for nd in ([d] if crossing else [d, (d[1], d[0]), (-d[1], -d[0])]):
-                g2 = ng + (0 if nd == d else 4)
+                g2 = ng + (0 if nd == d else 6)
                 k2 = (n, nd)
                 if best.get(k2, 1e9) <= g2: continue
                 best[k2] = g2; came[k2] = (c, d)
@@ -634,9 +704,9 @@ def route_between(g, net, src, dst, out):
         axis = 'h' if d[1] == 0 else 'v'
         if axis in o: continue
         crossing = bool(o)
-        ng = gg + 1 + (4 if crossing else 0)
+        ng = gg + 1 + (8 if crossing else 0)
         for nd in ([d] if crossing else [d, (d[1], d[0]), (-d[1], -d[0])]):
-            g2 = ng + (0 if nd == d else 4)
+            g2 = ng + (0 if nd == d else 6)
             k2 = (n, nd)
             if best.get(k2, 1e9) <= g2: continue
             best[k2] = g2; came[k2] = (c, d)
@@ -652,13 +722,14 @@ def g_pin_out(g, c):
 def write_merged(sheets):
     """ブロックごとに作った回路を、枠で囲んで 1 枚に並べる"""
     M = 8.0          # 枠の内側の余白
-    for name, PW, PH in [('A1', 841, 594), ('A0', 1189, 841)]:
+    sizes = [('A1', 841, 594), ('A0', 1189, 841)] + [('User', 1189 + 100 * k, 841 + 100 * k) for k in range(1, 8)]
+    for name, PW, PH in sizes:
         x, y, rowh, ok, pos = 25.4, 30.48, 0, True, []
         for sh in sheets:
             w = sh.bbox[2] - sh.bbox[0] + 2 * M; h = sh.bbox[3] - sh.bbox[1] + 2 * M + 6
             if x + w > PW - 20: x = 25.4; y += rowh + 22.86; rowh = 0
             pos.append((x, y, w, h)); x += w + 22.86; rowh = max(rowh, h)
-        if y + rowh < PH - 50: break
+        if y + rowh < PH - 60 and all(px + pw < PW - 20 for px, py, pw, ph in pos): break
     items, libs = [], {}
     allunits, allwires = [], []
     for sh, (x, y, w, h) in zip(sheets, pos):
@@ -681,10 +752,10 @@ def write_merged(sheets):
             '受信: ANT → 受信（2N3819 → SA612 → 10.7MHz → MC3361 → LM386）→ SP\\n'
             '制御: XIAO ESP32C3 ＋ Si5351（CLK0 = 変調基準 9.15625MHz、CLK1 = 受信局発 18.6MHz）\\n'
             'ブロックの中もブロックの間も線で結線（電源も線。電源の名前は出どころの電源記号で示す。GND だけ GND 記号）')
-    items.append([S('text'), q(note), [S('exclude_from_sim'), S('no')], [S('at'), F(25.4), F(PH - 30), S('0')],
+    items.append([S('text'), q(note), [S('exclude_from_sim'), S('no')], [S('at'), F(25.4), F(max(py + ph for px, py, pw, ph in pos) + 20), S('0')],
                   [S('effects'), [S('font'), [S('size'), S('2.5'), S('2.5')]], [S('justify'), S('left'), S('bottom')]], [S('uuid'), U()]])
     sch = [S('kicad_sch'), [S('version'), S('20260306')], [S('generator'), q('eeschema')], [S('generator_version'), q('10.0')],
-           [S('uuid'), q(ROOT_UUID)], [S('paper'), q(name)],
+           [S('uuid'), q(ROOT_UUID)], ([S('paper'), q(name)] if name != 'User' else [S('paper'), q('User'), F(PW), F(PH)]),
            [S('title_block'), [S('title'), q('Serrasoid TRX 29M（セラゾイド変調 29MHz FM 10W トランシーバ）')],
             [S('date'), q(datetime.date.today().isoformat())], [S('rev'), q('1.0')], [S('company'), q('JA6FUF')]],
            [S('lib_symbols')] + list(libs.values())] + items + [
@@ -711,7 +782,13 @@ def main():
     for i, (blk, fname) in enumerate(SHEETS):
         us = [u for p in blocks[blk] for u in units_of(p)]
         sh = Sheet(blk, fname, i + 2, us, global_nets)
-        sh.place(); sh.route(); sh.emit()
+        k = 0
+        while True:                       # 線を引けないネットがあれば、条件を変えて置き直す
+            sh.place(k); sh.route()
+            if not sh.failed or sh.try_index >= len(Sheet.TRIES) - 1: break
+            k = sh.try_index + 1
+            sh.items = []
+        sh.emit()
         print('%-10s 部品 %3d 線 %4d ラベルで代用 %s' % (blk, len(us), len(sh.wires), sorted(set(sh.failed)) or 'なし'))
         sheets.append(sh)
     print('用紙', write_merged(sheets))
