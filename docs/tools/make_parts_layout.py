@@ -27,6 +27,8 @@ import circuit
 
 FW3 = '/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc'
 FW6 = '/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc'
+if not os.path.exists(FW3):   # Windows: 游ゴシック（PSN_TRX と同じ）
+    FW3, FW6 = 'C:/Windows/Fonts/YuGothM.ttc', 'C:/Windows/Fonts/YuGothB.ttc'
 for f in (FW3, FW6):
     fm.fontManager.addfont(f)
 plt.rcParams['font.family'] = fm.FontProperties(fname=FW3).get_name()
@@ -176,7 +178,7 @@ def draw_fp(ax, f, mode, small=False):
     if mode != 'faint':
         (x0, y0), (x1, y1) = f['bbox']
         cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-        ax.text(cx, cy, f['ref'], ha='center', va='center', fontsize=4.0 if small else 5.2, color=NAVY, fontproperties=BOLD,
+        ax.text(cx, cy, 'U5 (XIAO)' if f['ref'] == 'U5' else f['ref'], ha='center', va='center', fontsize=4.0 if small else 5.2, color=NAVY, fontproperties=BOLD,
                 zorder=20, bbox=dict(fc='white', ec='none', alpha=0.65, pad=0.15))
         if not small and f['val'] and not f['ref'].startswith(('H', 'J', 'TP')):
             ax.text(cx, cy + 1.6, f['val'][:14], ha='center', va='center', fontsize=3.2, color='#555555', zorder=20)
