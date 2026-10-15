@@ -137,7 +137,7 @@ tools/route.sh
 tools/check.sh             # 回路図を作り直して ERC と接続照合（tools/verify_sch.py）
 ```
 
-回路図での部品の位置は `tools/circuit.py` の `LAYOUT` で手で決めてある（ない部品は自動で置く）。回路を直すときは `tools/circuit.py` を編集して作り直す（KiCad で回路図を直接直した場合は、circuit.py にも同じ修正を入れる）。
+回路図での部品の位置は `tools/circuit.py` の `LAYOUT` で手で決めてある（ない部品は自動で置く）。KiCad で部品を動かしたときは `python3 tools/import_layout.py` で位置を `LAYOUT` に取り込める。回路を直すときは `tools/circuit.py` を編集して作り直す（KiCad で回路図を直接直した場合は、circuit.py にも同じ修正を入れる）。
 
 ## 運用上の注意
 
