@@ -180,7 +180,9 @@ class Sheet:
         self.gap, self.try_index = gap, i
         for u in self.units:
             (x, y), r = res[u.key]
-            u.pos, u.r = (round(x / 2.54) * 2.54, round(y / 2.54) * 2.54), r
+            fixed = LAYOUT.get(u.key) or (LAYOUT.get(u.ref) if u.unit == 1 else None)
+            gsn = RG if fixed else 2.54          # 手で決めた位置は 1.27mm 刻みのまま
+            u.pos, u.r = (round(x / gsn) * gsn, round(y / gsn) * gsn), r
 
     def _inside(self, r, region):
         return r[0] >= region[0] - 0.01 and r[1] >= region[1] - 0.01 and r[2] <= region[2] + 0.01 and r[3] <= region[3] + 0.01
@@ -349,6 +351,8 @@ class Sheet:
         while rest:
             rest.sort(key=lambda pc: min(abs(pc[0][0] - t[0]) + abs(pc[0][1] - t[1]) for t in tree))
             tgt = rest.pop(0)
+            if tgt[0] in tree:                 # ピンどうしが重なっている（線なしでつながっている）
+                self._deg(net, tgt[0], 1); continue
             path = self._astar(tree, pin_of, tgt, net)
             if path is None:
                 self.failed.append(net)
@@ -380,8 +384,10 @@ class Sheet:
                 if c in getattr(self, 'side', {}):
                     o_, sd = self.side[c]; dirs = [d for d in DIRS if d not in ((-o_[0], -o_[1]), sd)]
             else:
-                if c in self.ends and len(used) == 2: continue
-                dirs = [d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used]
+                # 線の端からは同じ向きにそのまま延ばしてもよい（延ばした先が線でなければ）
+                dirs = [d for d in DIRS if ('h' if d[1] == 0 else 'v') not in used
+                        or (c in self.ends and (c[0] + d[0], c[1] + d[1]) not in tree)]
+                if c in self.ends and len(used) == 2 and not dirs: continue
             for d in dirs:
                 heapq.heappush(heap, (abs(c[0] - tc[0]) + abs(c[1] - tc[1]), 0, c, d))
                 best[(c, d)] = 0
