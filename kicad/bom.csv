@@ -56,7 +56,7 @@ C54,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
 C55,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
 C56,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
 C57,220u,Capacitor_THT:CP_Radial_D8.0mm_P3.50mm,送信RF,25V 以上
-C58,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,50V 以上
+C58,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,約 1.6Arms 流れるので、円板ではなく積層セラミック（X7R、100V）を使う
 C59,120p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
 C60,220p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
 C61,220p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
@@ -190,7 +190,7 @@ R50,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
 R51,4.7k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,Q 調整
 R52,330,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,
 R53,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,負荷（利得を約 8dB に抑える）
-R54,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,局発を約 0.3Vp-p に減衰
+R54,1.2k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,局発を約 0.25Vp-p に減衰（SA612 の範囲 200〜300mVp-p の中央）
 R55,100,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,
 R56,20k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,ダンピング（データシートは 20k）。音が歪むときは 6.8k〜47k で調整
 R57,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,ディエンファシス 470µs
@@ -218,7 +218,7 @@ U1,R-78E5.0-1.0,Converter_DCDC:Converter_DCDC_RECOM_R-78E-0.5_THT,電源,デジ�
 U2,L7808,Package_TO_SOT_THT:TO-220-3_Vertical,電源,受信・送信バイアス・アナログ系。小型放熱器を付ける
 U3,L7805,Package_TO_SOT_THT:TO-220-3_Vertical,電源,変調部専用 5V（リニア。DC-DC のリプルを変調に入れないため）
 U4,LP2950-3.3,Package_TO_SOT_THT:TO-92_Inline,電源,Si5351 モジュール用 3.3V
-U5,XIAO ESP32C3,Serrasoid_TRX:Seeeduino_XIAO_Socket,制御,ソケット実装。D8（PTT）・D9（エンコーダ SW）は起動設定ピンなので、PTT を押したまま電源を入れない
+U5,XIAO ESP32C3,Serrasoid_TRX:Seeeduino_XIAO_Socket,制御,ソケット実装。起動設定ピン D0（GPIO2）・D9（GPIO9）は起動時に High が必要なので、ふだん開放の PTT とエンコーダ SW をつなぐ（PTT・つまみを押したまま電源を入れない）。D8（GPIO8）はフラッシュ起動に関係しないのでエンコーダ B 相
 U6,AE-Si5351A,Serrasoid_TRX:DIP-8_W7.62mm,制御,秋月 AE-Si5351A。CLK0 = 変調基準 9.15625MHz（送信時のみ）、CLK1 = 受信局発 18.6MHz（受信時のみ）
 U7,74HCT4017,Package_DIP:DIP-16_W7.62mm_Socket,セラゾイド変調,÷10。Q0 が 1.09µs ごとに約 110ns 幅のリセットパルス。HCT 品（3.3V 入力を受けるため）
 U8,MAX913CPA,Package_DIP:DIP-8_W7.62mm_Socket,セラゾイド変調,高速コンパレータ（10ns、DIP-8）。単電源 5V（V- = GND）で入力範囲は -0.2〜+3.5V、出力は TTL（High 2.4〜3.4V）。LE は Low でラッチしない（データシート: High または開放でラッチ）ので GND に固定。LT1016 は単電源では入力範囲が足りないので使わない

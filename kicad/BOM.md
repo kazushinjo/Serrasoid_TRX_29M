@@ -12,7 +12,7 @@
 |---|---|---|---|---|
 | R1, R2, R15, R51, R58 | 4.7k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 5 | R1, R2: I2C プルアップ<br>R51: Q 調整 |
 | R3-R6, R9, R13, R22, R23, R26, R29, R34, R48, R50, R57, R59, R60, R62-R64, R67 | 10k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 20 | R6: PTT プルアップ<br>R22: VREF = 2.5V<br>R57: ディエンファシス 470µs |
-| R7, R8, R42, R47, R53, R54 | 1k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 6 | R7: PTT 保護抵抗<br>R8: リレー駆動のベース電流 約 2.6mA（コイル約 42mA を確実に飽和させる）<br>R42, R47: ゲートバイアス<br>R53: 負荷（利得を約 8dB に抑える）<br>R54: 局発を約 0.3Vp-p に減衰 |
+| R7, R8, R42, R47, R53 | 1k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 5 | R7: PTT 保護抵抗<br>R8: リレー駆動のベース電流 約 2.6mA（コイル約 42mA を確実に飽和させる）<br>R42, R47: ゲートバイアス<br>R53: 負荷（利得を約 8dB に抑える） |
 | R10, R12 | 1.5k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | R10: TX ランプ電流<br>R12: 定電流源エミッタ抵抗 |
 | R11, R14, R21, R55 | 100 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | R11: Si5351 CLK0 の直列抵抗<br>R21: BPF への直列抵抗 |
 | R16 | 3.9k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ×2 段 1 の遅延 273ns（915.6kHz の 1/4 周期） |
@@ -33,6 +33,7 @@
 | R41, R46 | 3.3k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 |  |
 | R44, R45 | 100 | R Axial DIN0414 L11.9mm D4.5mm P5.08mm Vertical | 2 | 入力スワンプ（2 本並列で 50Ω） |
 | R49 | 47k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 |  |
+| R54 | 1.2k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 局発を約 0.25Vp-p に減衰（SA612 の範囲 200〜300mVp-p の中央） |
 | R56 | 20k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ダンピング（データシートは 20k）。音が歪むときは 6.8k〜47k で調整 |
 | R65 | 470k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ノイズアンプ利得 47 |
 | R68 | 22k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | ADC 入力を 3.1V 以下に |
@@ -54,7 +55,7 @@
 | Reference | 値 / 型番 | フットプリント | 数量 | 備考 |
 |---|---|---|---|---|
 | C1 | 470u | CP Radial D8.0mm P3.50mm | 1 | 25V 以上 |
-| C2, C5, C8, C9, C11, C13, C17, C18, C20, C22, C28-C30, C41, C51, C55, C58, C66, C74, C78-C80, C84, C88, C92, C93 | 0.1u | C Disc D5.0mm W2.5mm P2.50mm | 26 | C58: 50V 以上<br>C78, C79: データシートどおり VCC へ |
+| C2, C5, C8, C9, C11, C13, C17, C18, C20, C22, C28-C30, C41, C51, C55, C58, C66, C74, C78-C80, C84, C88, C92, C93 | 0.1u | C Disc D5.0mm W2.5mm P2.50mm | 26 | C58: 約 1.6Arms 流れるので、円板ではなく積層セラミック（X7R、100V）を使う<br>C78, C79: データシートどおり VCC へ |
 | C3, C4, C7, C10, C12, C32, C40, C83, C89, C90 | 10u | CP Radial D5.0mm P2.00mm | 10 | C3: 25V 以上 |
 | C6 | 0.33u | C Disc D5.0mm W2.5mm P2.50mm | 1 |  |
 | C14, C31, C45-C50, C52-C54, C56, C65, C70-C73, C75 | 0.01u | C Disc D5.0mm W2.5mm P2.50mm | 18 |  |
@@ -143,7 +144,7 @@
 | U2 | L7808 | TO-220-3 Vertical | 1 | 受信・送信バイアス・アナログ系。小型放熱器を付ける |
 | U3 | L7805 | TO-220-3 Vertical | 1 | 変調部専用 5V（リニア。DC-DC のリプルを変調に入れないため） |
 | U4 | LP2950-3.3 | TO-92 Inline | 1 | Si5351 モジュール用 3.3V |
-| U5 | XIAO ESP32C3 | Seeeduino XIAO Socket | 1 | ソケット実装。D8（PTT）・D9（エンコーダ SW）は起動設定ピンなので、PTT を押したまま電源を入れない |
+| U5 | XIAO ESP32C3 | Seeeduino XIAO Socket | 1 | ソケット実装。起動設定ピン D0（GPIO2）・D9（GPIO9）は起動時に High が必要なので、ふだん開放の PTT とエンコーダ SW をつなぐ（PTT・つまみを押したまま電源を入れない）。D8（GPIO8）はフラッシュ起動に関係しないのでエンコーダ B 相 |
 | U6 | AE-Si5351A | DIP-8 W7.62mm | 1 | 秋月 AE-Si5351A。CLK0 = 変調基準 9.15625MHz（送信時のみ）、CLK1 = 受信局発 18.6MHz（受信時のみ） |
 | U7 | 74HCT4017 | DIP-16 W7.62mm Socket | 1 | ÷10。Q0 が 1.09µs ごとに約 110ns 幅のリセットパルス。HCT 品（3.3V 入力を受けるため） |
 | U8 | MAX913CPA | DIP-8 W7.62mm Socket | 1 | 高速コンパレータ（10ns、DIP-8）。単電源 5V（V- = GND）で入力範囲は -0.2〜+3.5V、出力は TTL（High 2.4〜3.4V）。LE は Low でラッチしない（データシート: High または開放でラッチ）ので GND に固定。LT1016 は単電源では入力範囲が足りないので使わない |
