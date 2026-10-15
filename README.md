@@ -163,6 +163,7 @@ tools/check.sh             # 回路図を作り直して ERC と接続照合（t
 | `tools/` | 回路図・部品表を作るスクリプト（回路は `tools/circuit.py` にまとめてある） |
 | `firmware/` | XIAO ESP32C3 スケッチ |
 | `docs/` | 資料 |
+| `enclosure/` | ケース（OpenSCAD、3D 印刷用 STL・パネル穴あけ図、[説明](enclosure/README.md)） |
 
 ## ライセンス
 
