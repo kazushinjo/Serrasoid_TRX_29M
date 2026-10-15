@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")/.."
 P=/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
 K=/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli
-FR=${FREEROUTING:-$HOME/tools/freerouting.jar}
+FR=${FREEROUTING:-$HOME/tools/freerouting-1.9.jar}   # 1.9.0（Java 17 で動く。2.x は時間がかかり未配線が残った）
 W=${1:-${TMPDIR:-/tmp}/serrasoid_route}
 mkdir -p "$W"
 PCB=kicad/Serrasoid_TRX.kicad_pcb

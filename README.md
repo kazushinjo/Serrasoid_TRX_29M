@@ -131,9 +131,9 @@
 python3 tools/mklib.py     # 記号・フットプリントのライブラリ
 python3 tools/gen_sch.py   # 回路図（部品配置と結線を自動で行う）
 python3 tools/gen_bom.py   # 部品表
-# 基板（KiCad 付属の Python で配置、Freerouting 1.9.0 で配線。FREEROUTING= に jar の場所）
+# 基板（KiCad 付属の Python で配置、Freerouting 1.9.0 で配線。jar は ~/tools/freerouting-1.9.jar、別の場所なら FREEROUTING= で指定）
 /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 tools/gen_pcb.py
-FREEROUTING=$HOME/tools/freerouting-1.9.jar tools/route.sh
+tools/route.sh
 tools/check.sh             # 回路図を作り直して ERC と接続照合（tools/verify_sch.py）
 ```
 
