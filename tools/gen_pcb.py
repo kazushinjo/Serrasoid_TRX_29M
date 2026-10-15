@@ -34,18 +34,14 @@ REGIONS = {
 # 基板上で別の区画に置く部品（値 → 区画）。Si5351 は CLK0（変調）と CLK1（受信）の間に置く
 BLOCK_OVERRIDE = {}
 # 配線長の重み: RF の線と、変調のタイミングに関わる線を優先して短くする
-TIMING = {'RAMP', 'THRESH', 'PM_OUT', 'COMP_OUT', 'RST_P', 'RST_G', 'CLK0', 'CLK0_IN', 'CLK1', 'LO_IN', 'LO_DIV',
+TIMING = {'RAMP', 'RAMP_E', 'RAMP_B', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'LPF2', 'LPF3', 'RFA_D', 'RFA_S', 'THRESH', 'PM_OUT', 'COMP_OUT', 'RST_P', 'RST_G', 'CLK0', 'CLK0_IN', 'CLK1', 'LO_IN', 'LO_DIV',
           'X2', 'X4', 'X8', 'X16', 'X32', 'DLY1', 'DLY2', 'DLY3', 'DLY4', 'DLY5', 'OS_C', 'OS_RC', 'MIX_IN', 'MIX_OUT', 'IF1', 'MIX3', 'LIM_IN'}
 # 位置を決めて置く部品: 部品番号 → (x, y, 角度)
 def fixed_positions(byref):
-    f = {}
-    for p in parts:
-        r = p['ref']
-        if p['value'] == 'DC 13.8V': f[r] = (12, 4, 0)
-        if p['value'] == 'ANT': f[r] = (153, 4, 0)
-        if p['value'] == 'G5V-2 DC12': f[r] = (152, 16, 0)
-        if p['value'] == 'RD16HHF1': f[r] = (120, 4.5, 0)
-    return f
+    """位置を決めて置く部品（コネクタ・リレー・ファイナル）。ほかは place.py が配線長の短い位置を探す
+    （送信の主要部品も固定する案は、全体の配線長が伸び未接続が残ったので採用しない）"""
+    by_value = {'DC 13.8V': (12, 4, 0), 'ANT': (153, 4, 0), 'G5V-2 DC12': (152, 16, 0), 'RD16HHF1': (120, 4.5, 0)}
+    return {p['ref']: by_value[p['value']] for p in parts if p['value'] in by_value}
 
 KCLI = '/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli'
 def sch_nets():
@@ -124,6 +120,8 @@ def main(report_only=False):
         bx = box(fp); placed.append((x + bx[0], y + bx[1], x + bx[2], y + bx[3]))
     # RD06HHF1 の放熱器（PSN_TRX と同じ相対位置）。配置では RD06HHF1 と一体の大きさとして扱う
     q5ref = [r for r, (fp, p) in fps.items() if p['value'] == 'RD06HHF1'][0]
+    if q5ref in fixed:
+        q5 = fps[q5ref][0]; q5.SetOrientationDegrees(0); q5.SetPosition(V(*fixed[q5ref][:2]))
     q5 = fps[q5ref][0]
     hs = fp_load(PROJ + ':Heatsink_20PB020'); hs.SetReference('HS1'); hs.SetValue('20PB020')
     hs.SetOrientationDegrees(180); hs.SetBoardOnly(True); b.Add(hs)
@@ -163,7 +161,7 @@ def main(report_only=False):
     for n, lst in pins.items():
         if n == 'GND' or n.startswith('unconnected'): continue
         r0, n0 = lst[0]; k = fps[r0][1]['pins'].get(n0) or n      # circuit.py でのネット名
-        w = 0.3 if (n in GLOBALS or len(lst) > 12) else 8.0 if (k in HEAVY or k in RF) else 3.0 if k in TIMING else 1.0
+        w = 0.3 if (n in GLOBALS or len(lst) > 12) else 8.0 if (k in HEAVY or k in RF) else 6.0 if k in TIMING else 1.0
         pl.add_net(n, w, lst)
     # 電源と GND だけにつながる部品（パスコンなど）は、回路一覧で直前にある同じ電源の部品のそばへ
     def power_only(ref):

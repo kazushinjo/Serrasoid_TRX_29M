@@ -4,7 +4,7 @@
 
 > 部品はすべてリード部品（表面実装部品なし）。
 
-> **状態: 回路図 Ver 1.0 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)）。基板は作成中、ファームウェアはこれから。実機未製作
+> **状態: 回路図 Ver 1.0 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)）。基板 Ver 1.0 は配置・配線まで（DRC エラー 0、[基板チェック](docs/基板チェック.md)）。製造データ・ファームウェアはこれから。実機未製作
 
 回路図は 1 枚（A0）。機能ブロック（電源・制御・セラゾイド変調・逓倍・送信音声・送信RF・受信）ごとに枠で囲み、枠の中は線で結線、ブロックをまたぐ信号は同じ名前のラベル、電源は電源記号でつないでいる。
 
@@ -131,6 +131,9 @@
 python3 tools/mklib.py     # 記号・フットプリントのライブラリ
 python3 tools/gen_sch.py   # 回路図（部品配置と結線を自動で行う）
 python3 tools/gen_bom.py   # 部品表
+# 基板（KiCad 付属の Python で配置、Freerouting 1.9.0 で配線。FREEROUTING= に jar の場所）
+/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 tools/gen_pcb.py
+FREEROUTING=$HOME/tools/freerouting-1.9.jar tools/route.sh
 tools/check.sh             # 回路図を作り直して ERC と接続照合（tools/verify_sch.py）
 ```
 
