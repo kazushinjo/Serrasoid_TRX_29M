@@ -19,18 +19,17 @@
 //     7: 前面パネル穴あけ図（2D、DXF/SVG 出力用）
 //     8: 後面パネル穴あけ図（2D、DXF/SVG 出力用）
 //     9: LCD ベゼル（ふた上面に取付）       ← 3D 印刷用（表を下、ボスが上）
-//    10: スピーカー押さえリング（ふた裏）   ← 3D 印刷用（つばを下）
-//   3D 印刷用（1〜4, 9, 10）は Z=0 のベッド面上、X/Y が正の範囲に置いてある。
+//   3D 印刷用（1〜4, 9）は Z=0 のベッド面上、X/Y が正の範囲に置いてある。
 //
 //   座標: X = 左→右（前から見て）、Y = 前→後（前面 Y=0）、Z = 下→上
 //   ねじ: 基板固定 M3x6（4 本）、ふた固定 M3x10（8 本。うち 4 本は前後パネル一体のボス）、
 //         前後パネル→底板 M3x10 皿（4 本）、LCD→ベゼル M3x6（4 本）、ベゼル→ふた M3x8（4 本、ふた裏から）、
-//         スピーカー押さえリング→ふた M3x8 皿（2 本、ふたの上から）、
+//         スピーカー→ふた M3x8 皿＋ナット（4 本、ふたの上から）、
 //         RD16HHF1→放熱器 M3x8＋ナット（1 本、放熱器のベースに φ3.2 の穴）。ボス・スタンドオフには M3 インサートナット（下穴 φ5.0）。
 //   ※ LCD・コネクタ類・放熱器の寸法は代表値。実物を実測して下の値を修正してから出力すること。
 // ============================================================
 
-mode = 0;   // ← ここを 0〜10 に変えて F5/F6（上の一覧参照）
+mode = 0;   // ← ここを 0〜9 に変えて F5/F6（上の一覧参照）
 $fn = 64;
 
 // ---------------- 外形 ----------------
@@ -136,7 +135,7 @@ lcd_insert_depth = lcd_boss_h + bezel_t - 1.0;
 bezel_screw = [bezel[0] / 2 - 6, 20];
 bezel_insert_depth = bezel_t - 1.0;
 bezel_hole = 3.4;
-lcd_c = [8 + bezel[0] / 2, 49 + bezel[1] / 2];   // ベゼル左端 X=8、前端 Y=49（手前に MIC・SP ジャック・内蔵スピーカー）
+lcd_c = [8 + bezel[0] / 2, 57 + bezel[1] / 2];   // ベゼル左端 X=8、前端 Y=57（手前に MIC・SP ジャック・内蔵スピーカー）
 // 右の列（X = 170）: 手前から TUNE・VOL・POWER
 col_x = 170;
 enc_c   = [col_x, 40];  enc_hole = 7.2;  enc_knob = 32;  enc_body = 14; enc_depth = 12;   // ロータリーエンコーダ（J4）
@@ -146,20 +145,17 @@ led_c   = [col_x + 18, psw_c[1]]; led_hole = 3.1;                               
 tx_c    = [col_x + 18, afv_c[1]]; tx_hole = 3.0; tx_depth = 6;                            // TX ランプ（J6）
 // 手前（基板より前、ふた裏が空いている所）: MIC・SP
 mic_c   = [35, 20];  mic_hole = 16.2; mic_flange = 20; mic_body = 20; mic_depth = 25;    // 4P 丸型マイクコネクタ（J7: MIC・PTT・GND）
-sp_c    = [70, 20];  sp_hole = 6.2;   sp_plug = 8;     sp_body = 12;  sp_depth = 15;     // 3.5mm 外部スピーカージャック（J9。スイッチ付き: 挿すと内蔵スピーカーが切れる）
+sp_c    = [70, 20];  sp_hole = 6.2;   sp_plug = 8;     sp_body = 12;  sp_depth = 15;     // 3.5mm 外部スピーカージャック（秋月 117359 MJ-352W-C、M6 P0.5 ねじ長 3.5mm、スイッチ付き。J9 からブレーク接点経由で内蔵スピーカーへ: 挿すと内蔵が切れる）
 sp_thin = 15; sp_thin_t = 1.8;   // SP ジャック穴を中心に 15x15mm を板厚 1.8mm に（ふた裏から座ぐり。ジャックのねじ長さ対策、PSN_TRX と同じ）
-// 内蔵スピーカー（J9、8Ω）: ふたの裏に下向きに当て、ふたにグリルの穴をあける。
-//   別に印刷する押さえリング（mode 10）で枠をふた裏に押し付け、リングの左右の耳のインサートへふたの上から M3×8 皿ねじで留める
-spk_c = [115, 28]; spk_d = 40;   // 外径（枠）※要実測
-spk_depth = 18;                  // 枠からマグネットの下まで（ふた裏から下へ）※要実測
-spk_frame_t = 3;                 // 枠の厚さ（押さえボスの高さ）※要実測
-spk_grille = 32; spk_hole = 2.5; spk_pitch = 4.2;   // グリル: 直径 32mm の中に φ2.5 の穴を 4.2mm ピッチ（六角配列）
-spk_ring_t = 2.0; spk_lip = 2.0; spk_lip_w = 3;   // 押さえリング: 周りの壁の厚さ、枠を押さえるつばの厚さと幅
-spk_boss_d = 9; spk_boss_r = spk_d / 2 + 0.3 + spk_ring_t + spk_boss_d / 2 - 1.5;   // リングの耳（M3 インサート）。中心からの距離
-spk_boss_pos = [for (a = [0, 180]) spk_c + spk_boss_r * [cos(a), sin(a)]];
-spk_out = spk_d / 2 + 0.3 + spk_ring_t;   // リングの外半径
-spk_holder_h = spk_frame_t + spk_lip;     // リングの高さ
-assert(spk_depth > spk_holder_h + 2, "スピーカーの奥行きが押さえリングより短い");
+// 内蔵スピーカー（秋月 116024 DXYD50N-22Z-8A-F、5cm 角 8Ω 0.5W。PSN_TRX と同じ）: ふた裏に密着させ、四隅の穴を M3 皿ねじ＋ナットで留める
+spk_c = [115, 31];       // 中心。左は EXT SP ジャック、右は TUNE、前は前面パネル、後ろは LCD
+spk_size = 50;           // 外形 50 × 50
+spk_pitch = 40;          // 取付穴 φ4 のピッチ
+spk_depth = 17.5;        // 枠の前面からマグネット後端まで
+spk_magnet = 22;         // マグネット直径
+spk_grille = 35;         // 放音穴を並べる範囲の直径
+spk_hole = 2.5; spk_hole_pitch = 4.5;   // 放音穴（六角配置）
+module spk_screw_pos() { for (sx = [-1, 1], sy = [-1, 1]) translate([spk_c[0] + sx * spk_pitch / 2, spk_c[1] + sy * spk_pitch / 2]) children(); }
 
 knob_gap = 5;
 assert(norm(afv_c - enc_c) >= enc_knob / 2 + afv_knob / 2 + knob_gap, "VOL つまみと TUNE つまみの隙間が 5mm 未満");
@@ -174,18 +170,14 @@ assert(sp_thin > sp_hole + 1 && sp_thin_t < lid_t, "SP の薄肉部の寸法が�
 assert(sp_c[0] - sp_thin / 2 >= mic_c[0] + mic_hole / 2 + 2, "SP の薄肉部が MIC の穴に近すぎる");
 assert(sp_c[1] - sp_thin / 2 >= y_front_in + 1, "SP の薄肉部が前面パネルの上端にかかる");
 // 内蔵スピーカー
-assert(spk_c[1] - spk_out >= y_front_in + 0.5, "スピーカーのリングが前面パネルにかかる");
-assert(spk_c[1] + spk_out + 1 <= lcd_c[1] - lcd_cut[1] / 2, "スピーカーのリングが LCD の切り欠きにかかる");
-assert(spk_c[1] + spk_grille / 2 + 2 <= lcd_c[1] - bezel[1] / 2, "スピーカーのグリルがベゼルにかかる");
-assert(spk_c[0] - spk_out - 1 >= sp_c[0] + sp_thin / 2, "スピーカーのリングが SP ジャックの薄肉部にかかる");
-for (b = spk_boss_pos) {
-    assert(b[0] - spk_boss_d / 2 >= sp_c[0] + sp_body / 2 + 1, "スピーカーの押さえボスが SP ジャックの本体にかかる");
-    assert(b[0] + spk_boss_d / 2 + 1 <= enc_c[0] - enc_body / 2, "スピーカーの押さえボスがエンコーダの本体にかかる");
-    assert(b[1] - spk_boss_d / 2 >= y_front_in + 0.5, "スピーカーの押さえボスが前面パネルにかかる");
-}
-assert(spk_c[0] + spk_out + 1 <= enc_c[0] - enc_body / 2, "スピーカーがエンコーダの本体にかかる");
-assert(spk_c[0] + spk_grille / 2 + knob_gap <= enc_c[0] - enc_knob / 2, "スピーカーのグリルが TUNE つまみに近すぎる");
-assert(lid_under - spk_depth >= parts_top(spk_c[0] - spk_out, spk_c[0] + spk_out, spk_c[1] - spk_out, spk_c[1] + spk_out) + 1, "スピーカーが基板の部品に当たる");
+function sq_dist(c, p, half) = norm([max(abs(p[0] - c[0]) - half, 0), max(abs(p[1] - c[1]) - half, 0)]);   // 正方形と点の距離
+assert(spk_c[1] - spk_size / 2 >= y_front_in + 0.5, "スピーカーが前面パネルにかかる");
+assert(spk_c[1] + spk_size / 2 + 2 <= lcd_c[1] - lcd_cut[1] / 2, "スピーカーが LCD の切り欠きにかかる");
+assert(spk_c[1] + spk_pitch / 2 + 6.6 / 2 + 2 <= lcd_c[1] - bezel[1] / 2, "スピーカー取付ねじの頭がベゼルに近すぎる");
+assert(spk_c[0] - spk_size / 2 >= sp_c[0] + max(sp_thin, sp_body) / 2 + 1, "スピーカーが EXT SP ジャックにかかる");
+assert(spk_c[0] + spk_size / 2 + 1 <= enc_c[0] - enc_body / 2, "スピーカーがエンコーダの本体にかかる");
+assert(spk_c[0] + spk_pitch / 2 + 6.6 / 2 + knob_gap <= enc_c[0] - enc_knob / 2, "スピーカー取付ねじの頭が TUNE つまみに近すぎる");
+assert(lid_under - spk_depth >= parts_top(spk_c[0] - spk_size / 2, spk_c[0] + spk_size / 2, spk_c[1] - spk_size / 2, spk_c[1] + spk_size / 2) + 1, "スピーカーが基板の部品に当たる");
 assert(tx_c[0] + tx_hole / 2 + 3 <= W - 3 && led_c[0] + led_hole / 2 + 3 <= W - 3, "LED がふたの縁に近すぎる");
 // ふた裏の本体が基板の部品に当たらない（基板の上にあるもの）
 for (c = [[enc_c, enc_body, enc_depth, "TUNE"], [afv_c, afv_body, afv_depth, "VOL"], [psw_c, psw_body, psw_depth, "POWER"],
@@ -301,31 +293,17 @@ module lid() {
             translate([lid_vent_x[0], lid_vent_y0 + i * lid_vent_pitch, H - lid_t - 1]) cube([lid_vent_x[1] - lid_vent_x[0], 2.5, lid_t + 2]);
         // SP ジャック周りの薄肉部（ふた裏から掘り、上面は平らのまま）
         translate([sp_c[0], sp_c[1], H - lid_t - 1]) linear_extrude(1 + lid_t - sp_thin_t) square(sp_thin, center = true);
-        // スピーカーのグリル
+        // スピーカーの放音穴と取付穴（M3 皿ねじ、ふた上面から皿もみ）
         translate([0, 0, H - lid_t - 1]) linear_extrude(lid_t + 2) spk_grille_2d();
-        // スピーカー押さえリングの皿ねじ穴
-        for (b = spk_boss_pos) translate([b[0], b[1], H - lid_t - 1]) {
+        spk_screw_pos() translate([0, 0, H - lid_t - 1]) {
             cylinder(d = lid_screw, h = lid_t + 2);
             translate([0, 0, lid_t + 1 - 1.8]) cylinder(d1 = lid_screw, d2 = 6.6, h = 1.81);
         }
     }
 }
-// スピーカー押さえリング（ケース座標、上面がふた裏に当たる）
-module spk_holder() {
-    translate([0, 0, lid_under - spk_holder_h]) difference() {
-        union() {
-            translate(spk_c) cylinder(r = spk_out, h = spk_holder_h);
-            for (b = spk_boss_pos) hull() { translate(b) cylinder(d = spk_boss_d, h = spk_holder_h); translate(spk_c) cylinder(r = spk_out - 4, h = spk_holder_h); }
-        }
-        translate(concat(spk_c, [spk_lip])) cylinder(d = spk_d + 0.6, h = spk_holder_h);          // 枠が入る所
-        translate(concat(spk_c, [-0.01])) cylinder(d = spk_d - 2 * spk_lip_w, h = spk_holder_h);  // 振動板・マグネットの逃げ
-        for (b = spk_boss_pos) translate(concat(b, [spk_holder_h - 5])) cylinder(d = 5.0, h = 5.01);   // インサート下穴（上から深さ 5）
-    }
-}
-module spk_holder_print() translate([spk_out + spk_boss_r - spk_c[0] + spk_boss_d / 2 - spk_out, spk_out - spk_c[1], -(lid_under - spk_holder_h)]) spk_holder();
 module spk_grille_2d() {
-    n = ceil(spk_grille / spk_pitch);
-    for (i = [-n:n], j = [-n:n]) let(p = [i * spk_pitch + (j % 2) * spk_pitch / 2, j * spk_pitch * sqrt(3) / 2])
+    n = ceil(spk_grille / spk_hole_pitch);
+    for (i = [-n:n], j = [-n:n]) let(p = [i * spk_hole_pitch + (j % 2) * spk_hole_pitch / 2, j * spk_hole_pitch * sqrt(3) / 2])
         if (norm(p) <= spk_grille / 2 - spk_hole / 2) translate(spk_c + p) circle(d = spk_hole, $fn = 16);
 }
 module top_holes_2d() {
@@ -454,10 +432,10 @@ module top_parts_dummy() {
     color("gray") translate([psw_c[0], psw_c[1], lid_under - psw_depth]) cylinder(d = psw_body, h = psw_depth);
     color("lime") translate([led_c[0], led_c[1], H]) cylinder(d = 3, h = 2);
     color("red") translate([tx_c[0], tx_c[1], H]) cylinder(d = 3, h = 2);
-    color("dimgray") translate([spk_c[0], spk_c[1], lid_under - spk_depth]) {   // 内蔵スピーカー（枠とマグネット）
-        translate([0, 0, spk_depth - spk_frame_t]) cylinder(d = spk_d, h = spk_frame_t);
-        cylinder(d = spk_d * 0.55, h = spk_depth - spk_frame_t + 0.01);
-    }
+    // 内蔵スピーカー: 枠（ふた裏に密着）・コーン部・マグネット（PSN_TRX と同じ表示）
+    color("black") translate([spk_c[0] - spk_size / 2, spk_c[1] - spk_size / 2, lid_under - 1.5]) cube([spk_size, spk_size, 1.5]);
+    color("dimgray") translate([spk_c[0], spk_c[1], lid_under - spk_depth + 6]) cylinder(d1 = spk_magnet + 2, d2 = spk_size - 4, h = spk_depth - 7.5);
+    color("silver") translate([spk_c[0], spk_c[1], lid_under - spk_depth]) cylinder(d = spk_magnet, h = 6);
     for (c = [[mic_c, mic_flange, 6, mic_body, mic_depth], [sp_c, sp_plug, 3, sp_body, sp_depth]])
         color("gray") translate([c[0][0], c[0][1], 0]) {
             translate([0, 0, H]) cylinder(d = c[1], h = c[2]);
@@ -480,7 +458,6 @@ module assembly(explode = 0) {
     translate([0, 0, explode]) {
         color([0.85, 0.85, 0.88, 0.35]) lid();
         color([0.15, 0.15, 0.17]) bezel_part();
-        color([0.25, 0.25, 0.28]) spk_holder();
         top_parts_dummy();
     }
     pcb_dummy();
@@ -495,9 +472,8 @@ else if (mode == 2) lid_print();
 else if (mode == 3) front_panel_print();
 else if (mode == 4) rear_panel_print();
 else if (mode == 5) assembly(0);
-else if (mode == 6) { color([0.85, 0.85, 0.88]) base(); color([0.25, 0.25, 0.28]) { front_panel(); rear_panel(); } heatsink_dummy(); color([0.15, 0.15, 0.17]) bezel_part(); color([0.25, 0.25, 0.28]) spk_holder(); pcb_dummy(); top_parts_dummy(); rear_parts_dummy(); }
+else if (mode == 6) { color([0.85, 0.85, 0.88]) base(); color([0.25, 0.25, 0.28]) { front_panel(); rear_panel(); } heatsink_dummy(); color([0.15, 0.15, 0.17]) bezel_part(); pcb_dummy(); top_parts_dummy(); rear_parts_dummy(); }
 else if (mode == 7) front_2d();
 else if (mode == 8) rear_2d();
 else if (mode == 9) bezel_print();
-else if (mode == 10) spk_holder_print();
-else echo("mode は 0〜10 を指定してください");
+else echo("mode は 0〜9 を指定してください");
