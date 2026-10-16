@@ -35,7 +35,10 @@ REGIONS = {
 BLOCK_OVERRIDE = {}
 # 配線長の重み: RF の線と、変調のタイミングに関わる線を優先して短くする
 TIMING = {'RAMP', 'RAMP_E', 'RAMP_B', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'LPF2', 'LPF3', 'RFA_D', 'RFA_S', 'THRESH', 'PM_OUT', 'COMP_OUT', 'RST_P', 'RST_G', 'CLK0', 'CLK0_IN', 'CLK1', 'LO_IN', 'LO_DIV',
-          'X2', 'X4', 'X8', 'X16', 'X32', 'DLY1', 'DLY2', 'DLY3', 'DLY4', 'DLY5', 'OS_C', 'OS_RC', 'MIX_IN', 'MIX_OUT', 'IF1', 'MIX3', 'LIM_IN'}
+          'X2', 'X4', 'X8', 'X16', 'X32', 'DLY1', 'DLY2', 'DLY3', 'DLY4', 'DLY5', 'OS_C', 'OS_RC', 'MIX_IN', 'MIX_OUT', 'IF1', 'MIX3', 'LIM_IN',
+          'MIX_BYP', 'LO_IN', 'LO_DIV'}
+# NJM2594 の出力 → 10.7MHz 増幅 → 水晶フィルタ は 1 か所にまとめる（増幅の部品は一覧の最後で、ほかより後に置かれるため重みを大きく）
+MIXER = {'MIX_EF', 'IFA_B', 'IFA_C', 'IFA_E', 'IFA_E2', 'MIX_OUT'}
 # 位置を決めて置く部品: 部品番号 → (x, y, 角度)
 def fixed_positions(byref):
     """位置を決めて置く部品（コネクタ・リレー・ファイナル）。ほかは place.py が配線長の短い位置を探す
@@ -137,6 +140,9 @@ def main(report_only=False):
     from netclass import HEAVY, RF
     pl = Placer(BW, BH, REGIONS)
     for r in placed: pl.add_obstacle(r)
+    # ケースの放熱器（RD16HHF1 のタブを当てる、幅 50mm）のベースが基板の上辺に 1.1mm かかる（enclosure/serrasoid_trx_case.scad）。
+    # RD16HHF1 の左右のその範囲（上辺から 1.6mm）には部品を置かない
+    pl.add_obstacle((122.54 - 25.5, 0, 122.54 + 25.5, 1.6))
     order = [p['ref'] for p in parts if p['ref'] in fps]
     for ref in order:
         fp, p = fps[ref]
@@ -161,7 +167,7 @@ def main(report_only=False):
     for n, lst in pins.items():
         if n == 'GND' or n.startswith('unconnected'): continue
         r0, n0 = lst[0]; k = fps[r0][1]['pins'].get(n0) or n      # circuit.py でのネット名
-        w = 0.3 if (n in GLOBALS or len(lst) > 12) else 8.0 if (k in HEAVY or k in RF) else 6.0 if k in TIMING else 1.0
+        w = 0.3 if (n in GLOBALS or len(lst) > 12) else 20.0 if k in MIXER else 8.0 if (k in HEAVY or k in RF) else 6.0 if k in TIMING else 1.0
         pl.add_net(n, w, lst)
     # 電源と GND だけにつながる部品（パスコンなど）は、回路一覧で直前にある同じ電源の部品のそばへ
     def power_only(ref):
@@ -184,7 +190,10 @@ def main(report_only=False):
         REGIONS[fps[ref][1]['block']][k] - 0.01 <= v if k < 2 else v <= REGIONS[fps[ref][1]['block']][k] + 0.01
         for k, v in enumerate(pl.rect(ref)))]
     if out: print('区画からはみ出した部品:', out)
-    smd = ['%s.%s' % (ref, pd.GetNumber()) for ref, (fp, p) in fps.items() for pd in fp.Pads() if pd.GetAttribute() == pcbnew.PAD_ATTRIB_SMD]
+    # リード部品だけにする方針。例外は NJM2594V（SA612 が製造中止のため。2026-10-16 にユーザーが表面実装を了承）
+    SMD_OK = {'NJM2594V'}
+    smd = ['%s.%s' % (ref, pd.GetNumber()) for ref, (fp, p) in fps.items() for pd in fp.Pads()
+           if pd.GetAttribute() == pcbnew.PAD_ATTRIB_SMD and p['value'] not in SMD_OK]
     if smd: raise SystemExit('表面実装のパッドがある（リード部品だけにする方針）: %s' % smd)
     # 外形
     for (x0, y0, x1, y1) in [(0, 0, BW, 0), (BW, 0, BW, BH), (BW, BH, 0, BH), (0, BH, 0, 0)]:
@@ -197,6 +206,9 @@ def main(report_only=False):
         for (x, y) in [(0.3, 0.3), (BW - 0.3, 0.3), (BW - 0.3, BH - 0.3), (0.3, BH - 0.3)]: o.Append(M(x), M(y))
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_THERMAL); z.SetLocalClearance(M(0.3)); z.SetMinThickness(M(0.25))
         b.Add(z)
+    # 表面実装 IC の GND パッドを内層の GND へ（ビア）。配線の前に入れて、Freerouting にはよけてもらう
+    from pcb_smd_gnd import add_gnd_vias
+    print('表面実装の GND ビア', add_gnd_vias(b))
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     b.Save(os.path.join(ROOT, 'kicad', PROJ + '.kicad_pcb'))
     print('saved', len(fps), 'footprints', len(nets), 'nets')

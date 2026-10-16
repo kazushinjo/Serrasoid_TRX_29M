@@ -39,7 +39,7 @@ OUT = sys.argv[2]
 PNGDIR = sys.argv[3] if len(sys.argv) > 3 else None
 
 TITLE = 'Serrasoid TRX 29M　部品実装図'
-SUB = '基板 170 × 130 mm / 4 層 / すべてリード部品（表面実装なし）　Ver 1.0　2026-10-16'
+SUB = '基板 170 × 130 mm / 4 層 / リード部品（U13 NJM2594V だけ表面実装 SSOP8）　Ver 1.1　2026-10-16'
 COPPER = '#c8762f'
 FAB = '#333333'
 FAINT = '#c8c8c8'
@@ -58,7 +58,8 @@ BLOCKS = [
     ('送信RF', '#f2aaa8', ['Q2 RD06HHF1 は放熱器 HS1 に固定。Q3 RD16HHF1 は基板端に立て、ケースの放熱器にねじ止め（絶縁不要）',
                           'C34 は積層セラミック（X7R・100V）。LPF の C38・C41・C42・C43 は NP0 500V。コイルの巻数は表のとおり']),
     ('受信', '#a8dcb4', ['FL1（10.7MHz 水晶フィルタ 10M15A）・FL2（455kHz セラミックフィルタ）は 3 ピンで中央が GND',
-                        'TC3・TC4 は 29.3MHz に同調']),
+                        'TC3・TC4 は 29.3MHz に同調',
+                        'U13 NJM2594V だけ表面実装（SSOP8、0.65mm ピッチ）。周りの部品より先に、細いこて先とフラックスで付ける']),
 ]
 BCOL = {n: c for n, c, _ in BLOCKS}
 
@@ -90,6 +91,7 @@ def kind(p):
     if 'XIAO' in s: return 'マイコン(ソケット)'
     if 'Si5351' in s: return 'モジュール'
     if 'Regulator' in s or 'Converter' in s: return 'レギュレータ'
+    if 'Package_SO' in fp: return 'IC(表面実装)'
     return 'IC(ソケット)' if 'Socket' in fp else 'IC'
 
 
@@ -99,7 +101,8 @@ def caution(p):
     if k == '電解コンデンサ': out.append('極性: □パッドが＋')
     if k == 'ダイオード': out.append('極性: □パッドが K')
     if k == 'トランジスタ/FET' or (k == 'レギュレータ' and 'TO-92' in fp): out.append('□パッドが 1 番ピン')
-    if k in ('IC', 'IC(ソケット)'): out.append('1 番ピン（□）の向き')
+    if k in ('IC', 'IC(ソケット)', 'IC(表面実装)'): out.append('1 番ピン（□）の向き')
+    if k == 'IC(表面実装)': out.append('SSOP8 0.65mm ピッチ、最初に付ける')
     if k == 'トロイダル' and n:
         out.append(re.sub(r'（[^）]*）', '', n.split('。')[-1 if 'BN43' in fp else 0]).strip())
         return '、'.join(out)
@@ -211,7 +214,7 @@ def draw_blocks(ax, only=None, alpha=0.32):
 
 
 SHORT_TYPE = {'セラミックコンデンサ': 'セラC', '積層セラミックC': '積層C', '電解コンデンサ': '電解C', 'トランジスタ/FET': 'Tr/FET', 'トリマコンデンサ': 'トリマC',
-              '半固定抵抗': '半固定VR', 'IC(ソケット)': 'IC(ｿｹｯﾄ)', 'マイコン(ソケット)': 'マイコン', 'テストポイント': 'TP', '水晶/フィルタ': '水晶/FL', 'トロイダル': 'ﾄﾛｲﾀﾞﾙ', 'ダイオード': 'ﾀﾞｲｵｰﾄﾞ', 'レギュレータ': 'ﾚｷﾞｭﾚｰﾀ'}
+              '半固定抵抗': '半固定VR', 'IC(ソケット)': 'IC(ｿｹｯﾄ)', 'IC(表面実装)': 'IC(SMD)', 'マイコン(ソケット)': 'マイコン', 'テストポイント': 'TP', '水晶/フィルタ': '水晶/FL', 'トロイダル': 'ﾄﾛｲﾀﾞﾙ', 'ダイオード': 'ﾀﾞｲｵｰﾄﾞ', 'レギュレータ': 'ﾚｷﾞｭﾚｰﾀ'}
 
 
 def fit(v, width_pt, fs):
@@ -277,7 +280,7 @@ draw_blocks(ax)
 for f in board['fps']:
     draw_fp(ax, f, 'normal', small=True)
 fig.text(0.03, 0.075, '□（四角）パッド = 1 番ピン / 電解コンデンサの＋ / ダイオードの K（カソード）。H1〜H4 = M3 取付穴（GND）。', fontsize=7)
-fig.text(0.03, 0.055, '抵抗・ダイオードはすべて縦置き。IC はすべて DIP ソケット。上辺がケースの後面側。', fontsize=7)
+fig.text(0.03, 0.055, '抵抗・ダイオードはすべて縦置き。IC は DIP ソケット（U13 NJM2594V だけ表面実装、最初に付ける）。上辺がケースの後面側。', fontsize=7)
 fig.text(0.03, 0.035, 'ブロック別の詳細と部品表は次ページ以降（組立順の目安: 1→%d）。' % len(BLOCKS), fontsize=7)
 lx = 0.60
 for i, (name, col, _) in enumerate(BLOCKS):

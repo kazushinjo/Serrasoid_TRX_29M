@@ -1,7 +1,7 @@
 """配線後の仕上げ: 外層の GND ベタ、シルクの文字"""
 import pcbnew
 M = pcbnew.FromMM
-def finish(b, title='Serrasoid TRX 29M', ver='Ver 1.0'):
+def finish(b, title='Serrasoid TRX 29M', ver='Ver 1.1'):
     bb = b.GetBoardEdgesBoundingBox()
     gnd = b.FindNet('GND')
     have = {z.GetLayer() for z in b.Zones()}

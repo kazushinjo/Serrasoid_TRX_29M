@@ -25,6 +25,8 @@ b=pcbnew.LoadBoard(sys.argv[1]); print('ses', pcbnew.ImportSpecctraSES(b, sys.ar
 pcb_post.finish(b)
 b.Save(sys.argv[1])
 PY
+# Freerouting で残った未接続を、表・裏の格子で探して引く
+$P tools/fix_route.py "$PCB" 2>&1 | grep -E "引いた|引けない" || true
 $K pcb drc --schematic-parity --format json -o "$W/drc.json" "$PCB" >/dev/null 2>&1 || true
 python3 - "$W/drc.json" <<'PY'
 import json,collections,sys

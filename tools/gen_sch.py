@@ -787,7 +787,7 @@ def write_merged(sheets, out=None):
                       [S('effects'), [S('font'), [S('size'), S('4'), S('4')], [S('bold'), S('yes')]], [S('justify'), S('left'), S('bottom')]], [S('uuid'), U()]])
     items = connect_labels(items, allunits, allwires, PW, PH)
     note = ('送信: マイク → 送信音声 → セラゾイド変調（915.625kHz で PM）→ 逓倍 ×32 → 送信RF（10W）→ ANT\\n'
-            '受信: ANT → 受信（2N3819 → SA612 → 10.7MHz → MC3361 → LM386）→ SP\\n'
+            '受信: ANT → 受信（2N3819 → NJM2594 → 10.7MHz 増幅 → 10.7MHz → MC3361 → LM386）→ SP\\n'
             '制御: XIAO ESP32C3 ＋ Si5351（CLK0 = 変調基準 9.15625MHz、CLK1 = 受信局発 18.6MHz）\\n'
             'ブロックの中もブロックの間も線で結線（電源も線。電源の名前は出どころの電源記号で示す。GND だけ GND 記号）')
     items.append([S('text'), q(note), [S('exclude_from_sim'), S('no')], [S('at'), F(25.4), F(max(py + ph for px, py, pw, ph in pos) + 20), S('0')],
@@ -795,7 +795,7 @@ def write_merged(sheets, out=None):
     sch = [S('kicad_sch'), [S('version'), S('20260306')], [S('generator'), q('eeschema')], [S('generator_version'), q('10.0')],
            [S('uuid'), q(ROOT_UUID)], ([S('paper'), q(name)] if name != 'User' else [S('paper'), q('User'), F(PW), F(PH)]),
            [S('title_block'), [S('title'), q('Serrasoid TRX 29M（セラゾイド変調 29MHz FM 10W トランシーバ）')],
-            [S('date'), q(datetime.date.today().isoformat())], [S('rev'), q('1.0')], [S('company'), q('JA6FUF')]],
+            [S('date'), q(datetime.date.today().isoformat())], [S('rev'), q('1.1')], [S('company'), q('JA6FUF')]],
            [S('lib_symbols')] + list(libs.values())] + items + [
            [S('sheet_instances'), [S('path'), q('/'), [S('page'), q('1')]]], [S('embedded_fonts'), S('no')]]
     open(out or os.path.join(ROOT, 'kicad', PROJ + '.kicad_sch'), 'w').write(dump(sch) + '\n')

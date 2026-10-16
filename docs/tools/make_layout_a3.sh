@@ -20,7 +20,7 @@ s = s.replace('(paper "A4")', '''(paper "A3")
 	(title_block
 		(title "Serrasoid TRX 29M 部品配置図（部品面）")
 		(date "2026-10-16")
-		(rev "1.0")
+		(rev "1.1")
 		(company "JA6FUF")
 		(comment 1 "上辺 = 後面（DC・RD16HHF1・ANT）、下辺 = 前面。170 × 130 mm")
 		(comment 2 "□パッド = 1 番ピン・電解の＋・ダイオードの K")

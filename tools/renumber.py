@@ -9,7 +9,7 @@
 circuit.py は部品を出現順に仮の番号で数えたあと、RENUMBER（旧 → 新）で最終の番号にする。
 部品を足したら、回路図に置いてからもう一度これを実行する。
 """
-import os, re, sys, uuid, csv, datetime, subprocess
+import os, re, sys, uuid, csv, datetime, subprocess, ast
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sx import parse, find, find1, unq
 
@@ -62,6 +62,7 @@ def fmt_set(pre, nums):
 def sub_text(s, m):
     out = []
     for line in s.split('\n'):
+        if line.startswith('RENUMBER = '): out.append(line); continue   # 仮の番号の対応は apply で合成する
         def rng(mo):
             pre, a, b = mo.group(1), int(mo.group(2)), int(mo.group(3))
             olds = ['%s%d' % (pre, n) for n in range(a, b + 1)]
@@ -95,29 +96,46 @@ def apply(m, val):
     for f in TEXTS:
         p = os.path.join(ROOT, f); s = open(p).read(); t = sub_text(s, m)
         if t != s: open(p, 'w').write(t)
-    # ---- circuit.py の数え方（仮の番号 → 最終の番号）
+    # ---- circuit.py の数え方（仮の番号 → 最終の番号）。前に振り直していれば、その対応と合成する
     p = os.path.join(ROOT, 'tools', 'circuit.py'); s = open(p).read()
-    old = {v: k for k, v in m.items()}
-    s = s.replace("        p['ref'] = '%s%d' % (k, cnt[k]) if not k.startswith('#') else '%s0%d' % (k, cnt[k])\n    return parts",
-                  "        p['ref'] = '%s%d' % (k, cnt[k]) if not k.startswith('#') else '%s0%d' % (k, cnt[k])\n"
-                  "        p['ref'] = RENUMBER.get(p['ref'], p['ref'])\n    return parts")
     today = datetime.date.today().isoformat()
-    items = ', '.join("'%s': '%s'" % (o, n) for o, n in sorted(m.items(), key=lambda x: (re.match(r'[A-Z]+', x[0]).group(0), int(re.search(r'\d+', x[0]).group(0)))) if o != n)
-    block = ("# 部品番号の振り直し（%s、tools/renumber.py）: 出現順の仮の番号 → 回路図の位置順の番号\n" % today +
-             "RENUMBER = {" + items + "}\n\n")
-    s = s.replace('def numbered():', block + 'def numbered():', 1)
+    def key(r): return (re.match(r'[A-Z]+', r).group(0), int(re.search(r'\d+', r).group(0)))
+    mo = re.search(r'^RENUMBER = (\{.*\})$', s, re.M)
+    prev = ast.literal_eval(mo.group(1)) if mo else {}
+    inv = {v: k for k, v in prev.items()}
+    comp = {inv.get(cur, cur): new for cur, new in m.items()}
+    items = ', '.join("'%s': '%s'" % (o, n) for o, n in sorted(comp.items(), key=lambda x: key(x[0])) if o != n)
+    if mo:
+        s = s[:mo.start()] + 'RENUMBER = {' + items + '}' + s[mo.end():]
+        s = re.sub(r'^# 部品番号の振り直し（[^）]*）', '# 部品番号の振り直し（%s、tools/renumber.py）' % today, s, count=1, flags=re.M)
+    else:
+        s = s.replace("        p['ref'] = '%s%d' % (k, cnt[k]) if not k.startswith('#') else '%s0%d' % (k, cnt[k])\n    return parts",
+                      "        p['ref'] = '%s%d' % (k, cnt[k]) if not k.startswith('#') else '%s0%d' % (k, cnt[k])\n"
+                      "        p['ref'] = RENUMBER.get(p['ref'], p['ref'])\n    return parts")
+        s = s.replace('def numbered():', '# 部品番号の振り直し（%s、tools/renumber.py）: 出現順の仮の番号 → 回路図の位置順の番号\n' % today +
+                      'RENUMBER = {' + items + '}\n\ndef numbered():', 1)
     open(p, 'w').write(s)
-    # ---- 記録の資料に注記、対応表
+    # ---- 対応表（同じ日に 2 回目なら、その日の最初の振り直し前の番号との対応にする）、記録の資料に注記
     mp = 'refdes_map_%s.csv' % today
+    mpath = os.path.join(ROOT, 'kicad', mp)
+    orig = {}
+    if os.path.exists(mpath):
+        for r in list(csv.reader(open(mpath, encoding='utf-8-sig')))[1:]: orig[r[0]] = (r[1], r[2])
+    with open(mpath, 'w', newline='', encoding='utf-8-sig') as fh:
+        w = csv.writer(fh); w.writerow(['新しい番号', '旧番号（%s まで）' % today, '値/型番', '変更'])
+        for cur, new in sorted(m.items(), key=lambda x: key(x[1])):
+            o, ov = orig.get(cur, (cur, val[cur])) if (orig or True) else (cur, val[cur])
+            if orig and cur not in orig: o, ov = '', ''
+            note = '追加' if not o else ('変更' if o != new else '')
+            if o and ov != val[cur]: note = (note + '・' if note else '') + '部品を変更（旧 %s）' % ov
+            w.writerow([new, o, val[cur], note])
     for f in RECORDS:
-        p = os.path.join(ROOT, f); s = open(p).read().split('\n', 1)
+        p = os.path.join(ROOT, f); s = open(p).read()
+        if mp in s: continue
+        s = s.split('\n', 1)
         note = ('\n> **注意（%s）**: この記録の部品番号は、%s に部品番号を回路図の位置順に振り直す前の旧番号です。'
                 '現在の番号との対応は [`kicad/%s`](../kicad/%s) を見てください。\n' % (today, today, mp, mp))
         open(p, 'w').write(s[0] + '\n' + note + s[1])
-    def key(r): return (re.match(r'[A-Z]+', r).group(0), int(re.search(r'\d+', r).group(0)))
-    with open(os.path.join(ROOT, 'kicad', mp), 'w', newline='', encoding='utf-8-sig') as fh:
-        w = csv.writer(fh); w.writerow(['新しい番号', '旧番号（%s まで）' % today, '値/型番', '変更'])
-        for n in sorted(old, key=key): w.writerow([n, old[n], val[old[n]], '変更' if old[n] != n else ''])
     print('書き換え完了、対応表', mp)
     # 基板のネット名のうち部品番号から付いた名前（Net-(C23-Pad1) など）を、振り直した回路図の名前にそろえる（KiCad 付属の Python で）
     subprocess.run([KP, os.path.abspath(__file__), '--netnames'], check=True)
