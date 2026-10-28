@@ -4,7 +4,7 @@
 
 > 部品はリード部品（第 1 混合の NJM2594V だけ表面実装 SSOP8。SA612 が製造中止のため）。
 
-> **状態: 回路図 Ver 1.2 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)・[購入用部品表](kicad/bom_purchase.csv)）。基板 Ver 1.2（170 × 150mm）は配置・配線まで（スプリアス対策で逓倍を ×16 にし段間同調と PLL を追加、DRC エラー 0、[基板チェック](docs/基板チェック.md)、[部品実装図](docs/Serrasoid_TRX_部品実装図.pdf)・[部品配置図 A3](kicad/Serrasoid_TRX_部品配置図.pdf)）。スケッチ（[firmware/Serrasoid_TRX](firmware/Serrasoid_TRX/)、コンパイル確認のみ）・LCD 画面の背景と作り方は作成済み、LCD の画面データ（.HMI）と製造データはこれから。実機未製作
+> **状態: 回路図 Ver 1.2 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)・[購入用部品表](kicad/bom_purchase.csv)）。基板 Ver 1.2（170 × 150mm）は配置・配線まで（スプリアス対策で逓倍を ×16 にし段間同調と PLL を追加、DRC エラー 0、[基板チェック](docs/基板チェック.md)、[部品実装図](docs/Serrasoid_TRX_部品実装図.pdf)・[部品配置図 A3](kicad/Serrasoid_TRX_部品配置図.pdf)）。スケッチ（[firmware/Serrasoid_TRX](firmware/Serrasoid_TRX/)、コンパイル確認のみ）・LCD 画面の背景と作り方は作成済み、製造データ（ガーバー）は出力済み（[kicad/production](kicad/production/)）、LCD の画面データ（.HMI）はこれから。実機未製作
 
 回路図は 1 枚（A0）。機能ブロック（電源・制御・セラゾイド変調・逓倍・PLL・送信音声・送信RF・受信）ごとに枠で囲み、ブロックの中もブロックの間も、信号・電源ともすべて線で結線している（ネットラベルは使わない）。電源の名前（+13V8・+5VT・TX8V など）は、その電源の出どころ（レギュレータの出力など）に電源記号を 1 つ置いて示す。GND だけは GND 記号でつなぐ。
 
@@ -206,7 +206,8 @@ tools/check.sh             # 回路図を作り直して ERC と接続照合（t
 
 ### 2. 基板を作る
 
-- 基板データは `kicad/Serrasoid_TRX.kicad_pcb`（KiCad 10、170 × 150mm、4 層）。**製造用のガーバー（Gerber）はまだ出力していません**。基板メーカーに出すときは KiCad の「製造ファイル出力」でガーバーとドリルファイルを作ってください。
+- 基板データは `kicad/Serrasoid_TRX.kicad_pcb`（KiCad 10、170 × 150mm、4 層）。
+- **製造データ**: [kicad/production/Serrasoid_TRX_Gerber_JLCPCB.zip](kicad/production/Serrasoid_TRX_Gerber_JLCPCB.zip)（ガーバー 11 層＋ドリル＋ジョブファイル）をそのまま基板メーカーにアップロードします。発注のときの指定（4 層・1.6mm・最小穴 0.4mm など）は [kicad/production/JLCPCB_提出資料.md](kicad/production/JLCPCB_提出資料.md)。部品の実装は頼まず、手はんだで組み立てます。
 
 ### 3. はんだ付け
 
@@ -271,7 +272,7 @@ tools/check.sh             # 回路図を作り直して ERC と接続照合（t
 
 | フォルダ | 内容 |
 |---|---|
-| `kicad/` | 回路図・部品表・基板（KiCad 10）。部品番号は回路図の位置順（X の小さい順、同じ X は Y の順。2026-10-16・2026-10-29 に振り直し、新旧の対応は `kicad/refdes_map_2026-10-16.csv`・`kicad/refdes_map_2026-10-29.csv`） |
+| `kicad/` | 回路図・部品表・基板（KiCad 10）、製造データ（`kicad/production/`）。部品番号は回路図の位置順（X の小さい順、同じ X は Y の順。2026-10-16・2026-10-29 に振り直し、新旧の対応は `kicad/refdes_map_2026-10-16.csv`・`kicad/refdes_map_2026-10-29.csv`） |
 | `tools/` | 回路図・部品表を作るスクリプト（回路は `tools/circuit.py` にまとめてある） |
 | `firmware/` | XIAO ESP32C3 スケッチ（`Serrasoid_TRX/`）と Nextion の画面の背景・作り方（`Serrasoid_TRX/nextion/`） |
 | `docs/` | 資料 |
