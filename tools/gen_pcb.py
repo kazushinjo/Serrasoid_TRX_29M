@@ -25,11 +25,11 @@ GAP = 1.0          # 部品どうしのすき間
 # （2026-10-29 逓倍に段間同調、PLL を足したので区画を割り直した）
 REGIONS = {
     '電源':           (0, 0, 40, 40),
-    '送信RF':         (40, 0, 170, 44),
+    '送信RF':         (40, 0, 170, 48),
     'セラゾイド変調': (0, 40, 30, 104),
-    '逓倍':           (30, 44, 72, 104),
-    'PLL':            (72, 44, 118, 104),
-    '受信':           (118, 44, 170, 150),
+    '逓倍':           (30, 48, 72, 104),
+    'PLL':            (72, 48, 118, 104),
+    '受信':           (118, 48, 170, 150),
     '制御':           (0, 104, 70, 150),
     '送信音声':       (70, 104, 118, 150),
 }
@@ -49,8 +49,13 @@ MIXER |= {'VCO_IN', 'VCO_OA', 'VCO_O', 'VCO_L', 'VAR_K', 'TK1', 'TK2', 'TK3', 'S
 def fixed_positions(byref):
     """位置を決めて置く部品（コネクタ・リレー・ファイナル）。ほかは place.py が配線長の短い位置を探す
     （送信の主要部品も固定する案は、全体の配線長が伸び未接続が残ったので採用しない）"""
-    by_value = {'DC 13.8V': (12, 4, 0), 'ANT': (153, 4, 0), 'G5V-2 DC12': (152, 16, 0), 'MRF101AN': (120, 4.5, 0)}
-    return {p['ref']: by_value[p['value']] for p in parts if p['value'] in by_value}
+    by_value = {'DC 13.8V': (12, 4, 0), 'ANT': (153, 4, 0), 'G5V-2 DC12': (152, 16, 0)}
+    out = {p['ref']: by_value[p['value']] for p in parts if p['value'] in by_value}
+    # ファイナルの IRF510 × 2 は、ケースの放熱器（中心 X 122.54）の左右 7.62mm に並べる（2026-10-29、RD16HHF1 1 個から変更）
+    by_net = {'PA_DA': (112.38, 4.5, 0), 'PA_DB': (127.62, 4.5, 0)}
+    for p in parts:
+        if p['value'] == 'IRF510' and p['pins'].get('2') in by_net: out[p['ref']] = by_net[p['pins']['2']]
+    return out
 
 KCLI = '/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli'
 def sch_nets():
@@ -127,8 +132,8 @@ def main(report_only=False):
     for r, (x, y, a) in fixed.items():
         fp, p = fps[r]; fp.SetOrientationDegrees(a); fp.SetPosition(V(x, y))
         bx = box(fp); placed.append((x + bx[0], y + bx[1], x + bx[2], y + bx[3]))
-    # ドライバ（IRF510）の放熱器（PSN_TRX と同じ相対位置）。配置ではドライバと一体の大きさとして扱う
-    q5ref = [r for r, (fp, p) in fps.items() if p['value'] == 'IRF510'][0]
+    # ドライバ（IRF510、ドレイン = DRV_D）の放熱器（PSN_TRX と同じ相対位置）。配置ではドライバと一体の大きさとして扱う
+    q5ref = [r for r, (fp, p) in fps.items() if p['value'] == 'IRF510' and p['pins'].get('2') == 'DRV_D'][0]
     if q5ref in fixed:
         q5 = fps[q5ref][0]; q5.SetOrientationDegrees(0); q5.SetPosition(V(*fixed[q5ref][:2]))
     q5 = fps[q5ref][0]
@@ -146,8 +151,8 @@ def main(report_only=False):
     from netclass import HEAVY, RF
     pl = Placer(BW, BH, REGIONS)
     for r in placed: pl.add_obstacle(r)
-    # ケースの放熱器（MRF101AN のタブを当てる、幅 50mm）のベースが基板の上辺に 1.1mm かかる（enclosure/serrasoid_trx_case.scad）。
-    # MRF101AN の左右のその範囲（上辺から 1.6mm）には部品を置かない
+    # ケースの放熱器（ファイナル IRF510 × 2 のタブを当てる、幅 50mm）のベースが基板の上辺に 1.1mm かかる（enclosure/serrasoid_trx_case.scad）。
+    # その範囲（上辺から 1.6mm）には部品を置かない
     pl.add_obstacle((122.54 - 25.5, 0, 122.54 + 25.5, 1.6))
     # 後面の DC ジャック（ケース X 27 = 基板 u 12、本体 φ12・奥行き 15mm）の下には背の高い部品（レギュレータなど）を置けないので、
     # その範囲（基板の左奥）を部品禁止にする（2026-10-29、L7808 が当たったため。enclosure/serrasoid_trx_case.scad の assert）

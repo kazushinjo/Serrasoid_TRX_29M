@@ -143,8 +143,8 @@ def main():
                top=[('1', 'VDD', 'power_in')], bottom=[('2', 'GND', 'power_in')], w=12.7),
         two_terminal_filter('Filter_3pin', 'Crystal:Crystal_HC49-U-3Pin_Vertical', '3-terminal filter, 1=IN 2=GND 3=OUT'),
         l_tap('L_Tap', L + 'L_T30_3pin_Vertical', 'Tapped toroid coil, 1=hot 2=tap 3=cold'),
-        flip_y(copy_psn('RD06HVF1', 'RD_MOSFET_GSD', value='MRF101AN',
-                 desc='RF power MOSFET TO-220, 1=G 2=S 3=D (NXP MRF101AN, Mitsubishi RD16HHF1)')),
+        flip_y(copy_psn('RD06HVF1', 'RD_MOSFET_GSD', value='RD16HHF1',
+                 desc='Mitsubishi RF power MOSFET TO-220S (RD06HHF1 / RD16HHF1), 1=G 2=S 3=D')),
         copy_psn('Seeeduino_XIAO_Socket', 'XIAO_ESP32C3', fp=L + 'Seeeduino_XIAO_Socket', value='XIAO ESP32C3'),
         copy_psn('Si5351_DIP8', 'Si5351_Module', fp=L + 'DIP-8_W7.62mm', value='AE-Si5351A'),
     ] + [power_sym(n) for n in POWER_NETS]
@@ -172,6 +172,15 @@ def mkfoot():
     fpwrite('Transformer_BN43-202', 'Binocular core BN-43-202, 1-2 primary, 3-4 secondary, pad pitch 5.08mm, span 15.24mm',
             [('1', 0, 0, 2.4, 1.2), ('2', 0, 5.08, 2.4, 1.2), ('3', 15.24, 0, 2.4, 1.2), ('4', 15.24, 5.08, 2.4, 1.2)],
             (-2, -3.5, 17.24, 8.58), (1.6, -2.5, 13.64, 7.58))
+    # BN-43-202 のセンタータップ付き（2026-10-29、IRF510 プッシュプル）。左が 1 次側、右が 2 次側、穴は 0.8mm 線用
+    #   _SP: 1 次側にセンタータップ（1 = 端、2 = センター、3 = 端 / 4・5 = 2 次）＝ Device:Transformer_SP_1S
+    #   _SS: 2 次側にセンタータップ（1・2 = 1 次 / 3 = 端、4 = センター、5 = 端）＝ Device:Transformer_1P_SS
+    fpwrite('Transformer_BN43-202_SP', 'Binocular core BN-43-202, center-tapped primary 1-2-3, secondary 4-5',
+            [('1', 0, 0, 2.2, 1.1), ('2', 0, 3.81, 2.2, 1.1), ('3', 0, 7.62, 2.2, 1.1), ('4', 15.24, 0, 2.2, 1.1), ('5', 15.24, 7.62, 2.2, 1.1)],
+            (-2, -3.5, 17.24, 11.12), (1.6, -2.5, 13.64, 10.12))
+    fpwrite('Transformer_BN43-202_SS', 'Binocular core BN-43-202, primary 1-2, center-tapped secondary 3-4-5',
+            [('1', 0, 0, 2.2, 1.1), ('2', 0, 7.62, 2.2, 1.1), ('3', 15.24, 0, 2.2, 1.1), ('4', 15.24, 3.81, 2.2, 1.1), ('5', 15.24, 7.62, 2.2, 1.1)],
+            (-2, -3.5, 17.24, 11.12), (1.6, -2.5, 13.64, 10.12))
     # 455kHz セラミックフィルタ（3 端子 2.54mm ピッチ一列、1=IN 2=GND 3=OUT）
     fpwrite('Filter_Ceramic_3pin_P2.54mm', 'Ceramic filter 455kHz, 3 pins inline P2.54mm (CFWLA455 / LTWC455 type), 1=IN 2=GND 3=OUT',
             [('1', 0, 0, 1.6, 0.8), ('2', 2.54, 0, 1.6, 0.8), ('3', 5.08, 0, 1.6, 0.8)],

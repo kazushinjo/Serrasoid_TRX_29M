@@ -3,10 +3,10 @@
   python3 docs/tools/spur/make_spurious_plot.py [台数]
 
 実測ではなく計算。中身:
-- 搬送波 29.3MHz、10W（+40dBm）
+- 搬送波 29.3MHz、5W（+37dBm）。2026-10-29 にファイナルを IRF510 プッシュプル（約 5W）にした
 - 逓倍のずれによる側帯波（±1〜15 × 1.83125MHz）: spur_v12.py の時間領域計算（部品のばらつき 200 通り）に
   PLL の閉ループ・送信 BPF・7 次 LPF を掛けたもの。周波数ごとに 200 通りの最悪値
-- 高調波（2〜10 倍）: PA（MRF101AN）が出す高調波は実測していないので、AB 級の目安の値を仮定し、LPF を掛けた。
+- 高調波（2〜10 倍）: PA（IRF510 プッシュプル）が出す高調波は実測していないので、AB 級プッシュプルの目安の値（偶数次は打ち消し合って小さい）を仮定し、LPF を掛けた。
   LPF の阻止域は部品の寄生成分で実際には −70dB 程度で頭打ちになるとして、それより深い減衰は −70dB にした
 - 入っていないもの: 基板上の逓倍の信号（1.83〜14.65MHz など）が直接出力側へ飛び込む分、VCO の位相雑音、電源からの混入
 """
@@ -24,12 +24,12 @@ import spur_v11 as V11          # BPF・LPF のモデル
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 OUT = os.path.join(ROOT, 'docs', 'images', 'spurious_calc_0-300MHz.png')
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 200
-P0 = 40.0                       # 搬送波 dBm（10W）
-LIMIT = P0 - 50                 # 50mW 以下かつ −50dBc → 10W では −10dBm
+P0 = 37.0                       # 搬送波 dBm（5W）
+LIMIT = P0 - 50                 # 50mW 以下かつ −50dBc → 5W では −13dBm
 FLOOR = -110                    # 図の下限
 LPF_FLOOR = -70                 # LPF の阻止域の頭打ち（仮定）
-# PA の高調波（LPF の前、dBc）: 実測なし。AB 級シングルエンドの目安
-PA_HARM = {2: -20, 3: -15, 4: -30, 5: -25, 6: -40, 7: -35, 8: -45, 9: -40, 10: -50}
+# PA の高調波（LPF の前、dBc）: 実測なし。AB 級プッシュプルの目安（偶数次は 2 個の打ち消しで小さい）
+PA_HARM = {2: -35, 3: -15, 4: -45, 5: -25, 6: -50, 7: -35, 8: -55, 9: -40, 10: -60}
 
 FW3 = '/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc'
 FW6 = '/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc'
@@ -104,8 +104,8 @@ stems(ax, sb12, C_V12, '逓倍のずれによる側帯波（200 通りの最悪�
 stems(ax, harm, C_HARM, '高調波（PA の高調波は仮定、LPF 後）')
 ax.vlines([fc12 / 1e6], FLOOR, P0, color=INK, lw=2.4, zorder=6)
 ax.plot([fc12 / 1e6], [P0], 'o', ms=5, color=INK, zorder=7)
-ax.text(fc12 / 1e6 + 3, P0 + 2, '搬送波 29.3MHz　+40dBm（10W）', fontsize=9, color=INK, va='bottom')
-ax.text(298, LIMIT + 2, '規格 −10dBm（50mW 以下かつ −50dBc）', fontsize=9, color=C_LIM, ha='right', va='bottom')
+ax.text(fc12 / 1e6 + 3, P0 + 2, '搬送波 29.3MHz　+37dBm（5W）', fontsize=9, color=INK, va='bottom')
+ax.text(298, LIMIT + 2, '規格 −13dBm（50mW 以下かつ −50dBc）', fontsize=9, color=C_LIM, ha='right', va='bottom')
 for k in (2, 3, 4, 5):
     f = k * fc12
     ax.text(f / 1e6, P0 + harm[f] + 3, '%d 倍\n%.0fdBm' % (k, P0 + harm[f]), fontsize=8, color=INK2, ha='center', va='bottom')
@@ -118,11 +118,12 @@ ax.legend(loc='upper right', bbox_to_anchor=(1.0, 0.94), fontsize=8.5, frameon=F
 fig.suptitle('Serrasoid TRX 29M　送信スプリアス 0〜300MHz（Ver 1.2、計算値・実測ではない）', x=0.012, ha='left', fontsize=13,
              color=INK, fontproperties=BOLD)
 fig.text(0.012, 0.925,
-         '10W・アンテナ端。側帯波は逓倍のずれ（部品のばらつき 200 通り）に PLL・送信 BPF・7 次 LPF を掛けたもの。'
-         '高調波は PA の値を仮定（2 倍 −20、3 倍 −15dBc ほか）、LPF の阻止域は −70dB で頭打ちとした。\n'
-         '入っていないもの: 基板上の逓倍の信号の飛び込み、VCO の位相雑音、電源からの混入。完成後はスペクトラムアナライザで実測すること。'
+         '5W・アンテナ端。側帯波は逓倍のずれ（部品のばらつき 200 通り）に PLL・送信 BPF・7 次 LPF を掛けたもの。'
+         '\n高調波は PA の値を仮定（IRF510 プッシュプル: 2 倍 −35、3 倍 −15dBc ほか）、LPF の阻止域は −70dB で頭打ちとした。'
+         '\n入っていないもの: 基板上の逓倍の信号の飛び込み、VCO の位相雑音、電源からの混入。'
+         '完成後はスペクトラムアナライザで実測すること。'
          '図の下限 %ddBm。' % FLOOR, fontsize=8, color=INK2, va='top')
-fig.tight_layout(rect=(0, 0, 1, 0.88))
+fig.tight_layout(rect=(0, 0, 1, 0.85))
 fig.savefig(OUT, facecolor=SURF)
 print('saved', OUT)
 print('Ver 1.2 側帯波 最悪 %.1f dBc（%.3f MHz）、高調波 最大 %.1f dBc' % (w12, w12f / 1e6, max(harm.values())))
