@@ -16396,7 +16396,7 @@
 				)
 			)
 		)
-		(property "Value" "TJC"
+		(property "Value" "LCD"
 			(at 0 10 270)
 			(layer "F.Fab")
 			(uuid "ee9ec1b1-0c6c-4609-904c-aa724fb64931")

@@ -133,7 +133,7 @@ FL1,10M15A,Crystal:Crystal_HC49-U-3Pin_Vertical,受信,10.7MHz 水晶フィル�
 FL2,CFWLA455KFFA,Serrasoid_TRX:Filter_Ceramic_3pin_P2.54mm,受信,455kHz セラミックフィルタ（±7.5kHz 程度）。ピン配置は実物で確認
 J1,DC 13.8V,Connector_Wire:SolderWire-1sqmm_1x02_P5.4mm_D1.4mm_OD2.7mm,電源,後面の DC ジャックから（ヒューズ 5A は後面パネル側）
 J2,I2C,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,制御,OLED 表示を使う場合の予備
-J3,TJC,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,制御,TJC 表示器（XIAO の TX → 表示器の RX。表示器からの受信は使わない）
+J3,LCD,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,制御,Nextion NX4832T035（または TJC4832T135）表示器。2 番（XIAO の TX）→ 表示器の RX（黄）。表示器の TX（青）はつながない（表示器からの受信は使わない）
 J4,VOL,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,受信,上面 VOL（10kΩ A カーブ）
 J5,ENC,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,制御,ロータリーエンコーダ（上面 TUNE）
 J6,SP,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,受信,スピーカー 8Ω

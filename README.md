@@ -4,7 +4,7 @@
 
 > 部品はリード部品（第 1 混合の NJM2594V だけ表面実装 SSOP8。SA612 が製造中止のため）。
 
-> **状態: 回路図 Ver 1.2 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)・[購入用部品表](kicad/bom_purchase.csv)）。基板 Ver 1.2（170 × 140mm）は配置・配線まで（スプリアス対策で逓倍を ×16 にし段間同調と PLL を追加、DRC エラー 0、[基板チェック](docs/基板チェック.md)、[部品実装図](docs/Serrasoid_TRX_部品実装図.pdf)・[部品配置図 A3](kicad/Serrasoid_TRX_部品配置図.pdf)）。製造データ・ファームウェアはこれから。実機未製作
+> **状態: 回路図 Ver 1.2 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)・[購入用部品表](kicad/bom_purchase.csv)）。基板 Ver 1.2（170 × 140mm）は配置・配線まで（スプリアス対策で逓倍を ×16 にし段間同調と PLL を追加、DRC エラー 0、[基板チェック](docs/基板チェック.md)、[部品実装図](docs/Serrasoid_TRX_部品実装図.pdf)・[部品配置図 A3](kicad/Serrasoid_TRX_部品配置図.pdf)）。スケッチ（[firmware/Serrasoid_TRX](firmware/Serrasoid_TRX/)、コンパイル確認のみ）・LCD 画面の背景と作り方は作成済み、LCD の画面データ（.HMI）と製造データはこれから。実機未製作
 
 回路図は 1 枚（A1）。機能ブロック（電源・制御・セラゾイド変調・逓倍・送信音声・送信RF・受信）ごとに枠で囲み、ブロックの中もブロックの間も、信号・電源ともすべて線で結線している（ネットラベルは使わない）。電源の名前（+13V8・+5VT・TX8V など）は、その電源の出どころ（レギュレータの出力など）に電源記号を 1 つ置いて示す。GND だけは GND 記号でつなぐ。
 
@@ -111,7 +111,7 @@
 
 ## 制御部
 
-- XIAO ESP32C3：ロータリーエンコーダでチャンネル選択、PTT、送受切替リレー、スケルチ、出力表示、表示器（TJC、I2C の OLED も可）
+- XIAO ESP32C3：ロータリーエンコーダでチャンネル選択、PTT、送受切替リレー、スケルチ、周波数スキャン、表示器（Nextion NX4832T035、PSN_TRX と同じ。TJC4832T135 も可。アナログ S メーター・送信出力計）。スケッチは [firmware/Serrasoid_TRX](firmware/Serrasoid_TRX/)
 - 送受切替は G5V-2 1 個: 1 極目でアンテナ、2 極目で 8V を RX8V / TX8V に振り分ける（送信系のバイアスは TX8V のときだけかかる）
 
 | XIAO | 用途 | XIAO | 用途 |
@@ -172,7 +172,7 @@ tools/check.sh             # 回路図を作り直して ERC と接続照合（t
 |---|---|
 | `kicad/` | 回路図・部品表・基板（KiCad 10）。部品番号は回路図の位置順（X の小さい順、同じ X は Y の順。2026-10-16・2026-10-29 に振り直し、新旧の対応は `kicad/refdes_map_2026-10-16.csv`・`kicad/refdes_map_2026-10-29.csv`） |
 | `tools/` | 回路図・部品表を作るスクリプト（回路は `tools/circuit.py` にまとめてある） |
-| `firmware/` | XIAO ESP32C3 スケッチ |
+| `firmware/` | XIAO ESP32C3 スケッチ（`Serrasoid_TRX/`）と Nextion の画面の背景・作り方（`Serrasoid_TRX/nextion/`） |
 | `docs/` | 資料 |
 | `enclosure/` | ケース（OpenSCAD、3D 印刷用 STL・パネル穴あけ図、[説明](enclosure/README.md)） |
 

@@ -210,7 +210,7 @@
 |---|---|---|---|---|---|---|
 | J1 | DC 13.8V | SolderWire-1sqmm 1x02 P5.4mm D1.4mm OD2.7mm | 1 | 手持ち／ホームセンター |  | 後面の DC ジャックから（ヒューズ 5A は後面パネル側） |
 | J2 | I2C | PinHeader 1x04 P2.54mm Vertical | 1 | 秋月電子 | PH-1x40SG（100167） | OLED 表示を使う場合の予備 |
-| J3 | TJC | PinHeader 1x04 P2.54mm Vertical | 1 | 秋月電子 | PH-1x40SG（100167） | TJC 表示器（XIAO の TX → 表示器の RX。表示器からの受信は使わない） |
+| J3 | LCD | PinHeader 1x04 P2.54mm Vertical | 1 | 秋月電子 | PH-1x40SG（100167） | Nextion NX4832T035（または TJC4832T135）表示器。2 番（XIAO の TX）→ 表示器の RX（黄）。表示器の TX（青）はつながない（表示器からの受信は使わない） |
 | J4 | VOL | PinHeader 1x03 P2.54mm Vertical | 1 | 秋月電子 | PH-1x40SG（100167） | 上面 VOL（10kΩ A カーブ） |
 | J5 | ENC | PinHeader 1x05 P2.54mm Vertical | 1 | 秋月電子 | PH-1x40SG（100167） | ロータリーエンコーダ（上面 TUNE） |
 | J6 | SP | PinHeader 1x02 P2.54mm Vertical | 1 | 秋月電子 | PH-1x40SG（100167） | スピーカー 8Ω |
@@ -252,7 +252,7 @@
 | マイクコネクタ 4P 丸型（パネル取付 φ16） | 1 | 千石電商／マルツ など（要確認） | 4P 丸型マイクコネクタ（メス） | MIC（J7） |
 | 外部スピーカージャック（スイッチ付き） | 1 | 秋月電子 | MJ-352W-C（117359） | EXT SP（J6） |
 | スピーカー 5cm 8Ω 0.5W | 1 | 秋月電子 | DXYD50N-22Z-8A-F（116024） | ふた裏に M3 皿ねじ＋ナット 4 本 |
-| LCD TJC4832T135 | 1 | AliExpress（TJC 公式ストア） | TJC4832T135 | J3 |
+| LCD Nextion NX4832T035（3.5 インチ 480×320） | 1 | Nextion 公式ストア／Amazon など（要確認） | NX4832T035 | J3 |
 | DC ジャック 2.1mm（パネル取付） | 1 | 秋月電子 | MJ-14（106342） | 後面 |
 | ヒューズホルダ（パネル取付） | 1 | 秋月電子 | MF-524M（107079） | 後面 |
 | ヒューズ 5A（5×20mm） | 1 | 秋月電子 | MF51NR 250V 5（107131） |  |
