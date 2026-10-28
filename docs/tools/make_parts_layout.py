@@ -54,13 +54,13 @@ BLOCKS = [
     ('セラゾイド変調', '#f0b8d8', ['C79（68p）は C0G（NP0）必須。のこぎり波の直線性に直結',
                                  'TP3（RAMP）・TP4（THRESH）・TP6（PM）で波形を確認できる']),
     ('逓倍', '#a9c8ef', ['U20・U23（74AC14）・U21（74AC86）は必ず AC 品、U22 は必ず 74HCU04（U 付き）',
-                        '遅延の C（C91・C113・C92・C114）と同調の C（C102・C120・C103）は NP0。TP7 で ×16 の 29.3MHz を確認']),
+                        '遅延の C（C91・C111・C92・C112）と同調の C（C102・C117・C103）は NP0。TP7 で ×16 の 29.3MHz を確認']),
     ('PLL', '#9fd8e0', ['U1（74AC74）・U3（74AC00）は必ず AC 品、U12 は必ず 74HCU04（VCO 専用）',
                        'L6 は T50-6 に 15 回。TC3 で VCO の中心を合わせる（TP1 の VT が約 2.5V）。D4 1N4007 は可変容量として使う（向きに注意）',
                        'TP2 で送信に出る 29.3MHz（VCO）を確認']),
     ('送信音声', '#d6e6a4', ['VR1 マイク利得、VR3 周波数偏移（±5kHz）、VR4 しきい値の中心']),
-    ('送信RF', '#f2aaa8', ['Q12 RD06HHF1 は放熱器 HS1 に固定。Q13 RD16HHF1 は基板端に立て、ケースの放熱器にねじ止め（絶縁不要）',
-                          'C110 は積層セラミック（X7R・100V）。LPF の C116・C117・C118・C119 は NP0 500V。コイルの巻数は表のとおり']),
+    ('送信RF', '#f2aaa8', ['ドライバ Q12 IRF510 は放熱器 HS1 に、ファイナル Q14・Q13 IRF510 は基板端に立ててケースの放熱器にねじ止め。3 個ともタブ = ドレインなので絶縁シートと絶縁ブッシングで絶縁',
+                          'T1（入力）・T2（出力）は BN-43-202。センタータップの線を忘れない。LPF のコンデンサは NP0 500V。コイルの巻数は表のとおり']),
     ('受信', '#a8dcb4', ['FL1（10.7MHz 水晶フィルタ 10M15A）・FL2（455kHz セラミックフィルタ）は 3 ピンで中央が GND',
                         'TC1・TC2 は 29.3MHz に同調',
                         'U10 NJM2594V だけ表面実装（SSOP8、0.65mm ピッチ）。周りの部品より先に、細いこて先とフラックスで付ける',
@@ -199,7 +199,7 @@ def board_axes(fig, rect):
     ax.set_aspect('equal')
     ax.axis('off')
     ax.add_patch(Rectangle((BX0, BY0), BX1 - BX0, BY1 - BY0, fill=False, ec='black', lw=1.4, zorder=30))
-    ax.text((BX0 + BX1) / 2, BY0 - 1.2, '↑ 後面（DC 入力・RD16HHF1・ANT）', ha='center', va='bottom', fontsize=6.5, color='#555555')
+    ax.text((BX0 + BX1) / 2, BY0 - 1.2, '↑ 後面（DC 入力・ファイナル IRF510・ANT）', ha='center', va='bottom', fontsize=6.5, color='#555555')
     ax.text((BX0 + BX1) / 2, BY1 + 1.2, '↓ 前面', ha='center', va='top', fontsize=6.5, color='#555555')
     return ax
 

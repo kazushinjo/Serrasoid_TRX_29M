@@ -45,7 +45,7 @@ def flow():
     box(70, 15, 13, 10, '2SA1015 差動対', ['RAMP と', 'THRESH を比較'], accent=True)
     box(70, 1, 13, 10, '74HCT123（1）', ['幅 273ns', 'PM_OUT（TP6）'])
     box(86, 1, 13, 10, '逓倍 ×16・PLL', ['段間同調 → VCO', '29.3MHz（TP2）'])
-    box(86, 15, 13, 10, '送信RF', ['BPF → 2N2222A', '→ RD06 → RD16'])
+    box(86, 15, 13, 10, '送信RF', ['BPF → 2N2222A', '→ IRF510 → P.P.'])
     arrow(64, 22, 70, 22); ax.text(67, 23.2, '+ RAMP', ha='center', fontsize=7.2, color=ACC2)
     ax.plot([42, 66, 66], [6, 6, 18], color=LINE, lw=1.0); arrow(66, 18, 70, 18)
     ax.text(54, 7.2, 'THRESH', ha='center', fontsize=7.2, color=ACC2); ax.text(67.6, 15.6, '−', ha='center', fontsize=8, color=ACC2)

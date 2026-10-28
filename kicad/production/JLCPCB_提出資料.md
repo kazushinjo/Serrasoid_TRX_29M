@@ -18,7 +18,7 @@
 | Serrasoid_TRX-F_Paste.gtp / B_Paste.gbp | メタルマスク（表は NJM2594V の 8 パッドだけ。裏はなし） |
 | Serrasoid_TRX-F_Silkscreen.gto / B_Silkscreen.gbo | シルク（表・裏） |
 | Serrasoid_TRX-Edge_Cuts.gm1 | 外形 |
-| Serrasoid_TRX-PTH.drl | スルーホール 893 穴（φ0.4〜3.2mm、うちビア 22 個 φ0.4） |
+| Serrasoid_TRX-PTH.drl | スルーホール 908 穴（φ0.4〜3.2mm、うちビア 30 個 φ0.4） |
 | Serrasoid_TRX-NPTH.drl | ノンスルー 2 穴（φ1.6mm） |
 | Serrasoid_TRX-job.gbrjob | ジョブファイル（層の並び・板厚） |
 
@@ -34,7 +34,7 @@
 | 最小穴径 | 0.4mm（ビア）。部品の穴は 0.7mm 以上 |
 | 最小線幅 | 0.3mm |
 | 最小間隔 | 0.25mm 程度（配線の設定）。DRC で違反なし |
-| ビア | 22 個、穴 0.4mm・径 0.8mm（貫通ビアのみ） |
+| ビア | 30 個、穴 0.4mm・径 0.8mm（貫通ビアのみ） |
 | 銅箔厚 | 外層 1oz（終段まわりの太い線は 1.2mm 幅で 3A を想定） |
 | 表面処理 | 指定なし（HASL で可。手はんだ） |
 | レジスト色 | 任意 |
