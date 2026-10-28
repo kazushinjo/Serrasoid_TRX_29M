@@ -132,6 +132,15 @@ def main():
                right=[('3', 'MIX_OUT', 'output'), ('9', 'AUDIO', 'output'), ('11', 'FIL_OUT', 'output'), ('12', 'SQ_IN', 'input'),
                       ('13', 'SCAN', 'output'), ('14', 'MUTE', 'passive')],
                top=[('4', 'VCC', 'power_in')], bottom=[('15', 'GND', 'power_in')], w=15.24),
+        box_ic('AD8307', 'U', 'Package_DIP:DIP-8_W7.62mm', 'Logarithmic amplifier 500MHz 92dB (Analog Devices AD8307, PDIP-8)',
+               left=[('8', 'INP', 'input'), ('1', 'INM', 'input'), ('3', 'OFS', 'passive'), ('5', 'INT', 'passive')],
+               right=[('4', 'OUT', 'output'), ('6', 'ENB', 'input')],
+               top=[('7', 'VPS', 'power_in')], bottom=[('2', 'COM', 'power_in')], w=12.7),
+        box_ic('ADS1115_Module', 'U', 'Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical',
+               'ADS1115 16-bit I2C ADC breakout (Adafruit 1085 pinout: VDD GND SCL SDA ADDR ALRT A0 A1 A2 A3)',
+               left=[('7', 'A0', 'input'), ('8', 'A1', 'input'), ('9', 'A2', 'input'), ('10', 'A3', 'input'), ('5', 'ADDR', 'input')],
+               right=[('3', 'SCL', 'input'), ('4', 'SDA', 'bidirectional'), ('6', 'ALRT', 'output')],
+               top=[('1', 'VDD', 'power_in')], bottom=[('2', 'GND', 'power_in')], w=12.7),
         two_terminal_filter('Filter_3pin', 'Crystal:Crystal_HC49-U-3Pin_Vertical', '3-terminal filter, 1=IN 2=GND 3=OUT'),
         l_tap('L_Tap', L + 'L_T30_3pin_Vertical', 'Tapped toroid coil, 1=hot 2=tap 3=cold'),
         flip_y(copy_psn('RD06HVF1', 'RD_MOSFET_GSD', value='RD16HHF1',
@@ -167,6 +176,11 @@ def mkfoot():
     fpwrite('Filter_Ceramic_3pin_P2.54mm', 'Ceramic filter 455kHz, 3 pins inline P2.54mm (CFWLA455 / LTWC455 type), 1=IN 2=GND 3=OUT',
             [('1', 0, 0, 1.6, 0.8), ('2', 2.54, 0, 1.6, 0.8), ('3', 5.08, 0, 1.6, 0.8)],
             (-1.6, -2.6, 6.68, 2.6), (-1.3, -2.3, 6.38, 2.3))
+    # ADS1115 モジュール（Adafruit 1085: 28 × 17.8mm、長辺の端に 10 ピン）を差すピンソケット 1×10。
+    # 外形はモジュールの基板（ピンの列から +X 側へ 15.3mm）まで取り、ほかの部品がその下に来ないようにする
+    fpwrite('ADS1115_Module_Socket', 'Pin socket 1x10 P2.54mm for ADS1115 breakout (Adafruit 1085, 28x17.8mm board on +X side)',
+            [(str(i + 1), 0, i * 2.54, 1.7, 1.0) for i in range(10)],
+            (-2.5, -3.1, 16.3, 25.96), (-2.25, -2.85, 16.05, 25.71))
 
 if __name__ == '__main__':
     main()

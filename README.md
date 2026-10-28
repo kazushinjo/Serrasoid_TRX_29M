@@ -4,7 +4,7 @@
 
 > 部品はリード部品（第 1 混合の NJM2594V だけ表面実装 SSOP8。SA612 が製造中止のため）。
 
-> **状態: 回路図 Ver 1.2 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)・[購入用部品表](kicad/bom_purchase.csv)）。基板 Ver 1.2（170 × 140mm）は配置・配線まで（スプリアス対策で逓倍を ×16 にし段間同調と PLL を追加、DRC エラー 0、[基板チェック](docs/基板チェック.md)、[部品実装図](docs/Serrasoid_TRX_部品実装図.pdf)・[部品配置図 A3](kicad/Serrasoid_TRX_部品配置図.pdf)）。スケッチ（[firmware/Serrasoid_TRX](firmware/Serrasoid_TRX/)、コンパイル確認のみ）・LCD 画面の背景と作り方は作成済み、LCD の画面データ（.HMI）と製造データはこれから。実機未製作
+> **状態: 回路図 Ver 1.2 作成済み**（[回路図 PDF](kicad/Serrasoid_TRX_回路図.pdf)・[部品表](kicad/BOM.md)・[購入用部品表](kicad/bom_purchase.csv)）。基板 Ver 1.2（170 × 150mm）は配置・配線まで（スプリアス対策で逓倍を ×16 にし段間同調と PLL を追加、DRC エラー 0、[基板チェック](docs/基板チェック.md)、[部品実装図](docs/Serrasoid_TRX_部品実装図.pdf)・[部品配置図 A3](kicad/Serrasoid_TRX_部品配置図.pdf)）。スケッチ（[firmware/Serrasoid_TRX](firmware/Serrasoid_TRX/)、コンパイル確認のみ）・LCD 画面の背景と作り方は作成済み、LCD の画面データ（.HMI）と製造データはこれから。実機未製作
 
 回路図は 1 枚（A1）。機能ブロック（電源・制御・セラゾイド変調・逓倍・送信音声・送信RF・受信）ごとに枠で囲み、ブロックの中もブロックの間も、信号・電源ともすべて線で結線している（ネットラベルは使わない）。電源の名前（+13V8・+5VT・TX8V など）は、その電源の出どころ（レギュレータの出力など）に電源記号を 1 つ置いて示す。GND だけは GND 記号でつなぐ。
 
@@ -107,6 +107,7 @@
 | 第 1 IF | 10.7MHz 水晶フィルタ（10M15A 相当） |
 | 第 2 IF・検波 | MC3361（10.245MHz 水晶、455kHz セラミックフィルタ、CDBM455 ディスクリミネータ） |
 | スケルチ | ノイズ（7kHz 以上）を MCP6002 で増幅・検波して XIAO の A2 へ。XIAO が LM386 入力をミュート |
+| S メーター | 10.7MHz 水晶フィルタの出力を 2.2kΩ で取り出し → 2SC1815 同調増幅（4.7µH・47p、約 26dB）→ AD8307（対数増幅、25mV/dB、DIP-8）→ ADS1115 モジュール（I2C、A0）→ XIAO。計算で S2〜S9＋40 程度（MC3361 に RSSI 出力がないため、2026-10-29 に追加） |
 | AF | LM386（約 0.5W） |
 
 ## 制御部

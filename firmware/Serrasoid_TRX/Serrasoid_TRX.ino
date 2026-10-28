@@ -24,8 +24,9 @@
  *   S メーター : アナログメーター。背景（ピクチャ 0、nextion/background.png）の目盛りの上に、
  *                picq（メーター面の描き直し）と line（針）で針を描く
  *                受信中 = 外側の S 目盛り、送信中 = 内側の出力 W 目盛り
- *                この機械には受信電界強度（RSSI）の線がないので、S はスケルチ用ノイズの減り方（FM のクワイティング）
- *                から計算した目安。ノイズが消えきる強さ（QUIET_RANGE_DB、S5 前後）より上は振れない
+ *                S は 10.7MHz 水晶フィルタの後ろの強さを AD8307（対数増幅、25mV/dB）で測り、ADS1115（I2C の ADC、
+ *                アドレス 0x48、A0）で読む。ADS1115 が見つからないときは、スケルチ用ノイズの減り方（FM のクワイティング）
+ *                から計算した目安に切り替わる（こちらは S5 前後より上は振れない）
  *   t3 : メーターの値（"S5" / "9.8W"）
  *   t4 : "RX" / 送信中は赤い "TX" / スキャン中は黄色の "SCAN"（文字色 pco はスケッチが変える）
  *   t5 : スケルチの深さ（"SQL 3" / "SQL OFF"）
@@ -51,7 +52,8 @@
  *
  * ---- 調整（実機で合わせる。シリアルモニタ 115200bps に生の値が出る）----
  *   NOISE_NOSIG_MV / NOISE_FULL_MV : スケルチ用ノイズ（D2）の電圧。無信号のときと、十分強い信号のとき
- *   QUIET_RANGE_DB                 : ノイズが無信号から消えきるまでの信号の強さの幅 [dB]（S メーターの換算）
+ *   RSSI_MV_S9 / RSSI_MV_PER_DB    : S9（−73dBm）を入れたときの AD8307 の出力 [mV] と、1dB あたりの変化（データシート 25mV）
+ *   QUIET_RANGE_DB                 : ノイズが無信号から消えきるまでの信号の強さの幅 [dB]（ADS1115 がないときの S の換算）
  *   FWD_MV_10W                     : 出力検出（D1）の電圧。ダミーロードに 10W 出したとき
  *
  * Libraries:
@@ -63,8 +65,8 @@
  *   D1  (GPIO3)  FWD_ADC   出力検出（容量分割 ＋ 1N60）
  *   D2  (GPIO4)  NOISE_ADC スケルチ用ノイズ（MCP6002 で増幅・倍電圧検波。無信号で高く、信号で下がる）
  *   D3  (GPIO5)  ENC_A     エンコーダ A
- *   D4  (GPIO6)  SDA       Si5351
- *   D5  (GPIO7)  SCL       Si5351
+ *   D4  (GPIO6)  SDA       Si5351・ADS1115（S メーターの ADC モジュール）
+ *   D5  (GPIO7)  SCL       Si5351・ADS1115
  *   D6  (GPIO21) UART_TX   表示器（Nextion）の RX へ
  *   D7  (GPIO20) MUTE      High = 受信音を消す（スケルチ）
  *   D8  (GPIO8)  ENC_B     エンコーダ B
@@ -83,7 +85,10 @@
 #define NOISE_NOSIG_MV   2000   // 無信号（スケルチ用ノイズ最大）のときの D2 の電圧 [mV]
 #define NOISE_FULL_MV    150    // 十分強い信号（ノイズがほぼ消えた）のときの D2 の電圧 [mV]
 #define FWD_MV_10W       1100   // 10W 出力のときの D1 の電圧 [mV]（計算値の目安）
-#define QUIET_RANGE_DB   30     // 無信号（S0）からノイズが消えきるまでの幅 [dB]（6dB = S1 つ）
+#define RSSI_MV_S9       1275   // S9（−73dBm）で AD8307 の出力 [mV]（計算値の目安: 入力 約 −33dBm）
+#define RSSI_MV_PER_DB   25.0f  // AD8307 の傾き [mV/dB]
+#define ADS1115_ADDR     0x48   // ADDR = GND
+#define QUIET_RANGE_DB   30     // 無信号（S0）からノイズが消えきるまでの幅 [dB]（ADS1115 がないときの換算）
 #define SCAN_STEP        10000  // スキャンの刻み [Hz]
 #define SCAN_DWELL_MS    200    // 1 チャンネルを聞く時間（スケルチ用ノイズの検波 0.47µF × 100k が落ち着くまで）
 #define SCAN_RESUME_MS   3000   // 信号が消えてから再開するまで
@@ -163,6 +168,8 @@ unsigned long scanQuietMs = 0;     // 止まっている信号が消えた時刻
 float noiseMv = NOISE_NOSIG_MV;   // ならした値
 float fwdMv   = 0;
 float sigLevel = 0;               // ノイズの減り方 0〜10（10 = 消えきった）
+bool  adsOk    = false;           // ADS1115（S メーター）がある
+float rssiMv   = 0;               // AD8307 の出力 [mV]（ならした値）
 bool  sqlOpen  = false;
 unsigned long lastMeterMs = 0;
 
@@ -412,6 +419,30 @@ void updateMeter(int pos, const char* text, int mode, bool busy) {   // mode 0 =
 }
 
 // ============================================================
+// ADS1115（I2C 16 ビット ADC）: A0 を連続変換（±4.096V、128 回/秒）
+// ============================================================
+bool adsBegin() {
+  // 設定レジスタ: MUX = AIN0−GND、PGA = ±4.096V、連続変換、128SPS、コンパレータ不使用
+  Wire.beginTransmission(ADS1115_ADDR);
+  Wire.write(0x01);
+  Wire.write(0x42);
+  Wire.write(0x83);
+  if (Wire.endTransmission() != 0) return false;
+  Wire.beginTransmission(ADS1115_ADDR);
+  Wire.write(0x00);                                  // 以後は変換結果レジスタを読む
+  return Wire.endTransmission() == 0;
+}
+
+// A0 の電圧 [mV]（1LSB = 0.125mV）。読めなければ負の値
+float adsReadMv() {
+  if (Wire.requestFrom(ADS1115_ADDR, 2) != 2) return -1;
+  uint8_t hi = Wire.read();                          // 上位バイトが先（読む順を決めておく）
+  uint8_t lo = Wire.read();
+  int16_t v = (int16_t)((hi << 8) | lo);
+  return v * 0.125f;
+}
+
+// ============================================================
 // 測定（ADC は analogReadMilliVolts で補正済みの mV）
 // ============================================================
 // スケルチ用ノイズ → 信号の強さ 0〜10（FM はノイズが減るほど信号が強い）
@@ -437,12 +468,17 @@ void updateSquelch() {
   digitalWrite(MUTE_OUT, sqlOpen ? LOW : HIGH);
 }
 
-// ノイズの減り方 0〜10 → S メーター [dB、S9 = 0]
+// S メーター [dB、S9 = 0]。ADS1115 があれば AD8307 の出力から、なければノイズの減り方 0〜10 から
 float smeterDb(float sig) {
+  if (adsOk) return (rssiMv - RSSI_MV_S9) / RSSI_MV_PER_DB;
   return -54.0f + sig / 10.0f * QUIET_RANGE_DB;
 }
 
 void smeterText(float db, char* buf, size_t len) {
+  if (db > 5.0f) {
+    snprintf(buf, len, "S9+%d", ((int)(db + 5) / 10) * 10);
+    return;
+  }
   int s = 9 + (int)floorf(db / 6.0f + 0.5f);
   if (s < 0) s = 0;
   if (s > 9) s = 9;
@@ -551,6 +587,9 @@ void setup() {
 
   Wire.begin();
   nxInit();
+
+  adsOk = adsBegin();
+  if (!adsOk) Serial.println("ADS1115 not found: S meter uses noise quieting");
 
   if (!si5351.init(SI5351_CRYSTAL_LOAD_8PF, SI5351_XTAL, SI5351_CORR))
     Serial.println("Si5351 not found");
@@ -668,6 +707,10 @@ void loop() {
       float v = analogReadMilliVolts(NOISE_ADC);
       noiseMv += (v - noiseMv) * 0.3f;
       sigLevel = sigFromNoise(noiseMv);
+      if (adsOk) {
+        float r = adsReadMv();
+        if (r >= 0) rssiMv += (r - rssiMv) * (r > rssiMv ? 0.7f : 0.2f);   // すぐ上がり、ゆっくり下がる
+      }
       fwdMv = 0;
     }
     updateSquelch();
@@ -689,7 +732,7 @@ void loop() {
       pos = meterPos(db);
     }
     updateMeter(pos, text, txNow ? 1 : scanOn ? 2 : 0, sqlOpen);
-    Serial.printf("%s noise %.0f mV  sig %.1f  fwd %.0f mV  sql %d %s\n", txNow ? "TX" : scanOn ? "SCAN" : "RX",
-                  noiseMv, sigLevel, fwdMv, activeSql(), sqlOpen ? "open" : "closed");
+    Serial.printf("%s rssi %.0f mV  noise %.0f mV  sig %.1f  fwd %.0f mV  sql %d %s\n", txNow ? "TX" : scanOn ? "SCAN" : "RX",
+                  rssiMv, noiseMv, sigLevel, fwdMv, activeSql(), sqlOpen ? "open" : "closed");
   }
 }

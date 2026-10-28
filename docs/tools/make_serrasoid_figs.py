@@ -34,7 +34,7 @@ def flow():
     box(20, 29, 15, 10, '74HCT4017', ['÷10', 'Q0: 55ns パルス'])
     box(39, 29, 15, 10, '2N7000', ['放電スイッチ', '546ns ごと'])
     box(58, 29, 18, 10, '2SA1015 定電流源', ['約 300µA', 'VR2 で傾き調整'])
-    box(42, 15, 22, 10, 'C71 68pF', ['のこぎり波 RAMP', '0〜約 1.7V（TP3）'], accent=True)
+    box(42, 15, 22, 10, 'C80 68pF', ['のこぎり波 RAMP', '0〜約 1.7V（TP3）'], accent=True)
     arrow(16, 34, 20, 34); ax.text(18, 40.2, '18.3MHz', ha='center', fontsize=7.2, color=ACC2)
     arrow(35, 34, 39, 34); ax.text(37, 40.2, 'RST', ha='center', fontsize=7.2, color=ACC2)
     arrow(46.5, 29, 50, 25)
