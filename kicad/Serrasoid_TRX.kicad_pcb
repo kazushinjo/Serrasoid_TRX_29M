@@ -79950,7 +79950,7 @@
 		(layer "Edge.Cuts")
 		(uuid "3c5c530a-5c51-4187-be94-cf4ea218a705")
 	)
-	(gr_text "Serrasoid TRX 29M  Ver 1.2  Designed by JA6FUF"
+	(gr_text "Serrasoid TRX 29M  Ver 1.2  Designed by JA6FUF/JH1XHX"
 		(at 85 147.55 0)
 		(layer "B.SilkS")
 		(uuid "f8d9395d-552a-4bbd-88b2-1f031557ccbb")

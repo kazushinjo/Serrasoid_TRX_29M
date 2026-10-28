@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 JA6FUF (kazushinjo)
+// Copyright (C) 2026 真城和一 (JA6FUF/JH1XHX)
 // ============================================================
 // Serrasoid TRX 29M  ケース（筐体）  OpenSCAD パラメトリックモデル
 //   PSN_TRX_XIAO_ESP32C3 のケース（enclosure/psn_trx_case.scad）を元にしている

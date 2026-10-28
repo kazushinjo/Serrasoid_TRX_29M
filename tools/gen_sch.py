@@ -795,7 +795,7 @@ def write_merged(sheets, out=None):
     sch = [S('kicad_sch'), [S('version'), S('20260306')], [S('generator'), q('eeschema')], [S('generator_version'), q('10.0')],
            [S('uuid'), q(ROOT_UUID)], ([S('paper'), q(name)] if name != 'User' else [S('paper'), q('User'), F(PW), F(PH)]),
            [S('title_block'), [S('title'), q('Serrasoid TRX 29M（セラゾイド変調 29MHz FM 10W トランシーバ）')],
-            [S('date'), q(datetime.date.today().isoformat())], [S('rev'), q('1.2')], [S('company'), q('JA6FUF')]],
+            [S('date'), q(datetime.date.today().isoformat())], [S('rev'), q('1.2')], [S('company'), q('設計 真城和一（JA6FUF/JH1XHX）')]],
            [S('lib_symbols')] + list(libs.values())] + items + [
            [S('sheet_instances'), [S('path'), q('/'), [S('page'), q('1')]]], [S('embedded_fonts'), S('no')]]
     open(out or os.path.join(ROOT, 'kicad', PROJ + '.kicad_sch'), 'w').write(dump(sch) + '\n')

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright (C) 2026 JA6FUF (kazushinjo)
+# Copyright (C) 2026 真城和一 (JA6FUF/JH1XHX)
 """
 Nextion NX4832T035（3.5 インチ 480x320）用の背景画像（アナログ S メーターの目盛り入り）を作る。PSN_TRX の nextion/make_background.py が元。
   python3 make_background.py  → background.png（Nextion Editor でピクチャ 0 として取り込み、page0 の背景 sta=image, pic=0 にする）

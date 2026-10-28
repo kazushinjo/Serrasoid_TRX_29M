@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 JA6FUF (kazushinjo)
+// Copyright (C) 2026 真城和一 (JA6FUF/JH1XHX)
 /*
  * Serrasoid TRX 29M 制御 - Seeed Studio XIAO ESP32C3 + Si5351（秋月 AE-Si5351A）
  * 29.000 ~ 29.700 MHz FM（呼出 29.300MHz）。PSN_TRX のスケッチが元。

@@ -16,7 +16,7 @@ def finish(b, title='Serrasoid TRX 29M', ver='Ver 1.2'):
         b.Add(z)
     if any(isinstance(d, pcbnew.PCB_TEXT) and d.GetText().startswith(title) for d in b.GetDrawings()):
         pcbnew.ZONE_FILLER(b).Fill(b.Zones()); return
-    t = pcbnew.PCB_TEXT(b); t.SetText('%s  %s  Designed by JA6FUF' % (title, ver)); t.SetLayer(pcbnew.B_SilkS)
+    t = pcbnew.PCB_TEXT(b); t.SetText('%s  %s  Designed by JA6FUF/JH1XHX' % (title, ver)); t.SetLayer(pcbnew.B_SilkS)
     t.SetTextSize(pcbnew.VECTOR2I(M(1.5), M(1.5))); t.SetTextThickness(M(0.25)); t.SetMirrored(True)
     t.SetPosition(pcbnew.VECTOR2I(bb.GetX() + bb.GetWidth() // 2, bb.GetBottom() - M(2.5)))
     b.Add(t)

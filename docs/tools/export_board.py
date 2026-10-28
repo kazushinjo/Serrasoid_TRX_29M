@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright (C) 2026 JA6FUF (kazushinjo)
+# Copyright (C) 2026 真城和一 (JA6FUF/JH1XHX)
 """KiCad 付属の Python で実行: 基板の外形・部品（F.Fab 外形・パッド）・ブロック区画を JSON に書き出す（make_parts_layout.py 用）"""
 import pcbnew, sys, json
 b = pcbnew.LoadBoard(sys.argv[1]); mm = pcbnew.ToMM

@@ -1,6 +1,6 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright (C) 2026 JA6FUF (kazushinjo)
+# Copyright (C) 2026 真城和一 (JA6FUF/JH1XHX)
 # A3 の部品配置図（kicad/Serrasoid_TRX_部品配置図.pdf）を KiCad で出力する。
 # 基板の原点が用紙の左上にあるので、作業用のコピーで基板を用紙の中央へ移し、用紙を A3 にしてタイトル欄を入れてから F.Fab を出す。
 set -e
@@ -21,7 +21,7 @@ s = s.replace('(paper "A4")', '''(paper "A3")
 		(title "Serrasoid TRX 29M 部品配置図（部品面）")
 		(date "2026-10-29")
 		(rev "1.2")
-		(company "JA6FUF")
+		(company "設計 真城和一（JA6FUF/JH1XHX）")
 		(comment 1 "上辺 = 後面（DC・RD16HHF1・ANT）、下辺 = 前面。170 × 150 mm")
 		(comment 2 "□パッド = 1 番ピン・電解の＋・ダイオードの K")
 	)''', 1)

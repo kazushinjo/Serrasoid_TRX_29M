@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright (C) 2026 JA6FUF (kazushinjo)
+# Copyright (C) 2026 真城和一 (JA6FUF/JH1XHX)
 """
 部品実装図（docs/Serrasoid_TRX_部品実装図.pdf）と配置図 PNG を作る。PSN_TRX の docs/tools/make_parts_layout.py が元。
 
@@ -274,7 +274,7 @@ def table(fig, rect, rows, color):
 
 
 pages_total = 1 + len(BLOCKS)
-pdf = PdfPages(OUT, metadata={'Title': 'Serrasoid TRX 29M 部品実装図 Ver1.0', 'Author': 'JA6FUF'})
+pdf = PdfPages(OUT, metadata={'Title': 'Serrasoid TRX 29M 部品実装図 Ver1.2', 'Author': '真城和一（JA6FUF/JH1XHX）'})
 n_parts = sum(len(r) for r in ROWS.values())
 
 # ---- 1. 全体図

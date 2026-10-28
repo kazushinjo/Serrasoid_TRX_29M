@@ -295,4 +295,6 @@ tools/check.sh             # 回路図を作り直して ERC と接続照合（t
 - **使ったツール**: KiCad 10（回路図・基板）、Freerouting 1.9.0（自動配線）、OpenSCAD（ケース）、Arduino / arduino-cli と ESP32 Arduino コア、Etherkit Si5351 ライブラリ（Jason Milldrum, NT7S）、Python（numpy・matplotlib・python-docx・Pillow・PyMuPDF）。
 - 部品の購入先情報は秋月電子通商・DigiKey などのサイトで調べたものです（価格・在庫は調べた日の値）。
 
-Designed by JA6FUF
+設計: 真城和一
+
+Designed by JA6FUF/JH1XHX

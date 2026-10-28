@@ -67,7 +67,7 @@ def figure(name, caption, width=170):
 
 # ---------------------------------------------------------------- 表紙の見出し
 doc.add_paragraph('Serrasoid TRX 29M　セラゾイド変調部の動作説明', style='Title')
-p('29MHz FM 10W トランシーバ（リポジトリ Serrasoid_TRX_29M）　%s 版　JA6FUF' % datetime.date.today().strftime('%Y-%m-%d'), size=9.5)
+p('29MHz FM 10W トランシーバ（リポジトリ Serrasoid_TRX_29M）　%s 版　設計 真城和一（JA6FUF/JH1XHX）' % datetime.date.today().strftime('%Y-%m-%d'), size=9.5)
 p('対象: 回路図のブロック「セラゾイド変調」「逓倍」「PLL」「送信音声」。部品番号・定数は回路図 Ver 1.2（tools/circuit.py）に合わせている。'
   '実機は未製作で、数値は計算値。', size=9.5)
 
