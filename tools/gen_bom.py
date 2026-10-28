@@ -37,7 +37,7 @@ def main():
           '回路一覧 `tools/circuit.py` から `tools/gen_bom.py` で生成。回路図 `Serrasoid_TRX.kicad_sch` と同じ内容。', '',
           '- 部品はリード部品。第 1 混合の NJM2594V（U13）だけ表面実装（SSOP8、0.65mm ピッチ。SA612 が製造中止のため）',
           '- IC はすべて丸ピン IC ソケットを使う前提のフットプリント',
-          '- 基板専用部品（回路図にない）: RD06HHF1 の放熱器（秋月 20PB020）、取付穴', '']
+          '- 基板専用部品（回路図にない）: ドライバ IRF510 の放熱器（秋月 20PB020）、取付穴', '']
     total = 0
     for pf, title in GROUPS:
         ps = [p for p in real if prefix(p) == pf]

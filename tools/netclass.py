@@ -1,8 +1,8 @@
 """ネットごとの線幅（mm）"""
-HEAVY = {'+13V8', 'PA_DA', 'PA_DB', 'LPF_IN', 'LPF2', 'LPF3', 'TX_OUT', 'ANT', 'DRV_D', 'DCDC_IN'}
+HEAVY = {'+13V8', 'PA_D', 'T1_P', 'LPF_IN', 'LPF2', 'LPF3', 'TX_OUT', 'ANT', 'DRV_D', 'DCDC_IN'}
 # +5VA は 0.3mm（約 25mA。0.6mm だと NJM2594V の 0.65mm ピッチのパッドに隣のパッドとの間隔を取ってつなげない）
 POWER = {'+8V', 'TX8V', 'RX8V', '+5V', '+5VT', '+3V3S', '+3V3X', 'XIAO_5V', 'RLY_C', 'AF_OUT', 'SPK'}
-RF = {'PA_IN', 'PA_GA', 'PA_GB', 'PA_GA_IN', 'PA_GB_IN', 'PA_BIAS', 'DRV_IN', 'DRV_G', 'DRV_SW', 'Q_BUF_C', 'Q_BUF_B', 'TXBPF_IN', 'TXBPF_OUT', 'TB1', 'TB2',
+RF = {'PA_IN', 'PA_G', 'PA_SW', 'DRV_IN', 'DRV_G', 'DRV_SW', 'Q_BUF_C', 'Q_BUF_B', 'TXBPF_IN', 'TXBPF_OUT', 'TB1', 'TB2',
       'TXOSC', 'TXDRV', 'RX_ANT', 'RB1', 'RB2', 'GND'}
 def width_of(n):
     n = n.lstrip('/')
