@@ -78,7 +78,7 @@
 コイル,L13,フェライトトロイダルコア FT-50-43（0.8mm 線）,FT50-43 8T,L_T50_2pin_Vertical,1,秋月電子,FT-50-43,116918,1個,290,8 回（3A 流れる）
 コイル,"L14,L16",トロイダルコア T-50-6（0.8mm ポリウレタン線を巻く）,T50-6 9T,L_T50_2pin_Vertical,2,秋月電子,T-50-6,111947,1個,410,巻数は値のとおり（9T・10T）
 コイル,L15,トロイダルコア T-50-6（0.8mm ポリウレタン線を巻く）,T50-6 10T,L_T50_2pin_Vertical,1,秋月電子,T-50-6,111947,1個,410,巻数は値のとおり（9T・10T）
-トランス,T1,めがねコア BN-43-202,BN43-202 2T:5T,Transformer_BN43-202,1,DigiKey／Mouser（要確認）,Fair-Rite 2843002402（BN-43-202 相当）,,,,一次 2 回・二次 5 回。秋月に扱いなし
+トランス,T1,めがねコア BN-43-202,BN43-202 2T:5T,Transformer_BN43-202,1,DigiKey,Fair-Rite 2843002402（BN-43-202）,,,,在庫あり 約 $0.19（集計サイトの値（2026-10-29 調べ））。一次 2 回・二次 5 回
 ダイオード,D1,逆接続保護ダイオード 3A,1N5408,D_DO-201AD_P5.08mm_Vertical_AnodeUp,1,秋月電子,1N5822,102229,10個,350,秋月に 1N5408 はない。代わりにショットキー 1N5822（40V 3A、DO-201AD）。逆接続で 5A ヒューズを切る
 ダイオード,"D2,D3,D9,D10,D11,D12",小信号ダイオード,1N4148,D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp,6,秋月電子,1N4148,100941,50本,200,
 ダイオード,D4,整流ダイオード 1A（VCO の可変容量に使う）,1N4007,D_DO-41_SOD81_P5.08mm_Vertical_AnodeUp,1,秋月電子,1N4007-3485,100934,20本,100,1N4001 と同じ袋から
@@ -86,16 +86,16 @@
 ダイオード,"D6,D7,D13",ゲルマニウムダイオード,1N60,D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp,3,サトー電気 など（要確認）,1N60,,,,秋月に扱いなし
 ダイオード,D8,整流ダイオード 1A,1N4001,D_DO-41_SOD81_P5.08mm_Vertical_AnodeUp,1,秋月電子,1N4007-3485,100934,20本,100,1N4001 の代わりに 1N4007
 トランジスタ・FET,"Q1,Q3,Q4,Q5,Q6",NPN トランジスタ,2SC1815,TO-92_Inline,5,秋月電子,2SC1815L-GR-T92,106477,20個,100,
-トランジスタ・FET,Q2,N-ch JFET,2N3819,TO-92_Inline,1,DigiKey／サトー電気 など（要確認）,2N3819,,,,秋月に扱いなし
+トランジスタ・FET,Q2,N-ch JFET,2N3819,TO-92_Inline,1,DigiKey（取り寄せ）,2N3819 APM PBFREE（Central）,,,,Central 品は量産中だが DigiKey の在庫なし・取り寄せ（納期 8〜18 週）（2026-10-29 調べ）
 トランジスタ・FET,Q7,N-ch MOSFET,2N7000,TO-92_Inline,1,秋月電子,2N7000,109723,1個,40,
 トランジスタ・FET,Q8,PNP トランジスタ,2SA1015,TO-92_Inline,1,秋月電子,2SA1015L-GR-T92,106734,20個,100,
-トランジスタ・FET,Q9,RF 用 NPN トランジスタ（TO-39）,2N3866,TO-39-3,1,DigiKey／RF 部品店（要確認）,2N3866,,,,秋月に扱いなし。放熱クリップも用意
-トランジスタ・FET,Q10,RF パワー MOSFET（三菱）,RD06HHF1,TO-220-3_Vertical,1,RF 部品店／Mouser（要確認）,RD06HHF1,,,,秋月に扱いなし
-トランジスタ・FET,Q11,RF パワー MOSFET（三菱）,RD16HHF1,TO-220-3_Vertical,1,RF 部品店／Mouser（要確認）,RD16HHF1,,,,秋月に扱いなし
-IC・レギュレータ・モジュール,U1,D フリップフロップ（AC、DIP）,74AC74,DIP-14_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,SN74AC74N,,,,PLL の位相比較。必ず AC 品
+トランジスタ・FET,Q9,RF 用 NPN トランジスタ（TO-39）,2N3866,TO-39-3,1,要注意（製造中止）,2N3866 または HG3866（同等品）,,,,Central・Microchip・ST 品は DigiKey で製造中止（2026-10-29 調べ）。HG Semiconductor の HG3866 が同じピン配置の同等品（在庫は不定）。DigiKey の代替品一覧（onsemi など）も確認。放熱クリップも用意
+トランジスタ・FET,Q10,RF パワー MOSFET（三菱）,RD06HHF1,TO-220-3_Vertical,1,要注意（入手難）,RD06HHF1,,,,RF Parts では在庫限り（NOS）・輸出不可（2026-10-29 調べ）。早めに確保するか代わりを検討
+トランジスタ・FET,Q11,RF パワー MOSFET（三菱）,RD16HHF1,TO-220-3_Vertical,1,要注意（入手難）,RD16HHF1,,,,代理店は見積もりのみ（中国の代理店に在庫表示）（2026-10-29 調べ）。偽物に注意。早めに確保するか代わりを検討
+IC・レギュレータ・モジュール,U1,D フリップフロップ（AC、DIP）,74AC74,DIP-14_W7.62mm_Socket,1,DigiKey,SN74AC74N（296-4342-5-ND）,,,,DigiKey 在庫あり 約 $0.77（2026-10-29 調べ）。PLL の位相比較。必ず AC 品
 IC・レギュレータ・モジュール,U2,3 端子レギュレータ 5V 100mA,78L05,TO-92_Inline,1,秋月電子,L78L05ACZ,101250,5個,100,ピン配置（OUT-GND-IN）を基板と照合する
-IC・レギュレータ・モジュール,U3,2 入力 NAND（AC、DIP）,74AC00,DIP-14_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,SN74AC00N,,,,PLL の位相比較のリセット。必ず AC 品
-IC・レギュレータ・モジュール,U4,3 端子レギュレータ 8V 1.5A（TO-220）,L7808,TO-220-3_Vertical,1,DigiKey／Mouser（要確認）,L7808CV,,,,秋月は表面実装（TO-252）の NJM7808SDL1 だけ
+IC・レギュレータ・モジュール,U3,2 入力 NAND（AC、DIP）,74AC00,DIP-14_W7.62mm_Socket,1,DigiKey,SN74AC00N（296-4287-5-ND）,,,,DigiKey 在庫あり（標準納期 12 週）（2026-10-29 調べ）。PLL の位相比較のリセット。必ず AC 品
+IC・レギュレータ・モジュール,U4,3 端子レギュレータ 8V 1.5A（TO-220）,L7808,TO-220-3_Vertical,1,DigiKey,L7808CV（4491-L7808CV-ND、Lumimax）,,,,DigiKey マーケットプレイスに在庫あり 約 $0.50（2026-10-29 調べ）。ST 品（497-2949-5-ND）は在庫なし
 IC・レギュレータ・モジュール,U5,DC-DC コンバータ 5V 1A（78xx 互換）,R-78E5.0-1.0,Converter_DCDC_RECOM_R-78E-0.5_THT,1,DigiKey／Mouser,R-78E5.0-1.0,,,,秋月は 0.5A 品 R-78E5.0-0.5（106353）のみ
 IC・レギュレータ・モジュール,U6,3 端子レギュレータ 5V 1.5A,L7805,TO-220-3_Vertical,1,秋月電子,L7805CV-DG,107903,1個,120,
 IC・レギュレータ・モジュール,"U7,U16",2 回路オペアンプ（DIP-8）,MCP6002,DIP-8_W7.62mm_Socket,2,秋月電子,MCP6002-E/P,130011,1個,80,確認時は入荷予定
@@ -103,22 +103,22 @@ IC・レギュレータ・モジュール,U8,3.3V LDO レギュレータ,LP2950-
 IC・レギュレータ・モジュール,U9,対数増幅 IC（DIP-8、S メーター）,AD8307ANZ,DIP-8_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,AD8307ANZ,,,,Analog Devices。2026-10-29 時点で量産品、DigiKey の標準納期 10 週。秋月に扱いなし
 IC・レギュレータ・モジュール,U10,ダブルバランスドミキサ（SSOP8、表面実装）,NJM2594V,TSSOP-8_4.4x3mm_P0.65mm,1,秋月電子,NJM2594V,111195,1個,150,SA612AN（製造中止）の代わり。0.65mm ピッチを部品面に手はんだ
 IC・レギュレータ・モジュール,U11,Si5351A クロックジェネレータモジュール,AE-Si5351A,DIP-8_W7.62mm,1,秋月電子,AE-Si5351A-B,110679,1セット,650,ピン配置を基板と照合してから取り付ける
-IC・レギュレータ・モジュール,"U12,U24",アンバッファインバータ（DIP）,74HCU04,DIP-14_W7.62mm_Socket,2,DigiKey／Mouser（要確認）,SN74HCU04N,,,,段間同調の自己バイアス増幅と VCO。必ず U 付き
+IC・レギュレータ・モジュール,"U12,U24",アンバッファインバータ（DIP）,74HCU04,DIP-14_W7.62mm_Socket,2,DigiKey,SN74HCU04N（296-9820-5-ND）,,,,DigiKey JP 在庫あり 約 ¥115（2026-10-29 調べ）。代わりに CD74HCU04E（296-33167-5-ND）も可。必ず U 付き
 IC・レギュレータ・モジュール,U13,16 ビット I2C ADC モジュール（ADS1115）,ADS1115 module,ADS1115_Module_Socket,1,DigiKey（Adafruit 1085）／Amazon など（要確認）,Adafruit 1085 または同じピン並び（VDD GND SCL SDA ADDR ALRT A0〜A3）のモジュール,,,,付属のピンヘッダをはんだ付けし、基板のピンソケットに差す。秋月に扱いなし
-IC・レギュレータ・モジュール,U14,FM IF IC（DIP-16）,MC3361,DIP-16_W7.62mm_Socket,1,サトー電気／海外通販 など（要確認）,MC3361,,,,製造中止品。秋月に扱いなし
+IC・レギュレータ・モジュール,U14,FM IF IC（DIP-16）,MC3361,DIP-16_W7.62mm_Socket,1,LCSC／海外通販（要注意）,MC3361BPL-D16-T（UTC、DIP-16）または MC3361BP,,,,Motorola 品は製造中止（2026-10-29 調べ）。UTC の互換品が LCSC で約 $0.22。古い在庫品は eBay など
 IC・レギュレータ・モジュール,U15,Seeed Studio XIAO ESP32C3,XIAO ESP32C3,Seeeduino_XIAO_Socket,1,秋月電子,113991054,117454,1個,1080,確認時は在庫僅少
 IC・レギュレータ・モジュール,U17,オーディオアンプ（DIP-8）,LM386N-1,DIP-8_W7.62mm_Socket,1,秋月電子,LM386G-D08,114548,1個,40,LM386N-1 の互換品（HTC）
-IC・レギュレータ・モジュール,U18,4 回路オペアンプ（DIP-14）,MCP6004,DIP-14_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,MCP6004-I/P,,,,秋月に扱いなし
-IC・レギュレータ・モジュール,U19,10 進カウンタ（HCT、DIP）,74HCT4017,DIP-16_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,CD74HCT4017E,,,,秋月は表面実装の 74HC4017（109757）だけ
-IC・レギュレータ・モジュール,U20,高速コンパレータ（DIP-8）,MAX913CPA,DIP-8_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,MAX913CPA+,,,,秋月に扱いなし
-IC・レギュレータ・モジュール,U21,ワンショット（HCT、DIP）,74HCT123,DIP-16_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,CD74HCT123E,,,,秋月に扱いなし
-IC・レギュレータ・モジュール,"U22,U25",シュミットインバータ（AC、DIP）,74AC14,DIP-14_W7.62mm_Socket,2,DigiKey／Mouser（要確認）,SN74AC14N,,,,秋月は表面実装の ACT 品だけ。必ず AC 品
-IC・レギュレータ・モジュール,U23,2 入力 XOR（AC、DIP）,74AC86,DIP-14_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,SN74AC86N,,,,秋月に扱いなし。必ず AC 品
-水晶・フィルタ,FL1,10.7MHz 水晶フィルタ（15kHz 幅、3 ピン）,10M15A,Crystal_HC49-U-3Pin_Vertical,1,要確認,10M15A,,,,秋月に扱いなし
+IC・レギュレータ・モジュール,U18,4 回路オペアンプ（DIP-14）,MCP6004,DIP-14_W7.62mm_Socket,1,DigiKey,MCP6004-I/P（MCP6004-I/P-ND）,,,,DigiKey 在庫あり 約 $0.59（2026-10-29 調べ）
+IC・レギュレータ・モジュール,U19,10 進カウンタ（HCT、DIP）,74HCT4017,DIP-16_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,CD74HCT4017E,,,,DigiKey では HCT 品が見つからなかった（2026-10-29 調べ）。HC 品（CD74HC4017E、296-25989-5-ND、在庫あり）は Si5351 の 3.3V 出力を受けられない（5V で High 3.5V 以上）ので、HCT 品を探すか、間にレベル変換を入れる。秋月は表面実装の 74HC4017 だけ
+IC・レギュレータ・モジュール,U20,高速コンパレータ（DIP-8）,MAX913CPA,DIP-8_W7.62mm_Socket,1,DigiKey（要注意）,MAX913CPA+,,,,製造中止扱いの販売店が多い。DigiKey は在庫 43 個・約 €13（2026-10-29 調べ）、Rochester に在庫あり。早めに確保するか代わりを検討
+IC・レギュレータ・モジュール,U21,ワンショット（HCT、DIP）,74HCT123,DIP-16_W7.62mm_Socket,1,DigiKey／Mouser（要確認）,CD74HCT123E,,,,TI では量産品（Buerklin に在庫）（2026-10-29 調べ）。DigiKey の在庫は未確認
+IC・レギュレータ・モジュール,"U22,U25",シュミットインバータ（AC、DIP）,74AC14,DIP-14_W7.62mm_Socket,2,DigiKey,SN74AC14N（296-4301-5-ND）,,,,DigiKey JP 在庫あり 約 ¥120/個（2026-10-29 調べ）。必ず AC 品
+IC・レギュレータ・モジュール,U23,2 入力 XOR（AC、DIP）,74AC86,DIP-14_W7.62mm_Socket,1,DigiKey,SN74AC86N（296-4345-5-ND）,,,,DigiKey 在庫あり 約 $0.66（2026-10-29 調べ）。必ず AC 品
+水晶・フィルタ,FL1,10.7MHz 水晶フィルタ（15kHz 幅、3 ピン）,10M15A,Crystal_HC49-U-3Pin_Vertical,1,DigiKey,ECS-10.7-15A（X703-ND）,,,,10.7MHz・帯域 15kHz・3 端子、終端 3kΩ。DigiKey は標準納期 18 週（2026-10-29 調べ）
 水晶・フィルタ,FL2,455kHz セラミックフィルタ,CFWLA455KFFA,Filter_Ceramic_3pin_P2.54mm,1,秋月電子,LT455EU,116046,1個,65,CFWLA455KFFA の代わり（±7.5kHz）。ピン配置・寸法を基板と照合する
-水晶・フィルタ,X1,水晶振動子 10.245MHz（HC-49/U）,10.245MHz,Crystal_HC49-U_Vertical,1,要確認,10.245MHz,,,,秋月に扱いなし
-水晶・フィルタ,X2,セラミックディスクリミネータ 455kHz,CDBM455C24,C_Disc_D5.0mm_W2.5mm_P5.00mm,1,要確認,CDBM455C24（村田）,,,,秋月に扱いなし
-リレー,K1,リレー DPDT 12V（オムロン G5V-2）,G5V-2 DC12,Relay_DPDT_Omron_G5V-2,1,DigiKey／Mouser,G5V-2-DC12,,,,秋月に扱いなし
+水晶・フィルタ,X1,水晶振動子 10.245MHz（HC-49/U）,10.245MHz,Crystal_HC49-U_Vertical,1,Tayda／LCSC,10.245MHz HC-49/S（例: YXC X49SD10245MSD2SC）,,,,HC-49/U の DigiKey 品は見つからない（2026-10-29 調べ）。HC-49/S（背の低い品）なら安く手に入り、足の間隔は同じ。負荷容量 18〜20pF
+水晶・フィルタ,X2,セラミックディスクリミネータ 455kHz,CDBM455C24,C_Disc_D5.0mm_W2.5mm_P5.00mm,1,要確認（製造中止の恐れ）,CDBM455C24（村田）,,,,村田の 455kHz ディスクリミネータは DigiKey で製造中止の品が多い（2026-10-29 調べ）。在庫を確かめてから。入手できないときは 455kHz の LC 同調（コイル ＋ C）で置き換えを検討
+リレー,K1,リレー DPDT 12V（オムロン G5V-2）,G5V-2 DC12,Relay_DPDT_Omron_G5V-2,1,LCSC／DigiKey（要確認）,G5V-2-DC12,,,,LCSC に在庫あり（2026-10-29 調べ）。DigiKey は未確認
 コネクタ,J1,ビニール線（AWG18 など）,DC 13.8V,SolderWire-1sqmm_1x02_P5.4mm_D1.4mm_OD2.7mm,1,手持ち／ホームセンター,,,,,DC 入力・ANT（ANT は RG-174 同軸）
 コネクタ,J2,ピンヘッダ,I2C,PinHeader_1x04_P2.54mm_Vertical,1,秋月電子,PH-1x40SG,100167,1本(40P),35,J2・J3・J7・J5・J4・J6・J9 で 1 本
 コネクタ,J3,ピンヘッダ,LCD,PinHeader_1x04_P2.54mm_Vertical,1,秋月電子,PH-1x40SG,100167,1本(40P),35,J2・J3・J7・J5・J4・J6・J9 で 1 本
