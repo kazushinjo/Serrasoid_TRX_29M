@@ -30,21 +30,21 @@ def flow():
         ax.annotate('', xy=(x2, y2), xytext=(x1, y1), arrowprops=dict(arrowstyle='-|>', color=LINE, lw=1.0))
         if label: ax.text((x1 + x2) / 2, (y1 + y2) / 2 + dy, label, ha='center', fontsize=7.2, color=ACC2)
     # 上段: クロック → 4017 → 放電、定電流源 → のこぎり波
-    box(1, 29, 15, 10, 'Si5351 CLK0', ['9.15625MHz', '送信中だけ出力'])
-    box(20, 29, 15, 10, '74HCT4017', ['÷10', 'Q0: 109ns パルス'])
-    box(39, 29, 15, 10, '2N7000', ['放電スイッチ', '1.092µs ごと'])
-    box(58, 29, 18, 10, '2SA1015 定電流源', ['約 300µA', 'VR4 で傾き調整'])
-    box(42, 15, 22, 10, 'C73 100pF', ['のこぎり波 RAMP', '0〜約 2.4V（TP2）'], accent=True)
-    arrow(16, 34, 20, 34); ax.text(18, 40.2, '9.16MHz', ha='center', fontsize=7.2, color=ACC2)
+    box(1, 29, 15, 10, 'Si5351 CLK0', ['18.3125MHz', '送信中だけ出力'])
+    box(20, 29, 15, 10, '74HCT4017', ['÷10', 'Q0: 55ns パルス'])
+    box(39, 29, 15, 10, '2N7000', ['放電スイッチ', '546ns ごと'])
+    box(58, 29, 18, 10, '2SA1015 定電流源', ['約 300µA', 'VR2 で傾き調整'])
+    box(42, 15, 22, 10, 'C71 68pF', ['のこぎり波 RAMP', '0〜約 1.7V（TP3）'], accent=True)
+    arrow(16, 34, 20, 34); ax.text(18, 40.2, '18.3MHz', ha='center', fontsize=7.2, color=ACC2)
     arrow(35, 34, 39, 34); ax.text(37, 40.2, 'RST', ha='center', fontsize=7.2, color=ACC2)
     arrow(46.5, 29, 50, 25)
     arrow(67, 29, 58, 25)
     box(1, 1, 22, 10, '送信音声', ['マイク → ×22 → ×11', 'クリップ → 3kHz LPF'])
-    box(27, 1, 15, 10, 'VR5・VR6', ['偏移・中心', 'THRESH（TP3）'])
+    box(27, 1, 15, 10, 'VR3・VR4', ['偏移・中心', 'THRESH（TP4）'])
     arrow(23, 6, 27, 6)
     box(70, 15, 13, 10, 'MAX913', ['RAMP と', 'THRESH を比較'], accent=True)
-    box(70, 1, 13, 10, '74HCT123', ['幅 546ns', 'PM_OUT（TP4）'])
-    box(86, 1, 13, 10, '逓倍 ×32', ['XOR 5 段', '29.3MHz（TP1）'])
+    box(70, 1, 13, 10, '74HCT123', ['幅 273ns', 'PM_OUT（TP5）'])
+    box(86, 1, 13, 10, '逓倍 ×16・PLL', ['段間同調 → VCO', '29.3MHz（TP2）'])
     box(86, 15, 13, 10, '送信RF', ['BPF → 2N3866', '→ RD06 → RD16'])
     arrow(64, 22, 70, 22); ax.text(67, 23.2, '+ RAMP', ha='center', fontsize=7.2, color=ACC2)
     ax.plot([42, 66, 66], [6, 6, 18], color=LINE, lw=1.0); arrow(66, 18, 70, 18)
@@ -57,16 +57,16 @@ def flow():
 
 # ---------------------------------------------------------------- 2. のこぎり波としきい値
 def waves():
-    T, tr = 1.092, 0.109                  # µs
-    slope = 2.5                           # V/µs
+    T, tr = 0.546, 0.055                  # µs
+    slope = 3.4                           # V/µs
     t = np.linspace(0, 3 * T, 6000)
     ph = np.mod(t, T)
     ramp = np.where(ph < tr, 0.0, (ph - tr) * slope)
-    v0 = 1.2
-    dv = 0.3 * np.sin(2 * np.pi * t / (3 * T) - np.pi / 2)    # 音声の変化（見やすく誇張）
+    v0 = 0.85
+    dv = 0.22 * np.sin(2 * np.pi * t / (3 * T) - np.pi / 2)    # 音声の変化（見やすく誇張）
     th = v0 + dv
     comp = (ramp > th).astype(float)
-    # ワンショット: comp の立ち上がりから 0.546µs
+    # ワンショット: comp の立ち上がりから半周期（0.273µs）
     rise = np.where(np.diff(comp) > 0)[0]
     pm = np.zeros_like(t)
     for i in rise: pm[(t >= t[i]) & (t < t[i] + T / 2)] = 1
@@ -82,14 +82,14 @@ def waves():
     for i in rise:
         axs[1].plot([t[i], t[i]], [0, th[i]], color=QUIET, lw=0.6, ls=':')
         axs[1].plot(t[i], th[i], 'o', ms=3.2, color=ACC2)
-    axs[1].set_ylim(0, 2.9); axs[1].set_ylabel('V', rotation=0, fontsize=8.5)
+    axs[1].set_ylim(0, 2.1); axs[1].set_ylabel('V', rotation=0, fontsize=8.5)
     axs[1].legend(fontsize=7.8, loc='upper left', frameon=False, ncol=2)
     axs[1].text(t[rise[0]] + 0.03, 0.15, '交点のタイミングが\n音声で前後する', fontsize=7.6, color=QUIET)
     axs[2].plot(t, comp, color=LINE, lw=1.1); axs[2].set_ylim(-0.2, 1.4); axs[2].set_yticks([])
     axs[2].set_ylabel('COMP_OUT\n(MAX913)', rotation=0, ha='right', va='center', fontsize=8.5)
     axs[3].plot(t, pm, color=ACC, lw=1.3); axs[3].set_ylim(-0.2, 1.4); axs[3].set_yticks([])
     axs[3].set_ylabel('PM_OUT\n(74HCT123)', rotation=0, ha='right', va='center', fontsize=8.5)
-    axs[3].set_xlabel('時間（µs）　1 周期 = 1.092µs（915.625kHz）', fontsize=8.5)
+    axs[3].set_xlabel('時間（µs）　1 周期 = 0.546µs（1.83125MHz）', fontsize=8.5)
     fig.suptitle('しきい値が上がると交点（立ち上がり）が遅れ、下がると早まる（音声の振れは見やすく誇張）', fontsize=9.5, fontproperties=BOLD, x=0.02, ha='left')
     fig.tight_layout(rect=(0, 0, 1, 0.96))
     fig.savefig(os.path.join(OUT, 'serrasoid_waves.png')); plt.close(fig)

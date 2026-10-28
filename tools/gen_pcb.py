@@ -19,26 +19,32 @@ mm = pcbnew.ToMM
 V = lambda x, y: pcbnew.VECTOR2I(M(x), M(y))
 
 # 基板外形（上辺 = 後面、下辺 = 前面）
-BW, BH = 170.0, 130.0
+BW, BH = 170.0, 140.0     # 2026-10-29 逓倍の段間同調と PLL を足したので奥行きを 130 → 140mm に
 GAP = 1.0          # 部品どうしのすき間
-# ブロックの区画 (x0, y0, x1, y1)。送信は上段を左から右へ、受信は右列を上から下へ流れる
+# ブロックの区画 (x0, y0, x1, y1)。送信は中段を左から右へ（変調 → 逓倍 → PLL）、上段の送信 RF は右へ、受信は右列を上から下へ流れる
+# （2026-10-29 逓倍に段間同調、PLL を足したので区画を割り直した）
 REGIONS = {
-    '電源':           (0, 0, 40, 46),
+    '電源':           (0, 0, 40, 40),
     '送信RF':         (40, 0, 170, 46),
-    '逓倍':           (0, 46, 52, 82),
-    'セラゾイド変調': (52, 46, 112, 82),
-    '受信':           (112, 46, 170, 130),
-    '制御':           (0, 82, 56, 130),
-    '送信音声':       (56, 82, 112, 130),
+    'セラゾイド変調': (0, 40, 30, 100),
+    '逓倍':           (30, 46, 72, 100),
+    'PLL':            (72, 46, 122, 100),
+    '受信':           (122, 46, 170, 140),
+    '制御':           (0, 100, 70, 140),
+    '送信音声':       (70, 100, 122, 140),
 }
 # 基板上で別の区画に置く部品（値 → 区画）。Si5351 は CLK0（変調）と CLK1（受信）の間に置く
 BLOCK_OVERRIDE = {}
 # 配線長の重み: RF の線と、変調のタイミングに関わる線を優先して短くする
-TIMING = {'RAMP', 'RAMP_E', 'RAMP_B', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'LPF2', 'LPF3', 'RFA_D', 'RFA_S', 'THRESH', 'PM_OUT', 'COMP_OUT', 'RST_P', 'RST_G', 'CLK0', 'CLK0_IN', 'CLK1', 'LO_IN', 'LO_DIV',
-          'X2', 'X4', 'X8', 'X16', 'X32', 'DLY1', 'DLY2', 'DLY3', 'DLY4', 'DLY5', 'OS_C', 'OS_RC', 'MIX_IN', 'MIX_OUT', 'IF1', 'MIX3', 'LIM_IN',
+TIMING = {'TK1', 'TK2', 'TK3', 'SQ1', 'SQ2', 'SQ3', 'SQO1', 'SQO2', 'SQO3', 'X2S', 'X4S', 'X8S',
+          'PFD_UP', 'PFD_DN', 'PFD_RST', 'VCO_CK', 'TXOSC', 'TXDRV', 'VCO_IN', 'VCO_OA', 'VCO_O', 'VCO_L', 'VAR_K',
+          'RAMP', 'RAMP_E', 'RAMP_B', 'RC1', 'RC2', 'RC3', 'RC4', 'LPF2', 'LPF3', 'RFA_D', 'RFA_S', 'THRESH', 'PM_OUT', 'COMP_OUT', 'RST_P', 'RST_G', 'CLK0', 'CLK0_IN', 'CLK1', 'LO_IN', 'LO_DIV',
+          'X2', 'X4', 'X8', 'X16', 'DLY1', 'DLY2', 'DLY3', 'DLY4', 'OS_C', 'OS_RC', 'MIX_IN', 'MIX_OUT', 'IF1', 'MIX3', 'LIM_IN',
           'MIX_BYP', 'LO_IN', 'LO_DIV'}
 # NJM2594 の出力 → 10.7MHz 増幅 → 水晶フィルタ は 1 か所にまとめる（増幅の部品は一覧の最後で、ほかより後に置かれるため重みを大きく）
 MIXER = {'MIX_EF', 'IFA_B', 'IFA_C', 'IFA_E', 'IFA_E2', 'MIX_OUT'}
+# VCO の LC と段間同調の共振回路も 1 か所にまとめる（線が長いと容量・飛び込みが増える）
+MIXER |= {'VCO_IN', 'VCO_OA', 'VCO_O', 'VCO_L', 'VAR_K', 'TK1', 'TK2', 'TK3', 'SQ1', 'SQ2', 'SQ3'}
 # 位置を決めて置く部品: 部品番号 → (x, y, 角度)
 def fixed_positions(byref):
     """位置を決めて置く部品（コネクタ・リレー・ファイナル）。ほかは place.py が配線長の短い位置を探す
@@ -143,6 +149,9 @@ def main(report_only=False):
     # ケースの放熱器（RD16HHF1 のタブを当てる、幅 50mm）のベースが基板の上辺に 1.1mm かかる（enclosure/serrasoid_trx_case.scad）。
     # RD16HHF1 の左右のその範囲（上辺から 1.6mm）には部品を置かない
     pl.add_obstacle((122.54 - 25.5, 0, 122.54 + 25.5, 1.6))
+    # 後面の DC ジャック（ケース X 27 = 基板 u 12、本体 φ12・奥行き 15mm）の下には背の高い部品（レギュレータなど）を置けないので、
+    # その範囲（基板の左奥）を部品禁止にする（2026-10-29、L7808 が当たったため。enclosure/serrasoid_trx_case.scad の assert）
+    pl.add_obstacle((5, 0, 19, 13))
     order = [p['ref'] for p in parts if p['ref'] in fps]
     for ref in order:
         fp, p = fps[ref]

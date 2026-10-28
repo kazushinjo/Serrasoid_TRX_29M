@@ -144,6 +144,7 @@ class Placer:
             for pos, rot in cands:
                 c = self.part_cost(r, pos, rot) + 0.05 * (abs(pos[0] - tmp[r][0]) + abs(pos[1] - tmp[r][1]))
                 if best is None or c < best[0]: best = (c, pos, rot)
+            if best is None: raise SystemExit('置き場所がない: %s（区画 %s）' % (r, self.parts[r].get('block')))
             self.parts[r]['pos'], self.parts[r]['rot'] = best[1], best[2]
             self._mark(self.rect(r), 1)
     def target_of(self, ref):

@@ -39,27 +39,30 @@ OUT = sys.argv[2]
 PNGDIR = sys.argv[3] if len(sys.argv) > 3 else None
 
 TITLE = 'Serrasoid TRX 29M　部品実装図'
-SUB = '基板 170 × 130 mm / 4 層 / リード部品（U13 NJM2594V だけ表面実装 SSOP8）　Ver 1.1　2026-10-16'
+SUB = '基板 170 × 140 mm / 4 層 / リード部品（U9 NJM2594V だけ表面実装 SSOP8）　Ver 1.2　2026-10-29'
 COPPER = '#c8762f'
 FAB = '#333333'
 FAINT = '#c8c8c8'
 NAVY = '#1f2d6b'
-# 組立順の目安: 電源を先に付けて電圧を確かめ、制御（XIAO・Si5351）→ 変調 → 逓倍 → 送信音声 → 送信RF → 受信
+# 組立順の目安: 電源を先に付けて電圧を確かめ、制御（XIAO・Si5351）→ 変調 → 逓倍 → PLL → 送信音声 → 送信RF → 受信
 BLOCKS = [
-    ('電源', '#f6c27a', ['ヒューズ（5A）は後面パネル側。U3 L7808 には小型放熱器を付ける',
+    ('電源', '#f6c27a', ['ヒューズ（5A）は後面パネル側。U4 L7808 には小型放熱器を付ける',
                         '付け終わったら 13.8V を入れ、+8V・+5V（2 系統）・+3.3V を確認してから次へ']),
-    ('制御', '#b9b2ec', ['XIAO（U9）はソケット、Si5351 モジュール（U7 AE-Si5351A）はピンヘッダで実装',
+    ('制御', '#b9b2ec', ['XIAO（U13）はソケット、Si5351 モジュール（U10 AE-Si5351A）はピンヘッダで実装',
                         'XIAO の D0（PTT）・D9（エンコーダ SW）は起動設定ピン: PTT・つまみを押したまま電源を入れない']),
-    ('セラゾイド変調', '#f0b8d8', ['C73（100p）は C0G（NP0）必須。のこぎり波の直線性に直結',
-                                 'TP2（RAMP）・TP3（THRESH）・TP4（PM）で波形を確認できる']),
-    ('逓倍', '#a9c8ef', ['U1・U2・U8 は必ず AC 品（74AC14・74AC86）。HC・HCT 品では 29MHz まで上がらない',
-                        '遅延の C（C1・C9・C23・C31・C40）は NP0。TP1 で 29.3MHz を確認']),
-    ('送信音声', '#d6e6a4', ['VR3 マイク利得、VR5 周波数偏移（±5kHz）、VR6 しきい値の中心']),
-    ('送信RF', '#f2aaa8', ['Q2 RD06HHF1 は放熱器 HS1 に固定。Q3 RD16HHF1 は基板端に立て、ケースの放熱器にねじ止め（絶縁不要）',
-                          'C34 は積層セラミック（X7R・100V）。LPF の C38・C41・C42・C43 は NP0 500V。コイルの巻数は表のとおり']),
+    ('セラゾイド変調', '#f0b8d8', ['C71（68p）は C0G（NP0）必須。のこぎり波の直線性に直結',
+                                 'TP3（RAMP）・TP4（THRESH）・TP5（PM）で波形を確認できる']),
+    ('逓倍', '#a9c8ef', ['U20・U23（74AC14）・U21（74AC86）は必ず AC 品、U22 は必ず 74HCU04（U 付き）',
+                        '遅延の C（C83・C105・C84・C106）と同調の C（C94・C112・C95）は NP0。TP6 で ×16 の 29.3MHz を確認']),
+    ('PLL', '#9fd8e0', ['U1（74AC74）・U3（74AC00）は必ず AC 品、U11 は必ず 74HCU04（VCO 専用）',
+                       'L5 は T50-6 に 15 回。TC3 で VCO の中心を合わせる（TP1 の VT が約 2.5V）。D4 1N4007 は可変容量として使う（向きに注意）',
+                       'TP2 で送信に出る 29.3MHz（VCO）を確認']),
+    ('送信音声', '#d6e6a4', ['VR1 マイク利得、VR3 周波数偏移（±5kHz）、VR4 しきい値の中心']),
+    ('送信RF', '#f2aaa8', ['Q9 RD06HHF1 は放熱器 HS1 に固定。Q10 RD16HHF1 は基板端に立て、ケースの放熱器にねじ止め（絶縁不要）',
+                          'C102 は積層セラミック（X7R・100V）。LPF の C108・C109・C110・C111 は NP0 500V。コイルの巻数は表のとおり']),
     ('受信', '#a8dcb4', ['FL1（10.7MHz 水晶フィルタ 10M15A）・FL2（455kHz セラミックフィルタ）は 3 ピンで中央が GND',
-                        'TC3・TC4 は 29.3MHz に同調',
-                        'U13 NJM2594V だけ表面実装（SSOP8、0.65mm ピッチ）。周りの部品より先に、細いこて先とフラックスで付ける']),
+                        'TC1・TC2 は 29.3MHz に同調',
+                        'U9 NJM2594V だけ表面実装（SSOP8、0.65mm ピッチ）。周りの部品より先に、細いこて先とフラックスで付ける']),
 ]
 BCOL = {n: c for n, c, _ in BLOCKS}
 
@@ -120,7 +123,7 @@ ROWS = {n: [] for n, _, _ in BLOCKS}
 for p in circuit.parts:
     if p['ref'].startswith('#'): continue
     ROWS[p['block']].append([p['ref'], p['value'], kind(p), caution(p)])
-ROWS['送信RF'].append(['HS1', FP['HS1']['val'], '放熱器', 'Q2 をねじ止めしてからはんだ付け'])
+ROWS['送信RF'].append(['HS1', FP['HS1']['val'], '放熱器', 'Q9 をねじ止めしてからはんだ付け'])
 BLOCK_OF = {r[0]: n for n, rows in ROWS.items() for r in rows}
 
 
@@ -181,7 +184,7 @@ def draw_fp(ax, f, mode, small=False):
     if mode != 'faint':
         (x0, y0), (x1, y1) = f['bbox']
         cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-        ax.text(cx, cy, 'U9 (XIAO)' if f['ref'] == 'U9' else f['ref'], ha='center', va='center', fontsize=4.0 if small else 5.2, color=NAVY, fontproperties=BOLD,
+        ax.text(cx, cy, 'U13 (XIAO)' if f['ref'] == 'U13' else f['ref'], ha='center', va='center', fontsize=4.0 if small else 5.2, color=NAVY, fontproperties=BOLD,
                 zorder=20, bbox=dict(fc='white', ec='none', alpha=0.65, pad=0.15))
         if not small and f['val'] and not f['ref'].startswith(('H', 'J', 'TP')):
             ax.text(cx, cy + 1.6, f['val'][:14], ha='center', va='center', fontsize=3.2, color='#555555', zorder=20)
@@ -280,7 +283,7 @@ draw_blocks(ax)
 for f in board['fps']:
     draw_fp(ax, f, 'normal', small=True)
 fig.text(0.03, 0.075, '□（四角）パッド = 1 番ピン / 電解コンデンサの＋ / ダイオードの K（カソード）。H1〜H4 = M3 取付穴（GND）。', fontsize=7)
-fig.text(0.03, 0.055, '抵抗・ダイオードはすべて縦置き。IC は DIP ソケット（U13 NJM2594V だけ表面実装、最初に付ける）。上辺がケースの後面側。', fontsize=7)
+fig.text(0.03, 0.055, '抵抗・ダイオードはすべて縦置き。IC は DIP ソケット（U9 NJM2594V だけ表面実装、最初に付ける）。上辺がケースの後面側。', fontsize=7)
 fig.text(0.03, 0.035, 'ブロック別の詳細と部品表は次ページ以降（組立順の目安: 1→%d）。' % len(BLOCKS), fontsize=7)
 lx = 0.60
 for i, (name, col, _) in enumerate(BLOCKS):
