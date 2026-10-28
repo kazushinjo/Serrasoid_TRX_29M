@@ -788,7 +788,7 @@ def write_merged(sheets, out=None):
     items = connect_labels(items, allunits, allwires, PW, PH)
     note = ('送信: マイク → 送信音声 → セラゾイド変調（1.83125MHz で PM）→ 逓倍 ×16（段間同調）→ PLL（VCO 29.3MHz）→ 送信RF（10W）→ ANT\\n'
             '受信: ANT → 受信（2N3819 → NJM2594 → 10.7MHz 増幅 → 10.7MHz → MC3361 → LM386）→ SP\\n'
-            '制御: XIAO ESP32C3 ＋ Si5351（CLK0 = 変調基準 18.3125MHz、CLK1 = 受信局発 18.6MHz）\\n'
+            '制御: XIAO ESP32C3 ＋ Si5351（CLK0 = 変調基準 1.83125MHz、CLK1 = 受信局発 18.6MHz）\\n'
             'ブロックの中もブロックの間も線で結線（電源も線。電源の名前は出どころの電源記号で示す。GND だけ GND 記号）')
     items.append([S('text'), q(note), [S('exclude_from_sim'), S('no')], [S('at'), F(25.4), F(max(py + ph for px, py, pw, ph in pos) + 20), S('0')],
                   [S('effects'), [S('font'), [S('size'), S('2.5'), S('2.5')]], [S('justify'), S('left'), S('bottom')]], [S('uuid'), U()]])

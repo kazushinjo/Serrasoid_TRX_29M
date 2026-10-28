@@ -75,56 +75,55 @@ C73,47u,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm,制御,
 C74,10u,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm,送信音声,
 C75,220p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信音声,高域カット
 C76,1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
-C77,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,セラゾイド変調,
-C78,2.2n,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
-C79,4.7n,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
-C80,68p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,セラゾイド変調,C0G（NP0）必須。のこぎり波の直線性に直結。546ns で約 1.9〜3.1V
-C81,1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
-C82,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,セラゾイド変調,
-C83,10u,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm,送信音声,
-C84,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,セラゾイド変調,
-C85,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,セラゾイド変調,ワンショット時定数
-C86,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
-C87,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,セラゾイド変調,
-C88,22p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0
-C89,1p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0、段間結合（2p では過結合で ±1.8MHz が落ちない。1p で 29.0〜29.7MHz の偏差 0.6dB 以内）
-C90,22p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0
-C91,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C92,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
-C93,82p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
+C77,2.2n,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
+C78,4.7n,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
+C79,68p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,セラゾイド変調,C0G（NP0）必須。のこぎり波の直線性に直結。山 約 1.5〜1.7V
+C80,1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
+C81,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,セラゾイド変調,
+C82,10u,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm,送信音声,
+C83,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,セラゾイド変調,ワンショット時定数
+C84,22p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,セラゾイド変調,リセットパルスの時定数（NP0）
+C85,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信音声,
+C86,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,セラゾイド変調,
+C87,22p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0
+C88,1p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0、段間結合（2p では過結合で ±1.8MHz が落ちない。1p で 29.0〜29.7MHz の偏差 0.6dB 以内）
+C89,22p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0
+C90,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C91,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
+C92,82p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
+C93,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
 C94,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
 C95,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
 C96,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C97,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C98,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
-C99,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C100,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C101,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C102,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
-C103,180p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0。同調 1（3.66MHz、配線と 74HCU04 の入力を含めて）
-C104,120p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0。同調 3（14.65MHz、配線と 74HCU04 の入力を含めて）
-C105,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C97,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
+C98,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C99,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C100,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C101,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
+C102,180p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0。同調 1（3.66MHz、配線と 74HCU04 の入力を含めて）
+C103,120p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0。同調 3（14.65MHz、配線と 74HCU04 の入力を含めて）
+C104,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C105,1000p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,
 C106,1000p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,
-C107,1000p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,
-C108,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
-C109,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C110,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C111,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,約 1.6Arms 流れるので、円板ではなく積層セラミック（X7R、100V）を使う
-C112,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C113,220u,Capacitor_THT:CP_Radial_D8.0mm_P3.50mm,送信RF,25V 以上
-C114,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
-C115,47p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
-C116,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
-C117,120p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
+C107,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
+C108,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C109,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C110,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,約 1.6Arms 流れるので、円板ではなく積層セラミック（X7R、100V）を使う
+C111,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C112,220u,Capacitor_THT:CP_Radial_D8.0mm_P3.50mm,送信RF,25V 以上
+C113,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
+C114,47p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0
+C115,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,逓倍,
+C116,120p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
+C117,220p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
 C118,220p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
-C119,220p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
-C120,120p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
-C121,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0。同調 2（7.33MHz、配線と 74HCU04 の入力を含めて）
-C122,4.7p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0 500V。容量分割
-C123,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,
-C124,1000p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,
-C125,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
-C126,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C119,120p,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,送信RF,NP0 500V
+C120,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,NP0。同調 2（7.33MHz、配線と 74HCU04 の入力を含めて）
+C121,4.7p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,NP0 500V。容量分割
+C122,100p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,送信RF,
+C123,1000p,Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm,逓倍,
+C124,0.01u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
+C125,0.1u,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,送信RF,
 D1,1N5408,Diode_THT:D_DO-201AD_P5.08mm_Vertical_AnodeUp,電源,逆接続保護（逆接続でヒューズを切る）
 D2,1N4148,Diode_THT:D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp,受信,入力保護
 D3,1N4148,Diode_THT:D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp,受信,入力保護
@@ -175,9 +174,11 @@ Q5,2SC1815,Package_TO_SOT_THT:TO-92_Inline,受信,スケルチのミュート（
 Q6,2SC1815,Package_TO_SOT_THT:TO-92_Inline,制御,リレー駆動
 Q7,2N7000,Package_TO_SOT_THT:TO-92_Inline,セラゾイド変調,放電スイッチ
 Q8,2SA1015,Package_TO_SOT_THT:TO-92_Inline,セラゾイド変調,定電流源
-Q9,2N3866,Package_TO_SOT_THT:TO-39-3,送信RF,バッファ（TO-39、放熱クリップを付ける）
-Q10,RD06HHF1,Package_TO_SOT_THT:TO-220-3_Vertical,送信RF,ドライバ（約 1W）。放熱器 HS1 に固定
-Q11,RD16HHF1,Package_TO_SOT_THT:TO-220-3_Vertical,送信RF,ファイナル（10W）。基板端に置き、シャーシの放熱器にねじ止め（絶縁不要: タブ = ソース = GND）
+Q9,2SA1015,Package_TO_SOT_THT:TO-92_Inline,セラゾイド変調,比較（ベース = のこぎり波）。GR ランクの 2 個をそろえる
+Q10,2SA1015,Package_TO_SOT_THT:TO-92_Inline,セラゾイド変調,比較（ベース = しきい値）
+Q11,2N2222A,Package_TO_SOT_THT:TO-92_Inline,送信RF,バッファ（TO-92、E-B-C の並び。fT 250MHz 以上、コレクタ損失 約 0.3W）
+Q12,RD06HHF1,Package_TO_SOT_THT:TO-220-3_Vertical,送信RF,ドライバ（約 1W）。放熱器 HS1 に固定
+Q13,RD16HHF1,Package_TO_SOT_THT:TO-220-3_Vertical,送信RF,ファイナル（10W）。基板端に置き、シャーシの放熱器にねじ止め（絶縁不要: タブ = ソース = GND）
 R1,2.2k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,受信,取り出し。水晶フィルタの終端（MC3361 の入力）に重い負荷をかけないため
 R2,5.6k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,PLL,
 R3,5.6k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,PLL,
@@ -241,7 +242,7 @@ R60,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声
 R61,220k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,マイクアンプ利得 22
 R62,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,
 R63,100k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,利得 11
-R64,100,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,Si5351 CLK0 の直列抵抗
+R64,100,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,Si5351 CLK0（1.83125MHz）の直列抵抗
 R65,2.2k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,IDC（クリップ）
 R66,15k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,3kHz LPF（サレンキー）
 R67,15k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,
@@ -250,33 +251,36 @@ R69,1.5k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾ�
 R70,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,
 R71,100k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,
 R72,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信音声,
-R73,2.2k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,
-R74,120,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
-R75,1.8k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 1 の遅延 137ns（1.83MHz の 1/4 周期）
-R76,510,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 3 の遅延 34ns（7.33MHz の 1/4 周期）
-R77,560,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ベースバイアス（分圧電流 約 12mA、hFE が低くても約 40mA を保つ）
-R78,4.7,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,帰還（バイパスしない）
-R79,10,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
-R80,47,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,入力スワンプ
-R81,10,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートストッパー
-R82,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートバイアス
-R83,3.3k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
-R84,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,同調 1（3.66MHz）の駆動。Q 約 5 を決める
-R85,470,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,同調 3（14.65MHz）の駆動。Q 約 5 を決める
-R86,100,Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P5.08mm_Vertical,送信RF,入力スワンプ（2 本並列で 50Ω）
-R87,100,Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P5.08mm_Vertical,送信RF,入力スワンプ（2 本並列で 50Ω）
-R88,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートバイアス
-R89,10,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートストッパー
-R90,1M,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,自己バイアス（しきい値 = 入力の平均）
-R91,1M,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,自己バイアス（しきい値 = 入力の平均）
-R92,3.3k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
-R93,910,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 2 の遅延 68ns（3.66MHz の 1/4 周期）
-R94,330,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 4 の遅延 17ns（14.65MHz の 1/4 周期）
-R95,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,同調 2（7.33MHz）の駆動。Q 約 5 を決める
-R96,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
-R97,1M,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,自己バイアス（しきい値 = 入力の平均）
-R98,47k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
+R73,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,負荷。RAMP < THRESH で約 2.3V、超えると 0V
+R74,1.5k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,差動対の電流（約 (5 − 0.85 − 0.65) ÷ 1.5k ≒ 2.3mA）
+R75,1.5k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,リセットパルス 約 50〜100ns
+R76,2.2k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,セラゾイド変調,
+R77,120,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
+R78,1.8k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 1 の遅延 137ns（1.83MHz の 1/4 周期）
+R79,510,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 3 の遅延 34ns（7.33MHz の 1/4 周期）
+R80,560,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ベースバイアス（分圧電流 約 12mA、hFE が低くても約 40mA を保つ）
+R81,4.7,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,帰還（バイパスしない）
+R82,18,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,エミッタ電流 約 33mA（2N2222A の損失を 0.25W 程度に）
+R83,47,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,入力スワンプ
+R84,10,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートストッパー
+R85,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートバイアス
+R86,3.3k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
+R87,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,同調 1（3.66MHz）の駆動。Q 約 5 を決める
+R88,470,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,同調 3（14.65MHz）の駆動。Q 約 5 を決める
+R89,100,Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P5.08mm_Vertical,送信RF,入力スワンプ（2 本並列で 50Ω）
+R90,100,Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P5.08mm_Vertical,送信RF,入力スワンプ（2 本並列で 50Ω）
+R91,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートバイアス
+R92,10,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,ゲートストッパー
+R93,1M,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,自己バイアス（しきい値 = 入力の平均）
+R94,1M,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,自己バイアス（しきい値 = 入力の平均）
+R95,3.3k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
+R96,910,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 2 の遅延 68ns（3.66MHz の 1/4 周期）
+R97,330,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,×2 段 4 の遅延 17ns（14.65MHz の 1/4 周期）
+R98,1k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,同調 2（7.33MHz）の駆動。Q 約 5 を決める
 R99,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
+R100,1M,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,逓倍,自己バイアス（しきい値 = 入力の平均）
+R101,47k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
+R102,10k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,送信RF,
 T1,BN43-202 2T:5T,Serrasoid_TRX:Transformer_BN43-202,送信RF,出力整合 1:6.25（8Ω → 50Ω）。一次 2 回・二次 5 回。13.8V で 10W 出すにはドレイン負荷 約 8Ω が必要
 TC1,30p,Serrasoid_TRX:C_Trimmer_TMCV01,受信,29.3MHz に同調
 TC2,30p,Serrasoid_TRX:C_Trimmer_TMCV01,受信,29.3MHz に同調
@@ -287,8 +291,9 @@ TP1,VT,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,PLL,VCO 制御電圧。29.3M
 TP2,TXOSC,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,PLL,29.3MHz（PLL の VCO）の観測点
 TP3,RAMP,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,セラゾイド変調,のこぎり波の観測点
 TP4,THRESH,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,セラゾイド変調,しきい値（約 0.85V ± 音声）の観測点
-TP5,PM,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,セラゾイド変調,位相変調された 1.83125MHz の観測点（立ち上がりが音声で揺れる）
-TP6,X16,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,逓倍,×16 の出力（29.3MHz、PLL の基準）の観測点
+TP5,COMP,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,セラゾイド変調,コンパレータの出力の観測点（交点で立ち下がる）
+TP6,PM,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,セラゾイド変調,位相変調された 1.83125MHz の観測点（立ち上がりが音声で揺れる）
+TP7,X16,TestPoint:TestPoint_THTPad_D1.5mm_Drill0.7mm,逓倍,×16 の出力（29.3MHz、PLL の基準）の観測点
 U1,74AC74,Package_DIP:DIP-14_W7.62mm_Socket,PLL,位相周波数比較。1 個目のクロック = ×16（基準）、2 個目 = VCO。必ず AC 品（29.3MHz）
 U2,78L05,Package_TO_SOT_THT:TO-92_Inline,受信,受信用 5V（NJM2594・MC3361・スケルチ）
 U3,74AC00,Package_DIP:DIP-14_W7.62mm_Socket,PLL,位相比較のリセット（UP・DN が両方 High で両方の D-FF をクリア）。2〜4 回路目は未使用
@@ -299,7 +304,7 @@ U7,MCP6002,Package_DIP:DIP-8_W7.62mm_Socket,PLL,A: ループフィルタ（レ�
 U8,LP2950-3.3,Package_TO_SOT_THT:TO-92_Inline,電源,Si5351 モジュール用 3.3V
 U9,AD8307ANZ,Package_DIP:DIP-8_W7.62mm_Socket,受信,対数増幅（25mV/dB、−75〜＋17dBm）。DIP-8。+5VA（受信中だけ）。INT（5 番）は開放、ENB は VPS へ
 U10,NJM2594V,Package_SO:TSSOP-8_4.4x3mm_P0.65mm,受信,第 1 混合（DBM、変換利得 0dB）。表面実装 SSOP8（0.65mm ピッチ）、部品面に手はんだ（この部品だけ表面実装）。3 番エミッタフォロワ出力、2 番は開放、8 番（内部で未接続）は開放（基板で両側を信号線に挟まれ GND に落とせないため）
-U11,AE-Si5351A,Serrasoid_TRX:DIP-8_W7.62mm,制御,秋月 AE-Si5351A。CLK0 = 変調基準 18.3125MHz（送信時のみ。29.3MHz ÷ 16 × 10）、CLK1 = 受信局発 18.6MHz（受信時のみ）
+U11,AE-Si5351A,Serrasoid_TRX:DIP-8_W7.62mm,制御,秋月 AE-Si5351A。CLK0 = 変調基準 1.83125MHz（送信時のみ。29.3MHz ÷ 16）、CLK1 = 受信局発 18.6MHz（受信時のみ）
 U12,74HCU04,Package_DIP:DIP-14_W7.62mm_Socket,PLL,VCO 専用（必ず U 付き）。1: 発振、2: 位相比較行きのバッファ、3〜5: 送信 RF 行きのバッファ（出力を 330Ω ずつで合わせ、駆動を強くする）、6: 未使用。受信中は 1 の入力が GND に落ち、バッファの出力は Low のまま止まる
 U13,ADS1115 module,Serrasoid_TRX:ADS1115_Module_Socket,制御,I2C 16 ビット ADC（ADS1115 モジュール、Adafruit 1085 と同じピン並び）。アドレス 0x48（ADDR = GND）。A0 = S メーター。ピンソケットに差す（XIAO のピンが足りないので I2C で読む）
 U14,MC3361,Package_DIP:DIP-16_W7.62mm_Socket,受信,第 2 混合（455kHz）・リミッタ・検波。スケルチは XIAO 側で行うので 10〜14 番は未使用
@@ -307,13 +312,11 @@ U15,XIAO ESP32C3,Serrasoid_TRX:Seeeduino_XIAO_Socket,制御,ソケット実装�
 U16,MCP6002,Package_DIP:DIP-8_W7.62mm_Socket,受信,A: スケルチ用ノイズアンプ、B: 未使用（ボルテージフォロワで固定）
 U17,LM386N-1,Package_DIP:DIP-8_W7.62mm_Socket,受信,低周波増幅（利得 20）
 U18,MCP6004,Package_DIP:DIP-14_W7.62mm_Socket,送信音声,A: マイクアンプ、B: 利得段、C: 3kHz LPF、D: しきい値バッファ
-U19,74HCT4017,Package_DIP:DIP-16_W7.62mm_Socket,セラゾイド変調,÷10。Q0 が 546ns ごとに約 55ns 幅のリセットパルス。HCT 品（3.3V 入力を受けるため）。CLK0 18.3MHz は最高クロック（5V・最悪条件で約 20MHz）に近いので、代替品は 74HC4017（3.3V 入力でも動く品）を確かめてから
-U20,MAX913CPA,Package_DIP:DIP-8_W7.62mm_Socket,セラゾイド変調,高速コンパレータ（10ns、DIP-8）。単電源 5V（V- = GND）で入力範囲は -0.2〜+3.5V、出力は TTL（High 2.4〜3.4V）。LE は Low でラッチしない（データシート: High または開放でラッチ）ので GND に固定。LT1016 は単電源では入力範囲が足りないので使わない
-U21,74HCT123,Package_DIP:DIP-16_W7.62mm_Socket,セラゾイド変調,コンパレータの立ち上がりで約 273ns（デューティ 50%）のパルス。MAX913 の TTL 出力を受けるため HCT 品。2 回路目は未使用
-U22,74AC14,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,RC 遅延の後の波形整形（シュミット）と、段 1・2 の同調の後の整形。74AC86 に遅い波形を入れないため。必ず AC 品
-U23,74AC86,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65 → 29.3MHz）。必ず AC 品
-U24,74HCU04,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,アンバッファ品（必ず U 付き）。1〜3: 同調 1〜3 の後の自己バイアス増幅。4〜6 回路目は未使用
-U25,74AC14,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,同調 3 の後の整形（シュミット）。2〜6 回路目は未使用。必ず AC 品
+U19,74HCT123,Package_DIP:DIP-16_W7.62mm_Socket,セラゾイド変調,1 回路目: コンパレータの出力の立ち下がり（1A）で約 273ns（デューティ 50%）の PM_OUT。2 回路目: CLK0 の立ち上がり（2B）で約 50〜100ns のリセットパルス（2N7000 で放電）。HCT 品（Si5351 の 3.3V 出力を受けるため）
+U20,74AC14,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,RC 遅延の後の波形整形（シュミット）と、段 1・2 の同調の後の整形。74AC86 に遅い波形を入れないため。必ず AC 品
+U21,74AC86,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65 → 29.3MHz）。必ず AC 品
+U22,74HCU04,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,アンバッファ品（必ず U 付き）。1〜3: 同調 1〜3 の後の自己バイアス増幅。4〜6 回路目は未使用
+U23,74AC14,Package_DIP:DIP-14_W7.62mm_Socket,逓倍,同調 3 の後の整形（シュミット）。2〜6 回路目は未使用。必ず AC 品
 VR1,10k,Serrasoid_TRX:Potentiometer_TOCOS_GF063P_Vertical,送信音声,マイク利得
 VR2,1k,Serrasoid_TRX:Potentiometer_TOCOS_GF063P_Vertical,セラゾイド変調,のこぎり波の傾き調整（約 260〜430µA）
 VR3,10k,Serrasoid_TRX:Potentiometer_TOCOS_GF063P_Vertical,送信音声,周波数偏移（±5kHz に調整）

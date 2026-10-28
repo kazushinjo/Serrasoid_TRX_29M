@@ -5,8 +5,8 @@
  * 29.000 ~ 29.700 MHz FM（呼出 29.300MHz）。PSN_TRX のスケッチが元。
  *
  * ---- Si5351 ----
- *   CLK0 = 変調基準 = 送信周波数 × 10 ÷ 16（29.300MHz で 18.3125MHz）。送信中だけ出す
- *          （74HCT4017 で ÷10 → セラゾイド変調 1.83125MHz → ×16 → PLL の VCO が追従）
+ *   CLK0 = 変調基準 = 送信周波数 ÷ 16（29.300MHz で 1.83125MHz）。送信中だけ出す
+ *          （74HCT123 でリセットパルス → セラゾイド変調 1.83125MHz → ×16 → PLL の VCO が追従）
  *   CLK1 = 受信局発 = 受信周波数 − 10.7MHz（29.300MHz で 18.600MHz）。受信中だけ出す
  *
  * ---- 送受切替（D10 TX_EN → Q → リレー K1。2 極目で 8V を TX8V / RX8V に切り替える）----
@@ -113,7 +113,7 @@
 #define FREQ_MAX     29700000L
 #define FREQ_CALL    29300000L
 #define IF_FREQ      10700000L
-#define MULT_NUM     10         // CLK0 = 送信周波数 × 10 / 16
+#define MULT_NUM     1          // CLK0 = 送信周波数 × 1 / 16
 #define MULT_DEN     16
 
 #define RELAY_MS       15       // リレー（G5V-2）が切り替わるのを待つ時間
@@ -219,7 +219,7 @@ void setRxClock() {
 }
 
 void setTxClock() {
-  // 送信周波数は 1kHz 単位なので、× 10 / 16 は 0.625Hz 単位 → 0.01Hz 単位でちょうど割り切れる
+  // 送信周波数は 1kHz 単位なので、÷ 16 は 62.5Hz 単位 → 0.01Hz 単位でちょうど割り切れる
   uint64_t f = (uint64_t)currentFreq * 100ULL * MULT_NUM / MULT_DEN;
   si5351.set_freq(f, SI5351_CLK0);
 }

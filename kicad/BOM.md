@@ -10,40 +10,41 @@
 
 | Reference | 値 / 型番 | フットプリント | 数量 | 購入先 | 購入先の型番（販売コード） | 備考 |
 |---|---|---|---|---|---|---|
-| R1, R56, R65, R73 | 2.2k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | 秋月電子 | CF25J2K2B（125222） | R1: 取り出し。水晶フィルタの終端（MC3361 の入力）に重い負荷をかけないため<br>R56: エレクトレットのバイアス<br>R65: IDC（クリップ） |
+| R1, R56, R65, R76 | 2.2k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | 秋月電子 | CF25J2K2B（125222） | R1: 取り出し。水晶フィルタの終端（MC3361 の入力）に重い負荷をかけないため<br>R56: エレクトレットのバイアス<br>R65: IDC（クリップ） |
 | R2, R3, R8, R9 | 5.6k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | 秋月電子 | RD25S 5K6（125562） |  |
 | R4, R19, R21, R54 | 22k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | 秋月電子 | CF25J22KB（125223） | R4: S メーター増幅のベースバイアス（約 1.4V）<br>R21: 10.7MHz 増幅のベースバイアス（約 1.4V）<br>R54: ADC 入力を 3.1V 以下に |
 | R5, R10, R22, R32, R34, R41 | 4.7k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 6 | 秋月電子 | CF25J4K7B（125472） | R10: Q 調整<br>R32, R34: I2C プルアップ |
 | R6 | 27 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J27RB（114273） | エミッタ帰還（バイパスしない） |
 | R7, R36 | 220 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | 秋月電子 | CF25J220RB（125221） | R36: 出力の直列抵抗（発振振幅・高調波を抑える） |
-| R11, R15, R23, R59, R69 | 1.5k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 5 | 秋月電子 | CF25J1K5B（125152） | R15: ダンピング（ζ 約 0.7）<br>R23: コレクタ負荷（水晶フィルタの入力側の終端。10M15A の規格に合わせて調整）<br>R59: TX ランプ電流<br>R69: 定電流源エミッタ抵抗 |
-| R12, R43-R45, R94 | 330 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 5 | 秋月電子 | CF25J330RB（125331） | R43: 送信 BPF への直列抵抗。VCO の出力バッファ 3 回路を 330Ω ずつで合わせる（並列で約 110Ω）<br>R44: VCO の出力バッファ 2 個目の直列抵抗<br>R45: VCO の出力バッファ 3 個目の直列抵抗<br>R94: ×2 段 4 の遅延 17ns（14.65MHz の 1/4 周期） |
+| R11, R15, R23, R59, R69, R74, R75 | 1.5k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 7 | 秋月電子 | CF25J1K5B（125152） | R15: ダンピング（ζ 約 0.7）<br>R23: コレクタ負荷（水晶フィルタの入力側の終端。10M15A の規格に合わせて調整）<br>R59: TX ランプ電流<br>R69: 定電流源エミッタ抵抗<br>R74: 差動対の電流（約 (5 − 0.85 − 0.65) ÷ 1.5k ≒ 2.3mA）<br>R75: リセットパルス 約 50〜100ns |
+| R12, R43-R45, R97 | 330 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 5 | 秋月電子 | CF25J330RB（125331） | R43: 送信 BPF への直列抵抗。VCO の出力バッファ 3 回路を 330Ω ずつで合わせる（並列で約 110Ω）<br>R44: VCO の出力バッファ 2 個目の直列抵抗<br>R45: VCO の出力バッファ 3 個目の直列抵抗<br>R97: ×2 段 4 の遅延 17ns（14.65MHz の 1/4 周期） |
 | R13 | 1.2k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J1K2B（125122） | 局発を約 106mVrms に減衰（NJM2594 のキャリア入力 1200Ω。データシートの規格 100mVrms・−7dBm、約 100mV 以上で出力一定） |
-| R14, R18, R20, R27, R50, R82, R84, R88, R95 | 1k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 9 | 秋月電子 | CF25J1KB（125102） | R14: 負荷（NJM2594 の入力 600Ω と並列で約 375Ω、利得 約 4dB。感度が足りなければ外す）<br>R20: NJM2594 のエミッタフォロワの負荷（アイドル電流 約 3.3mA ＝（5V − 1.7V）÷ 1k）<br>R27: PTT 保護抵抗<br>R50: リレー駆動のベース電流 約 2.6mA（コイル約 42mA を確実に飽和させる）<br>R82, R88: ゲートバイアス<br>R84: 同調 1（3.66MHz）の駆動。Q 約 5 を決める<br>R95: 同調 2（7.33MHz）の駆動。Q 約 5 を決める |
-| R16, R64, R68 | 100 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 3 | 秋月電子 | CF25J100RB（125101） | R64: Si5351 CLK0 の直列抵抗 |
-| R17, R49, R79, R81, R89 | 10 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 5 | 秋月電子 | CF25J10RB（125100） | R17: 電源のデカップリング（データシートの応用回路）<br>R81, R89: ゲートストッパー |
+| R14, R18, R20, R27, R50, R73, R85, R87, R91, R98 | 1k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 10 | 秋月電子 | CF25J1KB（125102） | R14: 負荷（NJM2594 の入力 600Ω と並列で約 375Ω、利得 約 4dB。感度が足りなければ外す）<br>R20: NJM2594 のエミッタフォロワの負荷（アイドル電流 約 3.3mA ＝（5V − 1.7V）÷ 1k）<br>R27: PTT 保護抵抗<br>R50: リレー駆動のベース電流 約 2.6mA（コイル約 42mA を確実に飽和させる）<br>R73: 負荷。RAMP < THRESH で約 2.3V、超えると 0V<br>R85, R91: ゲートバイアス<br>R87: 同調 1（3.66MHz）の駆動。Q 約 5 を決める<br>R98: 同調 2（7.33MHz）の駆動。Q 約 5 を決める |
+| R16, R64, R68 | 100 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 3 | 秋月電子 | CF25J100RB（125101） | R64: Si5351 CLK0（1.83125MHz）の直列抵抗 |
+| R17, R49, R84, R92 | 10 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | 秋月電子 | CF25J10RB（125100） | R17: 電源のデカップリング（データシートの応用回路）<br>R84, R92: ゲートストッパー |
 | R24 | 82 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J82RB（114276） | エミッタ帰還（バイパスしない。利得 ≒ 1.5k ÷ 91Ω） |
 | R25 | 180 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J180RB（125181） |  |
-| R26, R28, R29, R33, R35, R37-R40, R42, R47, R48, R52, R53, R57, R58, R60, R62, R70, R72, R96, R99 | 10k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 22 | 秋月電子 | RD25S 10K（125103） | R35: PTT プルアップ<br>R37: ディエンファシス 470µs<br>R57: VREF = 2.5V |
-| R30, R90, R91, R97 | 1M | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | 秋月電子 | CF25J1MB（125105） | R30: 自己バイアス<br>R90, R91, R97: 自己バイアス（しきい値 = 入力の平均） |
+| R26, R28, R29, R33, R35, R37-R40, R42, R47, R48, R52, R53, R57, R58, R60, R62, R70, R72, R99, R102 | 10k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 22 | 秋月電子 | RD25S 10K（125103） | R35: PTT プルアップ<br>R37: ディエンファシス 470µs<br>R57: VREF = 2.5V |
+| R30, R93, R94, R100 | 1M | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 4 | 秋月電子 | CF25J1MB（125105） | R30: 自己バイアス<br>R93, R94, R100: 自己バイアス（しきい値 = 入力の平均） |
 | R31 | 20k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J20KB（103940） | ダンピング（データシートは 20k）。音が歪むときは 6.8k〜47k で調整 |
 | R46 | 470k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | RD25S 470K（125474） | ノイズアンプ利得 47 |
 | R51, R63, R71 | 100k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 3 | 秋月電子 | CF25J100KB（125104） | R63: 利得 11 |
-| R55, R85 | 470 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | 秋月電子 | CF25J470RB（125471） | R55: マイク電源デカップリング<br>R85: 同調 3（14.65MHz）の駆動。Q 約 5 を決める |
+| R55, R88 | 470 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | 秋月電子 | CF25J470RB（125471） | R55: マイク電源デカップリング<br>R88: 同調 3（14.65MHz）の駆動。Q 約 5 を決める |
 | R61 | 220k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J220KB（125224） | マイクアンプ利得 22 |
 | R66, R67 | 15k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | 秋月電子 | MFS25F15KB（108552） | R66: 3kHz LPF（サレンキー） |
-| R74 | 120 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J120RB（125121） |  |
-| R75 | 1.8k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | MFS25F1K8B（108538） | ×2 段 1 の遅延 137ns（1.83MHz の 1/4 周期） |
-| R76 | 510 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J510RB（125511） | ×2 段 3 の遅延 34ns（7.33MHz の 1/4 周期） |
-| R77 | 560 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J560RB（125561） | ベースバイアス（分圧電流 約 12mA、hFE が低くても約 40mA を保つ） |
-| R78 | 4.7 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J4R7B（125047） | 帰還（バイパスしない） |
-| R80 | 47 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J47RB（125470） | 入力スワンプ |
-| R83, R92 | 3.3k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | 秋月電子 | CF25J3K3B（125332） |  |
-| R86, R87 | 100 | R Axial DIN0414 L11.9mm D4.5mm P5.08mm Vertical | 2 | 秋月電子 | CFS50J100RB（107803） | 入力スワンプ（2 本並列で 50Ω） |
-| R93 | 910 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J910RB（114277） | ×2 段 2 の遅延 68ns（3.66MHz の 1/4 周期） |
-| R98 | 47k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J47KB（118208） |  |
+| R77 | 120 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J120RB（125121） |  |
+| R78 | 1.8k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | MFS25F1K8B（108538） | ×2 段 1 の遅延 137ns（1.83MHz の 1/4 周期） |
+| R79 | 510 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J510RB（125511） | ×2 段 3 の遅延 34ns（7.33MHz の 1/4 周期） |
+| R80 | 560 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J560RB（125561） | ベースバイアス（分圧電流 約 12mA、hFE が低くても約 40mA を保つ） |
+| R81 | 4.7 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J4R7B（125047） | 帰還（バイパスしない） |
+| R82 | 18 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J18RB（114272） | エミッタ電流 約 33mA（2N2222A の損失を 0.25W 程度に） |
+| R83 | 47 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J47RB（125470） | 入力スワンプ |
+| R86, R95 | 3.3k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 2 | 秋月電子 | CF25J3K3B（125332） |  |
+| R89, R90 | 100 | R Axial DIN0414 L11.9mm D4.5mm P5.08mm Vertical | 2 | 秋月電子 | CFS50J100RB（107803） | 入力スワンプ（2 本並列で 50Ω） |
+| R96 | 910 | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J910RB（114277） | ×2 段 2 の遅延 68ns（3.66MHz の 1/4 周期） |
+| R101 | 47k | R Axial DIN0207 L6.3mm D2.5mm P2.54mm Vertical | 1 | 秋月電子 | CF25J47KB（118208） |  |
 
-**抵抗 R 合計: 99**
+**抵抗 R 合計: 102**
 
 ## 半固定抵抗 VR
 
@@ -59,39 +60,39 @@
 
 | Reference | 値 / 型番 | フットプリント | 数量 | 購入先 | 購入先の型番（販売コード） | 備考 |
 |---|---|---|---|---|---|---|
-| C1, C3, C6, C10, C16-C19, C24, C34, C37-C42, C45, C46, C49, C50, C56, C61, C63, C65, C77, C82, C84, C86, C87, C98, C100, C102, C108, C110, C111, C116, C126 | 0.1u | C Disc D5.0mm W2.5mm P2.50mm | 37 | 秋月電子 | C1, C3, C6, C10, C16-C19, C24, C34, C37-C42, C45, C46, C49, C50, C56, C61, C63, C65, C77, C82, C84, C86, C87, C98, C100, C102, C108, C110, C116, C126: RDER71H104K0P1H03B（113582）<br>C111: RDER72A104K1K1H03B（115927） | C40: 出力の平滑（出力抵抗 12.5kΩ と約 1.3ms）<br>C42: 差動入力の中点（6 番）の AC 接地<br>C49, C50: データシートどおり VCC へ<br>C111: 約 1.6Arms 流れるので、円板ではなく積層セラミック（X7R、100V）を使う |
+| C1, C3, C6, C10, C16-C19, C24, C34, C37-C42, C45, C46, C49, C50, C56, C61, C63, C65, C81, C85, C86, C97, C99, C101, C107, C109, C110, C115, C125 | 0.1u | C Disc D5.0mm W2.5mm P2.50mm | 35 | 秋月電子 | C1, C3, C6, C10, C16-C19, C24, C34, C37-C42, C45, C46, C49, C50, C56, C61, C63, C65, C81, C85, C86, C97, C99, C101, C107, C109, C115, C125: RDER71H104K0P1H03B（113582）<br>C110: RDER72A104K1K1H03B（115927） | C40: 出力の平滑（出力抵抗 12.5kΩ と約 1.3ms）<br>C42: 差動入力の中点（6 番）の AC 接地<br>C49, C50: データシートどおり VCC へ<br>C110: 約 1.6Arms 流れるので、円板ではなく積層セラミック（X7R、100V）を使う |
 | C2 | 470u | CP Radial D8.0mm P3.50mm | 1 | 秋月電子 | 25PX470MEFC8X11.5（117883） | 25V 以上 |
-| C4, C11, C88, C90 | 22p | C Disc D3.0mm W1.6mm P2.50mm | 4 | 秋月電子 | RD15N220J1HL2L（104060） | NP0 |
+| C4, C11, C84, C87, C89 | 22p | C Disc D3.0mm W1.6mm P2.50mm | 5 | 秋月電子 | RD15N220J1HL2L（104060） | C4, C11, C87, C89: NP0<br>C84: リセットパルスの時定数（NP0） |
 | C5 | 0.33u | C Disc D5.0mm W2.5mm P2.50mm | 1 | 秋月電子 | RD15W334K1HL2L-10（115937） |  |
-| C7, C12, C15, C21, C28, C35, C58, C66, C74, C83 | 10u | CP Radial D5.0mm P2.00mm | 10 | 秋月電子 | 50PX10MEFC5X11（117897） | C12: 25V 以上 |
-| C8, C20, C22, C25-C27, C29-C33, C43, C47, C53, C54, C62, C91, C94-C97, C99, C101, C105, C109, C112, C125 | 0.01u | C Disc D5.0mm W2.5mm P2.50mm | 27 | 秋月電子 | C8, C22, C26, C27, C29-C33, C43, C47, C53, C54, C62, C91, C94-C97, C99, C101, C105, C109, C112, C125: RD15W103K1HL2L-10（104063）<br>C20, C25: RDE5C1H103J1K1H03B（108043） | C20: フィルム（または C0G）<br>C25: フィルム（または C0G）。積分<br>C27: 負入力を交流で GND へ<br>C30: オフセット補償ループの時定数（データシートの応用回路）<br>C54: DC カット（受信中に入力を GND に落としても出力から電流が流れない） |
+| C7, C12, C15, C21, C28, C35, C58, C66, C74, C82 | 10u | CP Radial D5.0mm P2.00mm | 10 | 秋月電子 | 50PX10MEFC5X11（117897） | C12: 25V 以上 |
+| C8, C20, C22, C25-C27, C29-C33, C43, C47, C53, C54, C62, C90, C93-C96, C98, C100, C104, C108, C111, C124 | 0.01u | C Disc D5.0mm W2.5mm P2.50mm | 27 | 秋月電子 | C8, C22, C26, C27, C29-C33, C43, C47, C53, C54, C62, C90, C93-C96, C98, C100, C104, C108, C111, C124: RD15W103K1HL2L-10（104063）<br>C20, C25: RDE5C1H103J1K1H03B（108043） | C20: フィルム（または C0G）<br>C25: フィルム（または C0G）。積分<br>C27: 負入力を交流で GND へ<br>C30: オフセット補償ループの時定数（データシートの応用回路）<br>C54: DC カット（受信中に入力を GND に落としても出力から電流が流れない） |
 | C9 | 2p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H2R0C0K1H03B（108044） | NP0、段間結合 |
 | C13, C14, C52, C75 | 220p | C Disc D3.0mm W1.6mm P2.50mm | 4 | 秋月電子 | RDE5C1H221J0K1H03B（108106） | C13, C14: PFD のパルスをならす<br>C52: NP0（データシートどおり VCC へ）<br>C75: 高域カット |
-| C23, C44, C115 | 47p | C Disc D3.0mm W1.6mm P2.50mm | 3 | 秋月電子 | RDE5C1H470J0K1H03B（108045） | C23: NP0。コレクタ同調<br>C44: NP0。可変容量の結合（範囲 約 0.8MHz）<br>C115: NP0 |
+| C23, C44, C114 | 47p | C Disc D3.0mm W1.6mm P2.50mm | 3 | 秋月電子 | RDE5C1H470J0K1H03B（108045） | C23: NP0。コレクタ同調<br>C44: NP0。可変容量の結合（範囲 約 0.8MHz）<br>C114: NP0 |
 | C36 | 470p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H471J0K1H03B（108110） | 339kHz の極（PFD の残りを落とす） |
 | C48 | 27p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H270J0K1H03B（108095） | NP0 |
-| C51, C80 | 68p | C Disc D3.0mm W1.6mm P2.50mm | 2 | 秋月電子 | RDE5C1H680J0P1H03B（114323） | C51: NP0<br>C80: C0G（NP0）必須。のこぎり波の直線性に直結。546ns で約 1.9〜3.1V |
+| C51, C79 | 68p | C Disc D3.0mm W1.6mm P2.50mm | 2 | 秋月電子 | RDE5C1H680J0P1H03B（114323） | C51: NP0<br>C79: C0G（NP0）必須。のこぎり波の直線性に直結。山 約 1.5〜1.7V |
 | C55 | 56p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H560J0K1H03B（108099） | NP0 |
-| C57, C78 | 2.2n | C Disc D5.0mm W2.5mm P2.50mm | 2 | 秋月電子 | RDER71H222K0P1H03B（112060） | C57: ノイズ HPF（約 7kHz 以上） |
+| C57, C77 | 2.2n | C Disc D5.0mm W2.5mm P2.50mm | 2 | 秋月電子 | RDER71H222K0P1H03B（112060） | C57: ノイズ HPF（約 7kHz 以上） |
 | C59, C67 | 0.047u | C Disc D5.0mm W2.5mm P2.50mm | 2 | 秋月電子 | RDER71H473K0P1H03B（112059） |  |
-| C60, C71, C76, C81 | 1u | C Disc D5.0mm W2.5mm P2.50mm | 4 | 秋月電子 | RD15W105K1HL2L-503（115940） |  |
+| C60, C71, C76, C80 | 1u | C Disc D5.0mm W2.5mm P2.50mm | 4 | 秋月電子 | RD15W105K1HL2L-503（115940） |  |
 | C64 | 100u | CP Radial D6.3mm P2.50mm | 1 | 秋月電子 | 25PX100MEFC5X11（117877） |  |
 | C68 | 0.47u | C Disc D5.0mm W2.5mm P2.50mm | 1 | 秋月電子 | RD15W474K1HL2L-10（115938） |  |
 | C69 | 220u | CP Radial D6.3mm P2.50mm | 1 | 秋月電子 | 25PX220MEFC6.3X11（117879） | 16V 以上 |
 | C70, C72, C73 | 47u | CP Radial D5.0mm P2.00mm | 3 | 秋月電子 | 35PX47MEFC5X11（117887） |  |
-| C79 | 4.7n | C Disc D5.0mm W2.5mm P2.50mm | 1 | 秋月電子 | 50F2D472J（110336） |  |
-| C85, C92, C114, C121, C123 | 100p | C Disc D3.0mm W1.6mm P2.50mm | 5 | 秋月電子 | C85, C123: RD15N101J1HL2L-10（104061）<br>C92, C114, C121: RDE5C1H101J0K1H03B（108063） | C85: ワンショット時定数<br>C92, C114: NP0<br>C121: NP0。同調 2（7.33MHz、配線と 74HCU04 の入力を含めて） |
-| C89 | 1p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H1R0C0K1H03B（108082） | NP0、段間結合（2p では過結合で ±1.8MHz が落ちない。1p で 29.0〜29.7MHz の偏差 0.6dB 以内） |
-| C93 | 82p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H820J0K1H03B（108101） | NP0 |
-| C103 | 180p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H181J0K1H03B（108105） | NP0。同調 1（3.66MHz、配線と 74HCU04 の入力を含めて） |
-| C104 | 120p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H121J0K1H03B（108103） | NP0。同調 3（14.65MHz、配線と 74HCU04 の入力を含めて） |
-| C106, C107, C124 | 1000p | C Disc D3.0mm W1.6mm P2.50mm | 3 | 秋月電子 | RDE5C1H102J0K1H03B（108114） |  |
-| C113 | 220u | CP Radial D8.0mm P3.50mm | 1 | 秋月電子 | 25PX220MEFC6.3X11（117879） | 25V 以上 |
-| C117, C120 | 120p | C Disc D5.0mm W2.5mm P5.00mm | 2 | DigiKey／Mouser（要確認） | C0G 500V〜1kV ディスク 120pF | NP0 500V |
-| C118, C119 | 220p | C Disc D5.0mm W2.5mm P5.00mm | 2 | DigiKey／Mouser（要確認） | C0G 500V〜1kV ディスク 220pF | NP0 500V |
-| C122 | 4.7p | C Disc D3.0mm W1.6mm P2.50mm | 1 | DigiKey／Mouser（要確認） | C0G 500V〜1kV ディスク 4.7pF | NP0 500V。容量分割 |
+| C78 | 4.7n | C Disc D5.0mm W2.5mm P2.50mm | 1 | 秋月電子 | 50F2D472J（110336） |  |
+| C83, C91, C113, C120, C122 | 100p | C Disc D3.0mm W1.6mm P2.50mm | 5 | 秋月電子 | C83, C122: RD15N101J1HL2L-10（104061）<br>C91, C113, C120: RDE5C1H101J0K1H03B（108063） | C83: ワンショット時定数<br>C91, C113: NP0<br>C120: NP0。同調 2（7.33MHz、配線と 74HCU04 の入力を含めて） |
+| C88 | 1p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H1R0C0K1H03B（108082） | NP0、段間結合（2p では過結合で ±1.8MHz が落ちない。1p で 29.0〜29.7MHz の偏差 0.6dB 以内） |
+| C92 | 82p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H820J0K1H03B（108101） | NP0 |
+| C102 | 180p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H181J0K1H03B（108105） | NP0。同調 1（3.66MHz、配線と 74HCU04 の入力を含めて） |
+| C103 | 120p | C Disc D3.0mm W1.6mm P2.50mm | 1 | 秋月電子 | RDE5C1H121J0K1H03B（108103） | NP0。同調 3（14.65MHz、配線と 74HCU04 の入力を含めて） |
+| C105, C106, C123 | 1000p | C Disc D3.0mm W1.6mm P2.50mm | 3 | 秋月電子 | RDE5C1H102J0K1H03B（108114） |  |
+| C112 | 220u | CP Radial D8.0mm P3.50mm | 1 | 秋月電子 | 25PX220MEFC6.3X11（117879） | 25V 以上 |
+| C116, C119 | 120p | C Disc D5.0mm W2.5mm P5.00mm | 2 | DigiKey／Mouser（要確認） | C0G 500V〜1kV ディスク 120pF | NP0 500V |
+| C117, C118 | 220p | C Disc D5.0mm W2.5mm P5.00mm | 2 | DigiKey／Mouser（要確認） | C0G 500V〜1kV ディスク 220pF | NP0 500V |
+| C121 | 4.7p | C Disc D3.0mm W1.6mm P2.50mm | 1 | DigiKey／Mouser（要確認） | C0G 500V〜1kV ディスク 4.7pF | NP0 500V。容量分割 |
 
-**コンデンサ C 合計: 126**
+**コンデンサ C 合計: 125**
 
 ## トリマコンデンサ TC
 
@@ -145,12 +146,12 @@
 | Q1, Q3-Q6 | 2SC1815 | TO-92 Inline | 5 | 秋月電子 | 2SC1815L-GR-T92（106477） | Q1: S メーター用 10.7MHz 増幅（Ic 約 3mA、約 26dB）<br>Q3: 10.7MHz 増幅（エミッタ接地、約 18dB。Ic 約 2.9mA）<br>Q4: 受信中（RX8V）に VCO の入力を GND に落として発振を止める<br>Q5: スケルチのミュート（MUTE = High で消音）<br>Q6: リレー駆動 |
 | Q2 | 2N3819 | TO-92 Inline | 1 | DigiKey（取り寄せ） | 2N3819 APM PBFREE（Central） | RF アンプ（ソース接地） |
 | Q7 | 2N7000 | TO-92 Inline | 1 | 秋月電子 | 2N7000（109723） | 放電スイッチ |
-| Q8 | 2SA1015 | TO-92 Inline | 1 | 秋月電子 | 2SA1015L-GR-T92（106734） | 定電流源 |
-| Q9 | 2N3866 | TO-39-3 | 1 | 要注意（製造中止） | 2N3866 または HG3866（同等品） | バッファ（TO-39、放熱クリップを付ける） |
-| Q10 | RD06HHF1 | TO-220-3 Vertical | 1 | 要注意（入手難） | RD06HHF1 | ドライバ（約 1W）。放熱器 HS1 に固定 |
-| Q11 | RD16HHF1 | TO-220-3 Vertical | 1 | 要注意（入手難） | RD16HHF1 | ファイナル（10W）。基板端に置き、シャーシの放熱器にねじ止め（絶縁不要: タブ = ソース = GND） |
+| Q8-Q10 | 2SA1015 | TO-92 Inline | 3 | 秋月電子 | 2SA1015L-GR-T92（106734） | Q8: 定電流源<br>Q9: 比較（ベース = のこぎり波）。GR ランクの 2 個をそろえる<br>Q10: 比較（ベース = しきい値） |
+| Q11 | 2N2222A | TO-92 Inline | 1 | DigiKey など | 2N2222A（TO-92、E-B-C の並び） | バッファ（TO-92、E-B-C の並び。fT 250MHz 以上、コレクタ損失 約 0.3W） |
+| Q12 | RD06HHF1 | TO-220-3 Vertical | 1 | 要注意（入手難） | RD06HHF1 | ドライバ（約 1W）。放熱器 HS1 に固定 |
+| Q13 | RD16HHF1 | TO-220-3 Vertical | 1 | 要注意（入手難） | RD16HHF1 | ファイナル（10W）。基板端に置き、シャーシの放熱器にねじ止め（絶縁不要: タブ = ソース = GND） |
 
-**トランジスタ・FET Q 合計: 11**
+**トランジスタ・FET Q 合計: 13**
 
 ## IC・モジュール U
 
@@ -166,20 +167,18 @@
 | U8 | LP2950-3.3 | TO-92 Inline | 1 | 秋月電子 | LP2950L-33-T92（108749） | Si5351 モジュール用 3.3V |
 | U9 | AD8307ANZ | DIP-8 W7.62mm Socket | 1 | DigiKey／Mouser（要確認） | AD8307ANZ | 対数増幅（25mV/dB、−75〜＋17dBm）。DIP-8。+5VA（受信中だけ）。INT（5 番）は開放、ENB は VPS へ |
 | U10 | NJM2594V | TSSOP-8 4.4x3mm P0.65mm | 1 | 秋月電子 | NJM2594V（111195） | 第 1 混合（DBM、変換利得 0dB）。表面実装 SSOP8（0.65mm ピッチ）、部品面に手はんだ（この部品だけ表面実装）。3 番エミッタフォロワ出力、2 番は開放、8 番（内部で未接続）は開放（基板で両側を信号線に挟まれ GND に落とせないため） |
-| U11 | AE-Si5351A | DIP-8 W7.62mm | 1 | 秋月電子 | AE-Si5351A-B（110679） | 秋月 AE-Si5351A。CLK0 = 変調基準 18.3125MHz（送信時のみ。29.3MHz ÷ 16 × 10）、CLK1 = 受信局発 18.6MHz（受信時のみ） |
-| U12, U24 | 74HCU04 | DIP-14 W7.62mm Socket | 2 | DigiKey | SN74HCU04N（296-9820-5-ND） | U12: VCO 専用（必ず U 付き）。1: 発振、2: 位相比較行きのバッファ、3〜5: 送信 RF 行きのバッファ（出力を 330Ω ずつで合わせ、駆動を強くする）、6: 未使用。受信中は 1 の入力が GND に落ち、バッファの出力は Low のまま止まる<br>U24: アンバッファ品（必ず U 付き）。1〜3: 同調 1〜3 の後の自己バイアス増幅。4〜6 回路目は未使用 |
+| U11 | AE-Si5351A | DIP-8 W7.62mm | 1 | 秋月電子 | AE-Si5351A-B（110679） | 秋月 AE-Si5351A。CLK0 = 変調基準 1.83125MHz（送信時のみ。29.3MHz ÷ 16）、CLK1 = 受信局発 18.6MHz（受信時のみ） |
+| U12, U22 | 74HCU04 | DIP-14 W7.62mm Socket | 2 | DigiKey | SN74HCU04N（296-9820-5-ND） | U12: VCO 専用（必ず U 付き）。1: 発振、2: 位相比較行きのバッファ、3〜5: 送信 RF 行きのバッファ（出力を 330Ω ずつで合わせ、駆動を強くする）、6: 未使用。受信中は 1 の入力が GND に落ち、バッファの出力は Low のまま止まる<br>U22: アンバッファ品（必ず U 付き）。1〜3: 同調 1〜3 の後の自己バイアス増幅。4〜6 回路目は未使用 |
 | U13 | ADS1115 module | ADS1115 Module Socket | 1 | DigiKey（Adafruit 1085）／Amazon など（要確認） | Adafruit 1085 または同じピン並び（VDD GND SCL SDA ADDR ALRT A0〜A3）のモジュール | I2C 16 ビット ADC（ADS1115 モジュール、Adafruit 1085 と同じピン並び）。アドレス 0x48（ADDR = GND）。A0 = S メーター。ピンソケットに差す（XIAO のピンが足りないので I2C で読む） |
 | U14 | MC3361 | DIP-16 W7.62mm Socket | 1 | LCSC／海外通販（要注意） | MC3361BPL-D16-T（UTC、DIP-16）または MC3361BP | 第 2 混合（455kHz）・リミッタ・検波。スケルチは XIAO 側で行うので 10〜14 番は未使用 |
 | U15 | XIAO ESP32C3 | Seeeduino XIAO Socket | 1 | 秋月電子 | 113991054（117454） | ソケット実装。起動設定ピン D0（GPIO2）・D9（GPIO9）は起動時に High が必要なので、ふだん開放の PTT とエンコーダ SW をつなぐ（PTT・つまみを押したまま電源を入れない）。D8（GPIO8）はフラッシュ起動に関係しないのでエンコーダ B 相 |
 | U17 | LM386N-1 | DIP-8 W7.62mm Socket | 1 | 秋月電子 | LM386G-D08（114548） | 低周波増幅（利得 20） |
 | U18 | MCP6004 | DIP-14 W7.62mm Socket | 1 | DigiKey | MCP6004-I/P（MCP6004-I/P-ND） | A: マイクアンプ、B: 利得段、C: 3kHz LPF、D: しきい値バッファ |
-| U19 | 74HCT4017 | DIP-16 W7.62mm Socket | 1 | DigiKey／Mouser（要確認） | CD74HCT4017E | ÷10。Q0 が 546ns ごとに約 55ns 幅のリセットパルス。HCT 品（3.3V 入力を受けるため）。CLK0 18.3MHz は最高クロック（5V・最悪条件で約 20MHz）に近いので、代替品は 74HC4017（3.3V 入力でも動く品）を確かめてから |
-| U20 | MAX913CPA | DIP-8 W7.62mm Socket | 1 | DigiKey（要注意） | MAX913CPA+ | 高速コンパレータ（10ns、DIP-8）。単電源 5V（V- = GND）で入力範囲は -0.2〜+3.5V、出力は TTL（High 2.4〜3.4V）。LE は Low でラッチしない（データシート: High または開放でラッチ）ので GND に固定。LT1016 は単電源では入力範囲が足りないので使わない |
-| U21 | 74HCT123 | DIP-16 W7.62mm Socket | 1 | DigiKey／Mouser（要確認） | CD74HCT123E | コンパレータの立ち上がりで約 273ns（デューティ 50%）のパルス。MAX913 の TTL 出力を受けるため HCT 品。2 回路目は未使用 |
-| U22, U25 | 74AC14 | DIP-14 W7.62mm Socket | 2 | DigiKey | SN74AC14N（296-4301-5-ND） | U22: RC 遅延の後の波形整形（シュミット）と、段 1・2 の同調の後の整形。74AC86 に遅い波形を入れないため。必ず AC 品<br>U25: 同調 3 の後の整形（シュミット）。2〜6 回路目は未使用。必ず AC 品 |
-| U23 | 74AC86 | DIP-14 W7.62mm Socket | 1 | DigiKey | SN74AC86N（296-4345-5-ND） | ×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65 → 29.3MHz）。必ず AC 品 |
+| U19 | 74HCT123 | DIP-16 W7.62mm Socket | 1 | DigiKey | CD74HCT123E | 1 回路目: コンパレータの出力の立ち下がり（1A）で約 273ns（デューティ 50%）の PM_OUT。2 回路目: CLK0 の立ち上がり（2B）で約 50〜100ns のリセットパルス（2N7000 で放電）。HCT 品（Si5351 の 3.3V 出力を受けるため） |
+| U20, U23 | 74AC14 | DIP-14 W7.62mm Socket | 2 | DigiKey | SN74AC14N（296-4301-5-ND） | U20: RC 遅延の後の波形整形（シュミット）と、段 1・2 の同調の後の整形。74AC86 に遅い波形を入れないため。必ず AC 品<br>U23: 同調 3 の後の整形（シュミット）。2〜6 回路目は未使用。必ず AC 品 |
+| U21 | 74AC86 | DIP-14 W7.62mm Socket | 1 | DigiKey | SN74AC86N（296-4345-5-ND） | ×2 段 1〜4（1.83 → 3.66 → 7.33 → 14.65 → 29.3MHz）。必ず AC 品 |
 
-**IC・モジュール U 合計: 25**
+**IC・モジュール U 合計: 23**
 
 ## 水晶・ディスクリミネータ X
 
@@ -231,18 +230,19 @@
 | TP2 | TXOSC | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | 29.3MHz（PLL の VCO）の観測点 |
 | TP3 | RAMP | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | のこぎり波の観測点 |
 | TP4 | THRESH | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | しきい値（約 0.85V ± 音声）の観測点 |
-| TP5 | PM | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | 位相変調された 1.83125MHz の観測点（立ち上がりが音声で揺れる） |
-| TP6 | X16 | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | ×16 の出力（29.3MHz、PLL の基準）の観測点 |
+| TP5 | COMP | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | コンパレータの出力の観測点（交点で立ち下がる） |
+| TP6 | PM | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | 位相変調された 1.83125MHz の観測点（立ち上がりが音声で揺れる） |
+| TP7 | X16 | TestPoint THTPad D1.5mm Drill0.7mm | 1 | 手持ち |  | ×16 の出力（29.3MHz、PLL の基準）の観測点 |
 
-**テストポイント TP 合計: 6**
+**テストポイント TP 合計: 7**
 
 ## 回路図に載っていない部品
 
 | 品名 | 数量 | 購入先 | 購入先の型番（販売コード） | 備考 |
 |---|---|---|---|---|
-| IC ソケット 8P | 5 | 秋月電子 | 2227-08-03（100017） | U7・U9・U16・U17・U20 |
-| IC ソケット 14P | 8 | 秋月電子 | 2227-14-03（100006） | U1・U3・U12・U18・U22・U23・U24・U25 |
-| IC ソケット 16P | 3 | 秋月電子 | 2227-16-03（100007） | U14・U19・U21 |
+| IC ソケット 8P | 4 | 秋月電子 | 2227-08-03（100017） | U7・U9・U16・U17 |
+| IC ソケット 14P | 8 | 秋月電子 | 2227-14-03（100006） | U1・U3・U12・U18・U20・U21・U22・U23 |
+| IC ソケット 16P | 2 | 秋月電子 | 2227-16-03（100007） | U14・U19 |
 | ピンソケット 1×7（XIAO 用） | 2 | 秋月電子 | FH-1x7SG/RH（104285） | U15 |
 | ピンソケット 1×10（ADS1115 モジュール用） | 1 | 秋月／千石 など（要確認） | ピンソケット 1×10 2.54mm（40P を切ってもよい） | U13 |
 | 放熱器 20PB020（RD06HHF1 用） | 1 | 秋月電子 | 20PB020-01025（105054） | HS1（基板に付ける） |
@@ -268,4 +268,4 @@
 
 ---
 
-**部品総数: 324**
+**部品総数: 327**
